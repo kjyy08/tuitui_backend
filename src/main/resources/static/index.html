@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Save</title>
+</head>
+<body>
+<!-- action : form에 작성한 데이터를 어디로 보낼지 지정 -->
+<form action="api/capsule/save" method="post">
+    <!-- name : 서버로 전송 할 때 변수이름의 역할 -->
+    캡슐 id: <input type="text" name="capsule_id"> <br>
+    글쓴이 id: <input type="text" name="write_user_id"> <br>
+    본문: <input type="text" name="content"> <br>
+    위치: <input type="text" name="location"> <br>
+    조회수: <input type="text" name="visit_count"> <br>
+    <input type="submit" value="회원가입">
+</form>
+</body>
+</html>

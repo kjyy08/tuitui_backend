@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>업로드된 이미지 목록</title>
+</head>
+<body>
+<h1>업로드된 이미지 목록</h1>
+
+<!-- 이미지 목록을 표시하는 반복문 -->
+<div th:each="image : ${images}">
+    <h3 th:text="${image.image_name}"></h3>
+    <!-- 이미지를 표시 -->
+    <img th:src="@{'/image/' + ${image.image_id}}" width="300" height="200" alt="Uploaded Image">
+</div>
+
+<!-- 이미지 업로드 폼으로 이동하는 링크 -->
+<br>
+<a th:href="@{/}">이미지 업로드 페이지로 이동</a>
+</body>
+</html>
