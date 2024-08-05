@@ -16,12 +16,12 @@ public class TimeCapsuleHashtag {
     @Column(name = "capsule_hashtag_id", nullable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer timeCapsuleHashtagId;
-//
-    //  //  @ManyToOne(fetch = FetchType.LAZY)
-    //  @JoinColumn(name = "capsule_id", referencedColumnName = "capsule_id")
-    //  TimeCapsule timeCapsule;
-//
-    //  //  @OneToMany(fetch = FetchType.LAZY)
-    //  @JoinColumn(name = "hashtag_id", referencedColumnName = "hashtag_id")
-    //  Hashtag hashtag;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "capsule_id", referencedColumnName = "capsule_id")
+    TimeCapsule timeCapsule;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hashtag_id", referencedColumnName = "hashtag_id")
+    Hashtag hashtag;
 }

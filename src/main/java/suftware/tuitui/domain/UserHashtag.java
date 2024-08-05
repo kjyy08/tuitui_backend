@@ -2,6 +2,7 @@ package suftware.tuitui.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @ToString
@@ -10,12 +11,12 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "capsule_like")
-public class TimeCapsuleLike {
+@Table(name = "user_tag")
+public class UserHashtag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "capsule_like_id", nullable = false, unique = true)
-    Integer capsuleLikeId;
+    @Column(name = "user_tag_id", nullable = false, unique = true)
+    Integer userHashtagId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "profile_id")

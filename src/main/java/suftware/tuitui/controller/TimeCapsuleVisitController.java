@@ -4,14 +4,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import suftware.tuitui.config.http.Message;
-import suftware.tuitui.config.http.MsgCode;
-import suftware.tuitui.dto.response.ProfileResponseDto;
-import suftware.tuitui.dto.response.TimeCapsuleLikeResponseDto;
+import suftware.tuitui.common.http.Message;
+import suftware.tuitui.common.enumType.MsgCode;
 import suftware.tuitui.dto.response.TimeCapsuleVisitResponseDto;
 import suftware.tuitui.service.TimeCapsuleVisitService;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -22,45 +19,27 @@ public class TimeCapsuleVisitController {
 
     //  캡슐을 방문한 모든 유저 조회
     @GetMapping(value = "capsules/{capsuleId}/visits")
-    public ResponseEntity<Message> getCapsuleVisitCount(@PathVariable(name = "capsuleId") Integer capsuleId){
-        Message message = new Message();
+    public ResponseEntity<Message> readCapsuleVisitCount(@PathVariable(name = "capsuleId") Integer capsuleId) {
         Optional<TimeCapsuleVisitResponseDto> timeCapsuleVisitResponseDto = timeCapsuleVisitService.getCapsuleVisitCount(capsuleId);
 
-        if (timeCapsuleVisitResponseDto.isEmpty()){
-            message.setStatus(HttpStatus.NOT_FOUND.value());
-            message.setMessage(MsgCode.READ_FAIL.getMsg());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(message);
-        }
-        else {
-            message.setStatus(HttpStatus.OK.value());
-            message.setMessage(MsgCode.READ_SUCCESS.getMsg());
-            message.setData(timeCapsuleVisitResponseDto);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(message);
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+                .status(HttpStatus.OK)
+                .message(MsgCode.CAPSULE_VISIT_READ_SUCCESS.getMsg())
+                .data(timeCapsuleVisitResponseDto)
+                .build());
     }
 
     //  조회수 증가
     //  쿠키, 세션 등의 방법이 있으나 조회수 증가만을 목적으로 두기에
-    //  간단하게 구현
+    //  api로 주고 받도록 구현
     @PostMapping(value = "capsules/{capsuleId}/visits")
-    public ResponseEntity<Message> addCapsuleVisitCount(@PathVariable(name = "capsuleId") Integer capsuleId){
-        Message message = new Message();
+    public ResponseEntity<Message> createCapsuleVisitCount(@PathVariable(name = "capsuleId") Integer capsuleId) {
         Optional<TimeCapsuleVisitResponseDto> timeCapsuleVisitResponseDto = timeCapsuleVisitService.addCapsuleVisitCount(capsuleId);
 
-        if (timeCapsuleVisitResponseDto.isEmpty()){
-            message.setStatus(HttpStatus.NOT_FOUND.value());
-            message.setMessage("capsuleId: " + capsuleId + ", " + MsgCode.CAPSULE_NOT_FOUND.getMsg());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(message);
-        }
-        else {
-            message.setStatus(HttpStatus.OK.value());
-            message.setMessage(MsgCode.CREATE_SUCCESS.getMsg());
-            message.setData(timeCapsuleVisitResponseDto);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(message);
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
+                .status(HttpStatus.CREATED)
+                .message(MsgCode.CAPSULE_VISIT_CREATE_SUCCESS.getMsg())
+                .data(timeCapsuleVisitResponseDto)
+                .build());
     }
 }

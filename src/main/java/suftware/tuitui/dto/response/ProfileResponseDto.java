@@ -3,10 +3,8 @@ package suftware.tuitui.dto.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import suftware.tuitui.domain.Profile;
-import suftware.tuitui.domain.User;
 
 import java.time.LocalDate;
-import java.util.Base64;
 
 @Getter
 @Setter

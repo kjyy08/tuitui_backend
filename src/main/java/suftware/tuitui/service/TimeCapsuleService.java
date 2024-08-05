@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import suftware.tuitui.config.http.Message;
-import suftware.tuitui.config.http.MsgCode;
+import suftware.tuitui.common.exception.CustomException;
+import suftware.tuitui.common.http.Message;
+import suftware.tuitui.common.enumType.MsgCode;
 import suftware.tuitui.domain.Image;
 import suftware.tuitui.domain.Profile;
 import suftware.tuitui.domain.TimeCapsule;
@@ -50,6 +51,11 @@ public class TimeCapsuleService {
     //  전체 캡슐 조회
     public List<TimeCapsuleResponseDto> getCapsuleList() {
         List<TimeCapsule> timeCapsuleList = timeCapsuleRepository.findAll();
+
+        if (timeCapsuleList.isEmpty()){
+            throw new CustomException(MsgCode.CAPSULE_NOT_FOUND);
+        }
+
         List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = new ArrayList<>();
 
         for (TimeCapsule timeCapsule : timeCapsuleList){
@@ -69,7 +75,7 @@ public class TimeCapsuleService {
     //  캡슐 id 기준 조회
     public Optional<TimeCapsuleResponseDto> getCapsule(Integer id){
         TimeCapsule timeCapsule = timeCapsuleRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("TimeCapsule " + id + " Not Found"));
+                .orElseThrow(() -> new CustomException(MsgCode.CAPSULE_NOT_FOUND));
 
         List<ImageResponseDto> imageResponseDtoList = getCapsuleImageList(timeCapsule.getTimeCapsuleId());
 
@@ -84,6 +90,11 @@ public class TimeCapsuleService {
     //  글쓴이 id 기준 조회
     public List<TimeCapsuleResponseDto> getCapsuleByWriteUser(Integer id) {
         List<TimeCapsule> timeCapsuleList = timeCapsuleRepository.findByProfile_ProfileId(id);
+
+        if (timeCapsuleList.isEmpty()){
+            throw new CustomException(MsgCode.CAPSULE_NOT_FOUND);
+        }
+
         List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = new ArrayList<>();
 
         for (TimeCapsule timeCapsule : timeCapsuleList){
@@ -102,19 +113,21 @@ public class TimeCapsuleService {
 
     //  캡슐 저장
     public Optional<TimeCapsuleResponseDto> save(TimeCapsuleRequestDto timeCapsuleRequestDto){
-        Optional<Profile> writeUser = profileRepository.findByNickname(timeCapsuleRequestDto.getWriteUser());
+        Profile writeUser = profileRepository.findByNickname(timeCapsuleRequestDto.getWriteUser())
+                .orElseThrow(() -> new CustomException(MsgCode.PROFILE_NOT_FOUND));
 
-        if (writeUser.isEmpty()){
-            return Optional.empty();
-        }
-
-        TimeCapsule timeCapsule = timeCapsuleRepository.save(TimeCapsuleRequestDto.toEntity(timeCapsuleRequestDto, writeUser.get()));
+        TimeCapsule timeCapsule = timeCapsuleRepository.save(TimeCapsuleRequestDto.toEntity(timeCapsuleRequestDto, writeUser));
         return Optional.of(TimeCapsuleResponseDto.toDTO(timeCapsule));
     }
 
     //  해당 닉네임의 캡슐 목록 조회
     public List<TimeCapsuleResponseDto> getCapsuleByNickname(String nickname) {
         List<TimeCapsule> timeCapsuleList = timeCapsuleRepository.findByProfile_Nickname(nickname);
+
+        if (timeCapsuleList.isEmpty()){
+            throw new CustomException(MsgCode.CAPSULE_NOT_FOUND);
+        }
+
         List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = new ArrayList<>();
 
         for (TimeCapsule timeCapsule : timeCapsuleList){
@@ -133,36 +146,26 @@ public class TimeCapsuleService {
 
     //  타임캡슐 수정
     @Transactional
-    public Optional<TimeCapsuleResponseDto> updateCapsule(Integer id, TimeCapsuleRequestDto timeCapsuleRequestDto){
-        Optional<TimeCapsule> timeCapsule = timeCapsuleRepository.findById(id);
+    public Optional<TimeCapsuleResponseDto> updateCapsule(Integer id, TimeCapsuleRequestDto timeCapsuleRequestDto) {
+        TimeCapsule timeCapsule = timeCapsuleRepository.findById(id)
+                .orElseThrow(() -> new CustomException(MsgCode.CAPSULE_NOT_FOUND));
 
-        if (timeCapsule.isEmpty()){
-            return Optional.empty();
-        }
-        else {
-            timeCapsule.get().setContent(timeCapsuleRequestDto.getContent());
-            timeCapsule.get().setRemindDate(timeCapsuleRequestDto.getRemindDate());
-            timeCapsule.get().setUpdateAt(new Timestamp(System.currentTimeMillis()));
+        if (!(timeCapsuleRequestDto.getContent() == null))
+            timeCapsule.setContent(timeCapsuleRequestDto.getContent());
+        if (!(timeCapsuleRequestDto.getRemindDate() == null))
+            timeCapsule.setRemindDate(timeCapsuleRequestDto.getRemindDate());
+        timeCapsule.setUpdateAt(new Timestamp(System.currentTimeMillis()));
 
-            return Optional.of(TimeCapsuleResponseDto.toDTO(timeCapsule.get()));
-        }
+        return Optional.of(TimeCapsuleResponseDto.toDTO(timeCapsule));
     }
 
     //  타임캡슐 삭제
     @Transactional
-    public Message deleteCapsule(Integer id){
-        Message message = new Message();
+    public void deleteCapsule(Integer id) {
+        if (!timeCapsuleRepository.existsById(id)) {
+            throw new CustomException(MsgCode.CAPSULE_NOT_FOUND);
+        }
 
-        if (timeCapsuleRepository.existsById(id)){
-            timeCapsuleRepository.deleteById(id);
-            message.setStatus(HttpStatus.OK.value());
-            message.setMessage(MsgCode.DELETE_SUCCESS.getMsg());
-            return message;
-        }
-        else {
-            message.setStatus(HttpStatus.NOT_FOUND.value());
-            message.setMessage("capsuleId: " + id + ", " + MsgCode.CAPSULE_NOT_FOUND.getMsg());
-            return message;
-        }
+        timeCapsuleRepository.deleteById(id);
     }
 }

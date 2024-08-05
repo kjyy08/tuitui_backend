@@ -1,15 +1,10 @@
 package suftware.tuitui.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @Entity
 @ToString
@@ -32,7 +27,7 @@ public class User {
     @Column(name = "password", nullable = false, length = 60)
     String password;
 
-    @Column(name = "phone", nullable = false, length = 20)
+    @Column(name = "phone", nullable = false, length = 13)
     String phone;
 
     @Column(name = "name", nullable = false, length = 16)

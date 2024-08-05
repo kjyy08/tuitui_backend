@@ -3,8 +3,6 @@ package suftware.tuitui.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
-import suftware.tuitui.dto.request.ProfileRequestDto;
-import suftware.tuitui.dto.response.ProfileResponseDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,10 +23,10 @@ public class Profile {
     Integer profileId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, unique = true)
     User user;
 
-    @Column(name = "nickname", nullable = false, length = 45)
+    @Column(name = "nickname", nullable = false, length = 45, unique = true)
     String nickname;
 
     @Column(name = "describe_self")
@@ -57,4 +55,7 @@ public class Profile {
 
     @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Follow> followings;
+
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserHashtag> userHashtags;
 }

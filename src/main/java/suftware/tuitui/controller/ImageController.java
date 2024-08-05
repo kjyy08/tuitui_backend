@@ -33,13 +33,13 @@ public class ImageController {
 
     //  전체 이미지 조회
     @GetMapping("image/list")
-    public List<ImageResponseDto> getImageList(){
+    public List<ImageResponseDto> readImageList(){
         return imageService.getAllImage();
     }
 
     //  이미지 id 기준 조회
     @GetMapping("image/{id}")
-    public ResponseEntity<ImageResponseDto> getImage(@PathVariable("id") int id) {
+    public ResponseEntity<ImageResponseDto> readImage(@PathVariable("id") int id) {
         Optional<Image> image = imageService.getImage(id);
         if (image.isPresent()) {
             HttpHeaders headers = new HttpHeaders();

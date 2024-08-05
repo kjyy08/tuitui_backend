@@ -5,10 +5,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import suftware.tuitui.config.http.Message;
-import suftware.tuitui.config.http.MsgCode;
+import suftware.tuitui.common.http.Message;
+import suftware.tuitui.common.enumType.MsgCode;
 import suftware.tuitui.dto.request.TimeCapsuleLikeRequestDto;
 import suftware.tuitui.dto.response.ProfileResponseDto;
 import suftware.tuitui.dto.response.TimeCapsuleLikeResponseDto;
@@ -26,59 +25,44 @@ public class TimeCapsuleLikeController {
 
     //  해당하는 캡슐 좋아요를 누른 모든 유저 조회
     @GetMapping(value = "capsules/{capsuleId}/likes")
-    public ResponseEntity<Message> getCapsuleLike(@PathVariable(name = "capsuleId") Integer capsule_id){
-        Message message = new Message();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+    public ResponseEntity<Message> readCapsuleLike(@PathVariable(name = "capsuleId") Integer capsule_id) {
         List<ProfileResponseDto> profileResponseDtoList = timeCapsuleLikeService.getCapsuleLike(capsule_id);
 
-        //  좋아요를 누른 유저가 존재하지 않음
         if (profileResponseDtoList.isEmpty()){
-            message.setStatus(HttpStatus.NOT_FOUND.value());
-            message.setMessage(MsgCode.CAPSULE_LIKE_EMPTY.getMsg());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .headers(headers)
-                    .body(message);
+            return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+                    .status(HttpStatus.OK)
+                    .message(MsgCode.CAPSULE_LIKE_NOT_FOUND.getMsg())
+                    .build());
         }
-
-        //  좋아요를 누른 유저가 1명 이상 존재
         else {
-            message.setStatus(HttpStatus.OK.value());
-            message.setMessage(MsgCode.READ_SUCCESS.getMsg());
-            message.setData(profileResponseDtoList);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .headers(headers)
-                    .body(message);
+            return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+                    .status(HttpStatus.OK)
+                    .message(MsgCode.CAPSULE_LIKE_READ_SUCCESS.getMsg())
+                    .data(profileResponseDtoList)
+                    .build());
         }
     }
 
     //  캡슐 좋아요 저장
     @PostMapping(value = "capsules/likes")
-    public ResponseEntity<Message> saveCapsuleLike(@RequestBody TimeCapsuleLikeRequestDto timeCapsuleLikeRequestDto){
-        Message message = new Message();
+    public ResponseEntity<Message> createCapsuleLike(@RequestBody TimeCapsuleLikeRequestDto timeCapsuleLikeRequestDto) {
         Optional<TimeCapsuleLikeResponseDto> timeCapsuleLikeResponseDto = timeCapsuleLikeService.saveCapsuleLike(timeCapsuleLikeRequestDto);
 
-        if (timeCapsuleLikeResponseDto.isEmpty()){
-            message.setStatus(HttpStatus.CONFLICT.value());
-            message.setMessage(MsgCode.CREATE_FAIL.getMsg());
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(message);
-        }
-        else {
-            message.setStatus(HttpStatus.CREATED.value());
-            message.setMessage(MsgCode.CREATE_SUCCESS.getMsg());
-            message.setData(timeCapsuleLikeResponseDto);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(message);
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
+                .status(HttpStatus.CREATED)
+                .message(MsgCode.CAPSULE_LIKE_CREATE_SUCCESS.getMsg())
+                .data(timeCapsuleLikeResponseDto)
+                .build());
     }
 
     //  캡슐 좋아요 삭제
     @DeleteMapping(value = "capsules/likes/{capsuleLikeId}")
     public ResponseEntity<Message> deleteCapsuleLike(@PathVariable(name = "capsuleLikeId") Integer timeCapsuleLikeId){
-        Message message = timeCapsuleLikeService.deleteCapsuleLike(timeCapsuleLikeId);
+        timeCapsuleLikeService.deleteCapsuleLike(timeCapsuleLikeId);
 
-        return ResponseEntity.status(message.getStatus())
-                .body(message);
+        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+                .status(HttpStatus.OK)
+                .message(MsgCode.CAPSULE_LIKE_DELETE_SUCCESS.getMsg())
+                .build());
     }
 }

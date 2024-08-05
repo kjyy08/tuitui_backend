@@ -3,8 +3,6 @@ package suftware.tuitui.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigInteger;
-
 @Entity
 @Getter
 @Setter

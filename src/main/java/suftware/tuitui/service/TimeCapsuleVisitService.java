@@ -2,12 +2,12 @@ package suftware.tuitui.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import suftware.tuitui.common.enumType.MsgCode;
+import suftware.tuitui.common.exception.CustomException;
 import suftware.tuitui.domain.TimeCapsuleVisit;
-import suftware.tuitui.dto.response.TimeCapsuleResponseDto;
 import suftware.tuitui.dto.response.TimeCapsuleVisitResponseDto;
 import suftware.tuitui.repository.TimeCapsuleVisitRepository;
-
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -15,27 +15,20 @@ import java.util.Optional;
 public class TimeCapsuleVisitService {
     private final TimeCapsuleVisitRepository timeCapsuleVisitRepository;
 
-    public Optional<TimeCapsuleVisitResponseDto> getCapsuleVisitCount(Integer id){
-        Optional<TimeCapsuleVisit> timeCapsuleVisit = timeCapsuleVisitRepository.findByTimeCapsule_TimeCapsuleId(id);
+    public Optional<TimeCapsuleVisitResponseDto> getCapsuleVisitCount(Integer id) {
+        TimeCapsuleVisit timeCapsuleVisit = timeCapsuleVisitRepository.findByTimeCapsule_TimeCapsuleId(id)
+                .orElseThrow(() -> new CustomException(MsgCode.CAPSULE_NOT_FOUND));
 
-        if (timeCapsuleVisit.isEmpty()){
-            return Optional.empty();
-        }
-        else {
-            return Optional.of(TimeCapsuleVisitResponseDto.toDTO(timeCapsuleVisit.get()));
-        }
+        return Optional.of(TimeCapsuleVisitResponseDto.toDTO(timeCapsuleVisit));
     }
 
-    public Optional<TimeCapsuleVisitResponseDto> addCapsuleVisitCount(Integer id){
-        Optional<TimeCapsuleVisit> timeCapsuleVisit = timeCapsuleVisitRepository.findByTimeCapsule_TimeCapsuleId(id);
+    @Transactional
+    public Optional<TimeCapsuleVisitResponseDto> addCapsuleVisitCount(Integer id) {
+        TimeCapsuleVisit timeCapsuleVisit = timeCapsuleVisitRepository.findByTimeCapsule_TimeCapsuleId(id)
+                .orElseThrow(() -> new CustomException(MsgCode.CAPSULE_NOT_FOUND));
 
-        if (timeCapsuleVisit.isEmpty()){
-            return Optional.empty();
-        }
-        else {
-            timeCapsuleVisit.get().setVisitCount(timeCapsuleVisit.get().getVisitCount() + 1);
-            return Optional.of(TimeCapsuleVisitResponseDto.toDTO(timeCapsuleVisit.get()));
-        }
+        timeCapsuleVisit.setVisitCount(timeCapsuleVisit.getVisitCount() + 1);
+        return Optional.of(TimeCapsuleVisitResponseDto.toDTO(timeCapsuleVisit));
     }
 
 }

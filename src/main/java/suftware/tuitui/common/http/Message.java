@@ -1,12 +1,19 @@
-package suftware.tuitui.config.http;
+package suftware.tuitui.common.http;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.http.HttpStatus;
 
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Message {
-    private Integer status;
+    private HttpStatus status;
     private String message;
     private Object data;
 

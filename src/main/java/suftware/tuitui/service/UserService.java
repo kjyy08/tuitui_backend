@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import suftware.tuitui.config.http.Message;
-import suftware.tuitui.config.http.MsgCode;
+import suftware.tuitui.common.exception.CustomException;
+import suftware.tuitui.common.http.Message;
+import suftware.tuitui.common.enumType.MsgCode;
 import suftware.tuitui.domain.User;
 import suftware.tuitui.dto.request.UserRequestDto;
 import suftware.tuitui.dto.response.UserResponseDto;
@@ -23,13 +24,18 @@ public class UserService {
 
     public Optional<UserResponseDto> getUser(Integer id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("user " + id + " Not Found"));
+                .orElseThrow(() -> new CustomException(MsgCode.USER_NOT_FOUND));
 
         return Optional.of(UserResponseDto.toDTO(user));
     }
 
     public List<UserResponseDto> getUserList() {
         List<User> userList = userRepository.findAll();
+
+        if (userList.isEmpty()){
+            throw new CustomException(MsgCode.USER_NOT_FOUND);
+        }
+
         List<UserResponseDto> userResponseDtoList = new ArrayList<>();
 
         for (User user : userList){
@@ -39,79 +45,62 @@ public class UserService {
         return userResponseDtoList;
     }
 
-    public Optional<UserResponseDto> getUserByAccount(String account){
-        Optional<User> user = userRepository.findByAccount(account);
+    public Optional<UserResponseDto> getUserByAccount(String account) {
+        User user = userRepository.findByAccount(account)
+                .orElseThrow(() -> new CustomException(MsgCode.USER_NOT_FOUND));
 
-        if (user.isEmpty()){
-            return Optional.empty();
-        }
-        else {
-            return Optional.of(UserResponseDto.toDTO(user.get()));
-        }
+        return Optional.of(UserResponseDto.toDTO(user));
     }
 
     public Optional<UserResponseDto> save(UserRequestDto userRequestDto) {
+        if (userRepository.existsByAccount(userRequestDto.getAccount())){
+            throw new CustomException(MsgCode.USER_EXIST);
+        }
+
         User user = userRepository.save(UserRequestDto.toEntity(userRequestDto));
 
         return Optional.of(UserResponseDto.toDTO(user));
     }
 
     @Transactional
-    public Optional<UserResponseDto> updateUser(UserRequestDto userRequestDto){
-        Optional<User> user = userRepository.findByAccount(userRequestDto.getAccount());
+    public Optional<UserResponseDto> updateUser(UserRequestDto userRequestDto) {
+        User user = userRepository.findByAccount(userRequestDto.getAccount())
+                .orElseThrow(() -> new CustomException(MsgCode.USER_NOT_FOUND));
 
-        if (user.isEmpty()){
-            return Optional.empty();
-        }
-        else {
-            if (!(userRequestDto.getName() == null))
-                user.get().setName(userRequestDto.getName());
-            if (!(userRequestDto.getPhone() == null))
-                user.get().setPhone(userRequestDto.getPhone());
-            if (!(userRequestDto.getPassword() == null))
-                user.get().setPassword(userRequestDto.getPassword());
+        if (!(userRequestDto.getName() == null))
+            user.setName(userRequestDto.getName());
+        if (!(userRequestDto.getPhone() == null))
+            user.setPhone(userRequestDto.getPhone());
+        if (!(userRequestDto.getPassword() == null))
+            user.setPassword(userRequestDto.getPassword());
 
-            return Optional.of(UserResponseDto.toDTO(user.get()));
-        }
+        return Optional.of(UserResponseDto.toDTO(user));
     }
 
     @Transactional
-    public Message deleteUser(UserRequestDto userRequestDto){
-        Message message = new Message();
-
+    public void deleteUser(UserRequestDto userRequestDto){
         if (userRepository.existsByAccount(userRequestDto.getAccount())){
-            if (userRepository.existsByAccountAndPassword(userRequestDto.getAccount(), userRequestDto.getPassword())) {
-                userRepository.deleteByAccount(userRequestDto.getAccount());
-                message.setStatus(HttpStatus.OK.value());
-                message.setMessage(MsgCode.DELETE_SUCCESS.getMsg());
-                return message;
+            if (!userRepository.existsByAccountAndPassword(userRequestDto.getAccount(), userRequestDto.getPassword())) {
+                throw new CustomException(MsgCode.USER_BAD_REQUEST);
             }
             else {
-                message.setStatus(HttpStatus.BAD_REQUEST.value());
-                message.setMessage("비밀번호 불일치, " + MsgCode.DELETE_FAIL.getMsg());
-                return message;
+                userRepository.deleteByAccount(userRequestDto.getAccount());
             }
         }
         else {
-            message.setStatus(HttpStatus.NOT_FOUND.value());
-            message.setMessage(MsgCode.USER_NOT_FOUND.getMsg());
-            return message;
+            throw new CustomException(MsgCode.USER_NOT_FOUND);
         }
     }
 
     public Optional<UserResponseDto> login(UserRequestDto loginRequestDto) {
         if (!userRepository.existsByAccount(loginRequestDto.getAccount())) {
-            return Optional.empty();
+            throw new CustomException(MsgCode.USER_NOT_FOUND);
         }
         else {
-            Optional<User> user = userRepository.findByAccountAndPassword(loginRequestDto.getAccount(), loginRequestDto.getPassword());
+            User user = userRepository.findByAccountAndPassword(loginRequestDto.getAccount(), loginRequestDto.getPassword())
+                    .orElseThrow(() -> new CustomException(MsgCode.USER_BAD_REQUEST));
 
-            if (user.isEmpty()){
-                return Optional.empty();
-            }
-            else {
-                return Optional.of(UserResponseDto.toDTO(user.get()));
-            }
+            return Optional.of(UserResponseDto.toDTO(user));
         }
     }
 }

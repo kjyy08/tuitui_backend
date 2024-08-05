@@ -1,12 +1,12 @@
 package suftware.tuitui.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import suftware.tuitui.config.http.Message;
-import suftware.tuitui.config.http.MsgCode;
+import suftware.tuitui.common.exception.CustomException;
+import suftware.tuitui.common.http.Message;
+import suftware.tuitui.common.enumType.MsgCode;
 import suftware.tuitui.domain.Profile;
 import suftware.tuitui.domain.TimeCapsule;
 import suftware.tuitui.domain.TimeCapsuleLike;
@@ -17,7 +17,6 @@ import suftware.tuitui.repository.ProfileRepository;
 import suftware.tuitui.repository.TimeCapsuleLikeRepository;
 import suftware.tuitui.repository.TimeCapsuleRepository;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -43,33 +42,27 @@ public class TimeCapsuleLikeService {
 
     //  캡슐 좋아요 저장
     public Optional<TimeCapsuleLikeResponseDto> saveCapsuleLike(TimeCapsuleLikeRequestDto timeCapsuleLikeRequestDto){
-        Optional<TimeCapsule> timeCapsule = timeCapsuleRepository.findById(timeCapsuleLikeRequestDto.getTimeCapsuleId());
-        Optional<Profile> profile = profileRepository.findById(timeCapsuleLikeRequestDto.getProfileId());
+        Profile profile = profileRepository.findById(timeCapsuleLikeRequestDto.getProfileId())
+                .orElseThrow(() -> new CustomException(MsgCode.PROFILE_NOT_FOUND));
+        TimeCapsule timeCapsule = timeCapsuleRepository.findById(timeCapsuleLikeRequestDto.getTimeCapsuleId())
+                .orElseThrow(() -> new CustomException(MsgCode.CAPSULE_NOT_FOUND));
 
-        if (!timeCapsuleLikeRepository.existsByProfile_ProfileIdAndTimeCapsule_TimeCapsuleId(profile.get().getProfileId(), timeCapsule.get().getTimeCapsuleId())){
-            TimeCapsuleLike timeCapsuleLike = timeCapsuleLikeRepository.save(TimeCapsuleLikeRequestDto.toEntity(timeCapsule.get(), profile.get()));
+        if (!timeCapsuleLikeRepository.existsByProfile_ProfileIdAndTimeCapsule_TimeCapsuleId(profile.getProfileId(), timeCapsule.getTimeCapsuleId())){
+            TimeCapsuleLike timeCapsuleLike = timeCapsuleLikeRepository.save(TimeCapsuleLikeRequestDto.toEntity(timeCapsule, profile));
             return Optional.of(TimeCapsuleLikeResponseDto.toDto(timeCapsuleLike));
         }
         else {
-            return Optional.empty();
+            throw new CustomException(MsgCode.CAPSULE_LIKE_EXIST);
         }
     }
 
     //  캡슐 좋아요 삭제
     @Transactional
-    public Message deleteCapsuleLike(Integer id){
-        Message message = new Message();
+    public void deleteCapsuleLike(Integer id) {
+        if (!timeCapsuleLikeRepository.existsById(id.longValue())) {
+            throw new CustomException(MsgCode.CAPSULE_LIKE_NOT_FOUND);
+        }
 
-        if (timeCapsuleLikeRepository.existsById(id.longValue())) {
-            timeCapsuleLikeRepository.deleteById(id.longValue());
-            message.setStatus(HttpStatus.OK.value());
-            message.setMessage(MsgCode.DELETE_SUCCESS.getMsg());
-            return message;
-        }
-        else {
-            message.setStatus(HttpStatus.NOT_FOUND.value());
-            message.setMessage("capsuleLikeId: " + id + ", " + MsgCode.READ_FAIL.getMsg());
-            return message;
-        }
+        timeCapsuleLikeRepository.deleteById(id.longValue());
     }
 }
