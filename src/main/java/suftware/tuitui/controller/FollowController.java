@@ -21,7 +21,6 @@ public class FollowController {
 
     @GetMapping(value = "profiles/follows/{profileId}")
     public ResponseEntity<Message> readFollows(@PathVariable(name = "profileId") Integer id){
-        Message message = new Message();
         List<FollowDto> followerList = followService.getFollowerList(id);
         List<FollowDto> followingList = followService.getFollowingList(id);
 

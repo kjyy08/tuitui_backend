@@ -1,6 +1,5 @@
 package suftware.tuitui.common.enumType;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

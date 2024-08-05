@@ -1,11 +1,9 @@
 package suftware.tuitui.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import suftware.tuitui.common.exception.CustomException;
-import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.enumType.MsgCode;
 import suftware.tuitui.domain.Profile;
 import suftware.tuitui.domain.TimeCapsule;

@@ -2,7 +2,6 @@ package suftware.tuitui.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @ToString

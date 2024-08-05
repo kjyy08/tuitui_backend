@@ -7,7 +7,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import suftware.tuitui.common.exception.CustomException;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.enumType.MsgCode;
 import suftware.tuitui.dto.request.ProfileRequestDto;
@@ -88,7 +87,7 @@ public class ProfileController {
     //  프로필 생성, 이미지 포함
     @PostMapping(value = "profiles/with-image", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Message> createProfileMultipart(@RequestPart(name = "request") ProfileRequestDto profileRequestDto,
-                                                        @RequestPart(name = "file", required = false) MultipartFile file) throws IOException {
+                                                        @RequestPart(name = "file", required = false) MultipartFile file) {
         Optional<ProfileResponseDto> profileResponseDto = profileService.saveProfile(profileRequestDto, file);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
