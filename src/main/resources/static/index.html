@@ -2,30 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Save</title>
+    <title>Save Capsule</title>
 </head>
 <body>
-<!-- action : form에 작성한 데이터를 어디로 보낼지 지정 -->
-<form action="api/capsule/save" method="post">
-    <!-- name : 서버로 전송 할 때 변수이름의 역할 -->
-    캡슐 id: <input type="text" name="capsule_id"> <br>
-    글쓴이 id: <input type="text" name="write_user_id"> <br>
-    본문: <input type="text" name="content"> <br>
-    위치: <input type="text" name="location"> <br>
-    조회수: <input type="text" name="visit_count"> <br>
-    <input type="submit" value="회원가입">
-</form>
+<h1>Save Capsule with Images</h1>
+<form action="/api/capsules/save" method="post" enctype="multipart/form-data">
+    <legend>Capsule Information:</legend>
+    <!-- Capsule Information -->
+    글쓴이: <input type="text" name="request.writeUser" required> <br>
+    본문: <textarea name="request.content" required></textarea> <br>
+    위치: <input type="text" name="request.location" required> <br>
+    리마인드 날짜: <input type="number" name="request.remindDate" required> <br>
+    <label for="file">파일 업로드:</label>
+    <input type="file" id="file" name="file" multiple><br><br>
 
-<h1>Upload to Folder 1</h1>
-<form action="api/files/upload/image" method="post" enctype="multipart/form-data">
-    <input type="file" name="file"><br><br>
-    <input type="submit" value="Upload">
-</form>
+    <input type="submit" value="캡슐 저장">
 
-<h1>Upload to Folder 2</h1>
-<form action="api/files/upload/profile" method="post" enctype="multipart/form-data">
-    <input type="file" name="file"><br><br>
-    <input type="submit" value="Upload">
 </form>
 </body>
 </html>

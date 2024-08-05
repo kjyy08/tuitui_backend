@@ -3,6 +3,7 @@ package suftware.tuitui.dto.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import suftware.tuitui.domain.Hashtag;
+import suftware.tuitui.domain.Profile;
 import suftware.tuitui.domain.TimeCapsule;
 
 import java.sql.Timestamp;
@@ -55,6 +56,17 @@ public class TimeCapsuleResponseDto {
                 .location(timeCapsule.getLocation())
                 .remindDate(timeCapsule.getRemindDate())
                 .imageList(imageList)
+                .build();
+    }
+
+    public TimeCapsule toEntity(){
+        return TimeCapsule.builder()
+                .timeCapsuleId(this.capsuleId)
+                .content(this.content)
+                .location(this.location)
+                .remindDate(this.remindDate)
+                .writeAt(Timestamp.valueOf(this.writeAt))
+                .updateAt(Timestamp.valueOf(this.updateAt))
                 .build();
     }
 }

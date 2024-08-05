@@ -87,7 +87,7 @@ public class TimeCapsuleController {
     //  캡슐 저장, 이미지 포함, 수정 필요.
     @PostMapping(value = "capsules/with-image", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Message> createCapsuleMultipart(@RequestPart(name = "request") TimeCapsuleRequestDto timeCapsuleRequestDto,
-                                               @RequestPart(name = "file", required = false ) List<MultipartFile> files) {
+                                                          @RequestPart(name = "file", required = false ) List<MultipartFile> files) {
         Optional<TimeCapsuleResponseDto> timeCapsuleResponseDto = timeCapsuleService.save(timeCapsuleRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
