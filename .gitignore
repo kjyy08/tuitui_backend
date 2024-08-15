@@ -36,3 +36,7 @@ application.properties
 
 ### VS Code ###
 .vscode/
+
+### Logs ###
+application.log
+logs/

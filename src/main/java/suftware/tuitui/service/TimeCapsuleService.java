@@ -20,12 +20,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 @RequiredArgsConstructor
 public class TimeCapsuleService {
     private final TimeCapsuleRepository timeCapsuleRepository;
     private final ProfileRepository profileRepository;
     private final ImageRepository imageRepository;
+
+    private static final Logger logger = LoggerFactory.getLogger(ImageService.class);
 
     private List<ImageResponseDto> getCapsuleImageList(Integer id){
         List<Image> imageList = imageRepository.findByTimeCapsule_TimeCapsuleId(id);
@@ -108,13 +113,39 @@ public class TimeCapsuleService {
         return timeCapsuleResponseDtoList;
     }
 
+
     //  캡슐 저장
     public Optional<TimeCapsuleResponseDto> save(TimeCapsuleRequestDto timeCapsuleRequestDto){
-        Profile writeUser = profileRepository.findByNickname(timeCapsuleRequestDto.getWriteUser())
-                .orElseThrow(() -> new CustomException(MsgCode.PROFILE_NOT_FOUND));
+        logger.debug("TimeCapsuleService.save ---------- Saving TimeCapsule with content: {}, location: {}, writeUserId: {}, remindDate: {}",
+                timeCapsuleRequestDto.getContent(),
+                timeCapsuleRequestDto.getLocation(),
+                timeCapsuleRequestDto.getWriteUser(),
+                timeCapsuleRequestDto.getRemindDate());
 
-        TimeCapsule timeCapsule = timeCapsuleRepository.save(TimeCapsuleRequestDto.toEntity(timeCapsuleRequestDto, writeUser));
-        return Optional.of(TimeCapsuleResponseDto.toDTO(timeCapsule));
+        Profile writeUser;
+        try {
+            writeUser = profileRepository.findByNickname(timeCapsuleRequestDto.getWriteUser())
+                    .orElseThrow(() -> new CustomException(MsgCode.PROFILE_NOT_FOUND));
+            logger.debug("TimeCapsuleService.save ---------- Found writeUser profile: {}", writeUser.getNickname());
+        }
+        catch (CustomException e) {
+            logger.error("TimeCapsuleService.save ---------- Profile not found for nickname: {}", timeCapsuleRequestDto.getWriteUser(), e);
+            throw e;
+        }
+
+        TimeCapsule timeCapsule;
+        try {
+            timeCapsule = timeCapsuleRepository.save(TimeCapsuleRequestDto.toEntity(timeCapsuleRequestDto, writeUser));
+            logger.info("TimeCapsuleService.save ---------- TimeCapsule saved with ID: {}", timeCapsule.getTimeCapsuleId());
+        } catch (Exception e) {
+            logger.error("TimeCapsuleService.save ---------- Error saving TimeCapsule: {}", e.getMessage(), e);
+            throw new CustomException(MsgCode.CAPSULE_CREATE_FAIL, e);  // 이건 한 번도 안 써봤는데 궁금해서 넣어봄
+        }
+
+        TimeCapsuleResponseDto responseDto = TimeCapsuleResponseDto.toDTO(timeCapsule);
+        logger.debug("TimeCapsuleService.save ---------- TimeCapsuleResponseDto created: {}", responseDto);
+
+        return Optional.of(responseDto);
     }
 
     //  해당 닉네임의 캡슐 목록 조회

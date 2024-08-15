@@ -3,6 +3,7 @@ package suftware.tuitui.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import suftware.tuitui.domain.Image;
 import suftware.tuitui.domain.TimeCapsule;
@@ -36,12 +37,14 @@ public class ImageService {
     @Autowired
     private AmazonS3 amazonS3;
 
+    @Value("${S3_BUCKET_URL}")
+    private String origianlUrl;
+
     @Value("${cloud.aws.cloud-front}")
     private String hostUrl;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
-
 
     public Optional<Image> getImage(int id){
         return imageRepository.findById(id);
@@ -60,9 +63,11 @@ public class ImageService {
     }
 
 
+
+
     //  uploadImages: S3에 이미지를 저장하고 반환된 URL을 DB에 저장
     //  Parameters: {path: S3 폴더 이름}, {ImageRequestDto: TimeCapsule_id}, {file: 이미지}
-    public Optional<ImageResponseDto> uploadImages(String path, ImageRequestDto imageRequestDto,MultipartFile file) throws IOException {
+    public Optional<ImageResponseDto> uploadImage(String path, ImageRequestDto imageRequestDto,MultipartFile file) throws IOException {
         logger.info("ImageService.uploadImages ---------- Starting the image upload process. Path: {}, TimeCapsule ID: {}", path, imageRequestDto.getTimeCapsuleId());
         String url;     // 반환된 URL을 저장할 변수
 
@@ -89,14 +94,16 @@ public class ImageService {
                 metadata.setContentType(file.getContentType());
                 amazonS3.putObject(new PutObjectRequest(bucketName, fileName, file.getInputStream(), metadata));
 
-                url = amazonS3.getUrl(path, fileName).toString();
+                // Returned URL after upload
+                url = amazonS3.getUrl(path, uniqueFileName).toString();
                 logger.info("ImageService.uploadImages ---------- File successfully uploaded to S3. {}", url);
             }
             catch (IOException e){
                 logger.error("ImageService.uploadImages ---------- Failed to upload file to S3. Path: {}, Error: {}", fileName, e.getMessage());
                 throw new RuntimeException("Error while uploading file to S3", e);
             }
-
+            // Replace S3 URL to CloudFront URL
+            url = url.replace(origianlUrl, hostUrl);
             Image image = imageRepository.save(ImageRequestDto.toEntity(uniqueFileName, timeCapsule, url));
             logger.info("ImageService.uploadImages ---------- Image record saved in the database. Image ID: {}, URL: {}", image.getImageId(), image.getImagePath());
 
@@ -114,4 +121,16 @@ public class ImageService {
             }
         }
     }
+
+    
+    // 이미지 id 기준으로 삭제
+    @Transactional
+    public void deleteImage(int imageId){
+        logger.info("ImageService.deleteImage ---------- Starting the image remove process. image id: {}", imageId);
+        Image image = imageRepository.findById(imageId).orElseThrow(() -> new NoSuchElementException("Image not found with id: " + imageId));
+        imageRepository.delete(image);
+        logger.info("ImageService.deleteImage ---------- The target image has been deleted.");
+    }
+
+
 }

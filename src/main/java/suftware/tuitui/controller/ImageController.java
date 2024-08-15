@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import suftware.tuitui.common.enumType.MsgCode;
+import suftware.tuitui.common.http.Message;
 import suftware.tuitui.domain.Image;
 import suftware.tuitui.dto.request.ImageRequestDto;
 import suftware.tuitui.dto.response.ImageResponseDto;
@@ -25,13 +27,13 @@ import java.util.UUID;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("api/image")
+@RequestMapping("api/images")
 public class ImageController {
     private final ImageService imageService;
     private static final Logger logger = LoggerFactory.getLogger(ImageController.class);
 
-    //  이미지 업로드
-    //  Parameters: {request: ImageRequestDto}, {file: 이미지}, {directory: S3 폴더 이름}
+    //  이미지 업로드, 이미지 추가로 업로드 할때 사용할듯
+    //  Parameters: {request: ImageRequestDto(Json 'timeCapsuleId')}, {file: 이미지}, {directory: S3 폴더 이름}
     @PostMapping(value = "/upload", consumes = "multipart/form-data")
     public Optional<ImageResponseDto> uploadImage(@RequestPart(name = "request") ImageRequestDto imageRequestDto,
                                                   @RequestPart(name = "file") MultipartFile file,
@@ -57,7 +59,7 @@ public class ImageController {
         }
 
         logger.info("========== ImageController.uploadImage: Calling ImageService.uploadImages ==========");
-        Optional<ImageResponseDto> returnValue = imageService.uploadImages(path, imageRequestDto, file);
+        Optional<ImageResponseDto> returnValue = imageService.uploadImage(path, imageRequestDto, file);
 
         if (returnValue.isPresent()) {
             logger.info("ImageController.uploadImage ---------- Image upload successful, ImageResponseDto: {}", returnValue.get());
@@ -68,6 +70,19 @@ public class ImageController {
         logger.info("========== ImageController.uploadImage: Completed ==========");
 
         return returnValue;
+    }
+    
+    
+    //  이미지 삭제
+    //  Parameter: {id: image index}
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Message> deleteImage(@PathVariable("id") int id){
+        imageService.deleteImage(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+                .status(HttpStatus.OK)
+                .message(MsgCode.IMAGE_DELETE_SUCCESS.getMsg())
+                .build());
     }
 
     //  전체 이미지 조회
@@ -87,4 +102,6 @@ public class ImageController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+
 }

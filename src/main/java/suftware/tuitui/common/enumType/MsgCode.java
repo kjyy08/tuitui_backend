@@ -22,6 +22,8 @@ public enum MsgCode {
     CAPSULE_LIKE_DELETE_SUCCESS(HttpStatus.OK, "CAPSULE-000", "좋아요 삭제 성공"),
     CAPSULE_VISIT_READ_SUCCESS(HttpStatus.OK, "CAPSULE-000", "방문자 조회 성공"),
 
+    IMAGE_DELETE_SUCCESS(HttpStatus.OK, "IMAGE-000", "이미지 삭제 성공"),
+
     COMMENT_READ_SUCCESS(HttpStatus.OK, "COMMENT-000", "댓글 조회 성공"),
     COMMENT_UPDATE_SUCCESS(HttpStatus.OK, "COMMENT-000", "댓글 업데이트 성공"),
     COMMENT_DELETE_SUCCESS(HttpStatus.OK, "COMMENT-000", "댓글 삭제 성공"),
