@@ -16,13 +16,13 @@ import java.util.Base64;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ImageResponseDto {
     String imageName;
-    Integer timeCapsuleId;
+    //  Integer timeCapsuleId;
     String imagePath;
 
     public static ImageResponseDto toDto(Image image){
         ImageResponseDtoBuilder builder = ImageResponseDto.builder()
                 .imageName(image.getImageName())
-                .timeCapsuleId(image.getTimeCapsule().getTimeCapsuleId())
+                //  .timeCapsuleId(image.getTimeCapsule().getTimeCapsuleId())
                 .imagePath(image.getImagePath());
 
         return builder.build();

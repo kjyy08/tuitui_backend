@@ -107,56 +107,37 @@ public class TimeCapsuleController {
     }
 
     //  캡슐 저장, 이미지 포함, 테스트해보고 괜찮으면 url 수정
-//    @PostMapping(value = "capsules/save_with_image", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    @PostMapping(value = "capsules/save_with_image", consumes = "multipart/form-data")
+    @PostMapping(value = "capsules/with-image", consumes = "multipart/form-data")
     public ResponseEntity<Message> createCapsuleMultipartImage(@RequestPart(name = "request") TimeCapsuleRequestDto timeCapsuleRequestDto,
                                                                @RequestPart(name = "file", required = false ) List<MultipartFile> files) throws IOException {
-        logger.info("TimeCapsuleController.save_with_image ---------- Starting the TimeCapsule save process");
-
         // TimeCapsule 저장 부분
-        Optional<TimeCapsuleResponseDto> timeCapsuleResponseDto;
-        try {
-            timeCapsuleResponseDto = timeCapsuleService.save(timeCapsuleRequestDto);
-            logger.info("TimeCapsuleController.save_with_image ---------- TimeCapsule saved: {}", timeCapsuleResponseDto);
+        TimeCapsuleResponseDto timeCapsuleResponseDto = timeCapsuleService.save(timeCapsuleRequestDto)
+                .orElseThrow(() -> new CustomException(MsgCode.CAPSULE_CREATE_FAIL));
+
+        // imageUpload 부분
+        List<ImageResponseDto> imageResponseDtoList = new ArrayList<>();
+        if(files != null && !files.isEmpty()){
+            for(MultipartFile file: files){
+                imageResponseDtoList.add(imageService.uploadImage("image_image", timeCapsuleResponseDto.getCapsuleId(), file)
+                        .orElseThrow(() -> new CustomException(MsgCode.IMAGES_CREATE_FAIL)));
+            }
+
+            timeCapsuleResponseDto.setImageList(imageResponseDtoList);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
+                    .status(HttpStatus.CREATED)
+                    .message(MsgCode.CAPSULE_CREATE_SUCCESS.getMsg())
+                    .data(timeCapsuleResponseDto)
+                    .build());
         }
-        catch (Exception e) {
-            logger.error("TimeCapsuleController.save_with_image ---------- Error saving TimeCapsule: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+        //  파일이 비어있는 상태
+        else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     Message.builder()
-                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .status(HttpStatus.BAD_REQUEST)
                             .message(MsgCode.CAPSULE_CREATE_FAIL.getMsg())
                             .build());
         }
-
-        // imageUpload 부분
-        if(files != null && !files.isEmpty() && timeCapsuleResponseDto.isPresent()){
-            ImageRequestDto imageRequestDto = new ImageRequestDto();
-            imageRequestDto.setTimeCapsuleId(timeCapsuleResponseDto.get().getCapsuleId());
-            logger.info("TimeCapsuleController.save_with_image ---------- TimeCapsule ID for image upload: {}", imageRequestDto.getTimeCapsuleId());
-
-            for(MultipartFile file: files){
-                imageService.uploadImage("image_image", imageRequestDto, file);
-            }
-        }
-
-        // TimeCapsule Update
-        try {
-            timeCapsuleResponseDto = timeCapsuleService.getCapsule(timeCapsuleResponseDto.get().getCapsuleId());
-            logger.info("TimeCapsuleController.save_with_image ---------- Retrieved TimeCapsule after save: {}", timeCapsuleResponseDto);
-        } catch (Exception e) {
-            logger.error("TimeCapsuleController.save_with_image ---------- Error retrieving TimeCapsule: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    Message.builder()
-                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .message(MsgCode.CAPSULE_NOT_FOUND.getMsg())
-                            .build());
-        }
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
-                .status(HttpStatus.CREATED)
-                .message(MsgCode.CAPSULE_CREATE_SUCCESS.getMsg())
-                .data(timeCapsuleResponseDto)
-                .build());
     }
 
     //  캡슐 수정

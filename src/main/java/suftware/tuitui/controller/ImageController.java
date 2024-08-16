@@ -59,7 +59,7 @@ public class ImageController {
         }
 
         logger.info("========== ImageController.uploadImage: Calling ImageService.uploadImages ==========");
-        Optional<ImageResponseDto> returnValue = imageService.uploadImage(path, imageRequestDto, file);
+        Optional<ImageResponseDto> returnValue = imageService.uploadImage(path, imageRequestDto.getTimeCapsuleId(), file);
 
         if (returnValue.isPresent()) {
             logger.info("ImageController.uploadImage ---------- Image upload successful, ImageResponseDto: {}", returnValue.get());
@@ -71,8 +71,8 @@ public class ImageController {
 
         return returnValue;
     }
-    
-    
+
+
     //  이미지 삭제
     //  Parameter: {id: image index}
     @DeleteMapping("/{id}")
@@ -81,7 +81,7 @@ public class ImageController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.IMAGE_DELETE_SUCCESS.getMsg())
+                .message(MsgCode.IMAGES_DELETE_SUCCESS.getMsg())
                 .build());
     }
 
