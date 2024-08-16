@@ -93,19 +93,6 @@ public class TimeCapsuleController {
                 .build());
     }
 
-    //  캡슐 저장, 이미지 포함, 수정 필요.
-    @PostMapping(value = "capsules/save", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Message> createCapsuleMultipart(@RequestPart(name = "request") TimeCapsuleRequestDto timeCapsuleRequestDto,
-                                                          @RequestPart(name = "file", required = false ) List<MultipartFile> files) {
-        Optional<TimeCapsuleResponseDto> timeCapsuleResponseDto = timeCapsuleService.save(timeCapsuleRequestDto);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
-                .status(HttpStatus.CREATED)
-                .message(MsgCode.CAPSULE_CREATE_SUCCESS.getMsg())
-                .data(timeCapsuleResponseDto)
-                .build());
-    }
-
     //  캡슐 저장, 이미지 포함, 테스트해보고 괜찮으면 url 수정
     @PostMapping(value = "capsules/with-image", consumes = "multipart/form-data")
     public ResponseEntity<Message> createCapsuleMultipartImage(@RequestPart(name = "request") TimeCapsuleRequestDto timeCapsuleRequestDto,
