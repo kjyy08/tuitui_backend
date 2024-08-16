@@ -8,4 +8,7 @@ import suftware.tuitui.common.enumType.MsgCode;
 @AllArgsConstructor
 public class CustomException extends RuntimeException{
     MsgCode msgCode;
+
+    public CustomException(MsgCode msgCode, Exception e) {
+    }
 }
