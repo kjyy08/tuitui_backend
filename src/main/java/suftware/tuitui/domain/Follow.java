@@ -13,6 +13,7 @@ import lombok.*;
 @Table(name = "follow")
 public class Follow {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "follow_id")
     Integer followId;
 

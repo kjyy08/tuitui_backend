@@ -43,14 +43,22 @@ public class FollowController {
     }
 
     @PostMapping(value = "profiles/follows")
-    public ResponseEntity<Message> createFollow(FollowRequestDto followRequestDto){
+    public ResponseEntity<Message> createFollow(@RequestBody FollowRequestDto followRequestDto){
+        followService.saveFollow(followRequestDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+                .status(HttpStatus.OK)
+                .message(MsgCode.FOLLOWS_CREATE_SUCCESS.getMsg())
+                .build());
     }
 
     @DeleteMapping(value = "profiles/follows")
-    public ResponseEntity<Message> deleteFollow(){
+    public ResponseEntity<Message> deleteFollow(@RequestBody FollowRequestDto followRequestDto){
+        followService.deleteFollow(followRequestDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+                .status(HttpStatus.OK)
+                .message(MsgCode.FOLLOWS_DELETE_SUCCESS.getMsg())
+                .build());
     }
 }

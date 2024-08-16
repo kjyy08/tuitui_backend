@@ -75,6 +75,10 @@ public class ProfileService {
         if (profileRepository.existsByUser_UserId(profileRequestDto.getUserId())){
             throw new CustomException(MsgCode.PROFILE_EXIT);
         }
+        //  닉네임 중복 확인
+        else if (profileRepository.existsByNickname(profileRequestDto.getNickname())){
+            throw new CustomException(MsgCode.PROFILE_EXIT_NICKNAME);
+        }
 
         String filePath = hostUrl + directoryPath + file.getOriginalFilename();
         Profile profile = profileRepository.save(ProfileRequestDto.toEntity(profileRequestDto, user, filePath));
@@ -83,8 +87,18 @@ public class ProfileService {
 
     //  파일 미포함 프로필 저장
     public Optional<ProfileResponseDto> saveProfile(ProfileRequestDto profileRequestDto) {
+        //  유저가 존재하는지 확인
         User user = userRepository.findById(profileRequestDto.getUserId())
                 .orElseThrow(() -> new CustomException(MsgCode.USER_NOT_FOUND));
+
+        //  해당 유저의 프로필이 존재하는지 확인
+        if (profileRepository.existsByUser_UserId(profileRequestDto.getUserId())){
+            throw new CustomException(MsgCode.PROFILE_EXIT);
+        }
+        //  닉네임 중복 확인
+        else if (profileRepository.existsByNickname(profileRequestDto.getNickname())){
+            throw new CustomException(MsgCode.PROFILE_EXIT_NICKNAME);
+        }
 
         String filePath = hostUrl + directoryPath + basicProfileImgPath;
         Profile profile = profileRepository.save(ProfileRequestDto.toEntity(profileRequestDto, user, filePath));
@@ -96,8 +110,13 @@ public class ProfileService {
         Profile profile = profileRepository.findByUser_UserId(profileRequestDto.getUserId())
                 .orElseThrow(() -> new CustomException(MsgCode.USER_NOT_FOUND));
 
-        if (!(profileRequestDto.getNickname() == null))
+        if (!(profileRequestDto.getNickname() == null)){
+            if (profileRepository.existsByNickname(profileRequestDto.getNickname())){
+                throw new CustomException(MsgCode.PROFILE_EXIT_NICKNAME);
+            }
+
             profile.setNickname(profileRequestDto.getNickname());
+        }
         if (!(profileRequestDto.getDescribeSelf() == null))
             profile.setDescribeSelf(profileRequestDto.getDescribeSelf());
         if (!(profileRequestDto.getGender() == null))

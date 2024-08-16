@@ -26,10 +26,10 @@ public class Profile {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, unique = true)
     User user;
 
-    @Column(name = "nickname", nullable = false, length = 45, unique = true)
+    @Column(name = "nickname", nullable = false, length = 20, unique = true)
     String nickname;
 
-    @Column(name = "describe_self")
+    @Column(name = "describe_self", length = 100)
     String describeSelf;
 
     @Column(name = "gender", nullable = false, length = 4)

@@ -58,15 +58,4 @@ public class TimeCapsuleResponseDto {
                 .imageList(imageList)
                 .build();
     }
-
-    public TimeCapsule toEntity(){
-        return TimeCapsule.builder()
-                .timeCapsuleId(this.capsuleId)
-                .content(this.content)
-                .location(this.location)
-                .remindDate(this.remindDate)
-                .writeAt(Timestamp.valueOf(this.writeAt))
-                .updateAt(Timestamp.valueOf(this.updateAt))
-                .build();
-    }
 }

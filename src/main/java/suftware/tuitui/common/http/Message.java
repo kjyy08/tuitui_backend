@@ -15,11 +15,13 @@ import org.springframework.http.HttpStatus;
 public class Message {
     private HttpStatus status;
     private String message;
+    private String code;
     private Object data;
 
     public Message(){
         this.status = null;
         this.message = null;
+        this.code = null;
         this.data = null;
     }
 }
