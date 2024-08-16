@@ -81,7 +81,7 @@ public class ImageController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.IMAGE_DELETE_SUCCESS.getMsg())
+                .message(MsgCode.IMAGES_DELETE_SUCCESS.getMsg())
                 .build());
     }
 
