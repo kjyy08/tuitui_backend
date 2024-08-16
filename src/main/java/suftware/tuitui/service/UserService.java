@@ -1,9 +1,6 @@
 package suftware.tuitui.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +10,6 @@ import suftware.tuitui.domain.User;
 import suftware.tuitui.dto.request.UserRequestDto;
 import suftware.tuitui.dto.response.UserResponseDto;
 import suftware.tuitui.repository.UserRepository;
-import suftware.tuitui.dto.response.CustomUserDetails;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
@@ -137,11 +133,4 @@ public class UserService implements UserDetailsService {
 
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String account) throws UsernameNotFoundException {
-        User user = userRepository.findByAccount(account)
-                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없음"));
-
-        return new CustomUserDetails(user);
-    }
 }
