@@ -1,5 +1,8 @@
 package suftware.tuitui.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import suftware.tuitui.common.exception.CustomException;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.enumType.MsgCode;
+import suftware.tuitui.common.jwt.JwtMsgCode;
+import suftware.tuitui.common.jwt.JwtUtil;
 import suftware.tuitui.dto.request.UserRequestDto;
 import suftware.tuitui.dto.response.*;
 import suftware.tuitui.service.UserService;
@@ -21,6 +26,7 @@ import java.util.*;
 @RequestMapping("api/")
 public class UserController {
     private final UserService userService;
+    private final JwtUtil jwtUtil;
 
     private HashMap<String, String> getValidatorResult(BindingResult bindingResult) {
         HashMap<String, String> validatorResult = new HashMap<>();
@@ -100,15 +106,16 @@ public class UserController {
     }
 
     //  유저 로그인
-    @PostMapping(value = "login")
-    public String loginUser(@RequestBody @Valid UserRequestDto userRequestDto, BindingResult bindingResult) {
-        //Optional<UserResponseDto> userResponseDto = userService.login(userRequestDto);
+    //  @PostMapping(value = "login")
+    //  public String loginUser(@RequestBody @Valid UserRequestDto userRequestDto, BindingResult bindingResult) {
+    //      //Optional<UserResponseDto> userResponseDto = userService.login(userRequestDto);
+    //
+    //      return "ok";
+    //      //  return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+    //      //          .status(HttpStatus.OK)
+    //      //          //.message(MsgCode.USER_LOGIN_SUCCESS.getMsg())
+    //      //          //.data(userResponseDto)
+    //      //          .build());
+    //  }
 
-        return "ok";
-        //  return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
-        //          .status(HttpStatus.OK)
-        //          //.message(MsgCode.USER_LOGIN_SUCCESS.getMsg())
-        //          //.data(userResponseDto)
-        //          .build());
-    }
 }

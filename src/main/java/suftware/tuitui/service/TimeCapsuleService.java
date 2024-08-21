@@ -32,6 +32,7 @@ public class TimeCapsuleService {
 
     private static final Logger logger = LoggerFactory.getLogger(ImageService.class);
 
+    @Transactional(readOnly = true)
     private List<ImageResponseDto> getCapsuleImageList(Integer id){
         List<Image> imageList = imageRepository.findByTimeCapsule_TimeCapsuleId(id);
 
@@ -51,6 +52,7 @@ public class TimeCapsuleService {
     }
 
     //  전체 캡슐 조회
+    @Transactional(readOnly = true)
     public List<TimeCapsuleResponseDto> getCapsuleList() {
         List<TimeCapsule> timeCapsuleList = timeCapsuleRepository.findAll();
 
@@ -75,6 +77,7 @@ public class TimeCapsuleService {
     }
 
     //  캡슐 id 기준 조회
+    @Transactional(readOnly = true)
     public Optional<TimeCapsuleResponseDto> getCapsule(Integer id){
         TimeCapsule timeCapsule = timeCapsuleRepository.findById(id)
                 .orElseThrow(() -> new CustomException(MsgCode.CAPSULE_NOT_FOUND));
@@ -90,6 +93,7 @@ public class TimeCapsuleService {
     }
 
     //  글쓴이 id 기준 조회
+    @Transactional(readOnly = true)
     public List<TimeCapsuleResponseDto> getCapsuleByWriteUser(Integer id) {
         List<TimeCapsule> timeCapsuleList = timeCapsuleRepository.findByProfile_ProfileId(id);
 
@@ -113,6 +117,30 @@ public class TimeCapsuleService {
         return timeCapsuleResponseDtoList;
     }
 
+    //  해당 닉네임의 캡슐 목록 조회
+    @Transactional(readOnly = true)
+    public List<TimeCapsuleResponseDto> getCapsuleByNickname(String nickname) {
+        List<TimeCapsule> timeCapsuleList = timeCapsuleRepository.findByProfile_Nickname(nickname);
+
+        if (timeCapsuleList.isEmpty()){
+            throw new CustomException(MsgCode.CAPSULE_NOT_FOUND);
+        }
+
+        List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = new ArrayList<>();
+
+        for (TimeCapsule timeCapsule : timeCapsuleList){
+            List<ImageResponseDto> imageResponseDtoList = getCapsuleImageList(timeCapsule.getTimeCapsuleId());
+
+            if (imageResponseDtoList != null) {
+                timeCapsuleResponseDtoList.add(TimeCapsuleResponseDto.toDTO(timeCapsule, imageResponseDtoList));
+            }
+            else {
+                timeCapsuleResponseDtoList.add(TimeCapsuleResponseDto.toDTO(timeCapsule));
+            }
+        }
+
+        return timeCapsuleResponseDtoList;
+    }
 
     //  캡슐 저장
     public Optional<TimeCapsuleResponseDto> save(TimeCapsuleRequestDto timeCapsuleRequestDto){
@@ -146,30 +174,6 @@ public class TimeCapsuleService {
         logger.debug("TimeCapsuleService.save ---------- TimeCapsuleResponseDto created: {}", responseDto);
 
         return Optional.of(responseDto);
-    }
-
-    //  해당 닉네임의 캡슐 목록 조회
-    public List<TimeCapsuleResponseDto> getCapsuleByNickname(String nickname) {
-        List<TimeCapsule> timeCapsuleList = timeCapsuleRepository.findByProfile_Nickname(nickname);
-
-        if (timeCapsuleList.isEmpty()){
-            throw new CustomException(MsgCode.CAPSULE_NOT_FOUND);
-        }
-
-        List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = new ArrayList<>();
-
-        for (TimeCapsule timeCapsule : timeCapsuleList){
-            List<ImageResponseDto> imageResponseDtoList = getCapsuleImageList(timeCapsule.getTimeCapsuleId());
-
-            if (imageResponseDtoList != null) {
-                timeCapsuleResponseDtoList.add(TimeCapsuleResponseDto.toDTO(timeCapsule, imageResponseDtoList));
-            }
-            else {
-                timeCapsuleResponseDtoList.add(TimeCapsuleResponseDto.toDTO(timeCapsule));
-            }
-        }
-
-        return timeCapsuleResponseDtoList;
     }
 
     //  타임캡슐 수정

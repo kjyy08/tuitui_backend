@@ -62,8 +62,10 @@ public class UserService {
 
         User user = UserRequestDto.toEntity(userRequestDto);
 
+        //  비밀번호 암호화
         String hashPassword = passwordEncoder.encode(userRequestDto.getPassword());
 
+        //  암호화된 값과 입력받은 값이 일치하는지 확인
         if (!passwordEncoder.matches(userRequestDto.getPassword(), hashPassword)) {
             throw new CustomException(MsgCode.USER_SIGNUP_FAIL_NOT_ENCODED);
         }
@@ -119,6 +121,10 @@ public class UserService {
 
             userRepository.deleteByAccount(userRequestDto.getAccount());
         }
+    }
+
+    public boolean existsByAccount(String account){
+        return userRepository.existsByAccount(account);
     }
 
     public Optional<UserResponseDto> login(UserRequestDto loginRequestDto) {

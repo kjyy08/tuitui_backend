@@ -1,5 +1,7 @@
 # JPA
 spring:
+  jwt:
+    secret-key: ${JWT_SECRET_KEY}
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${SPRING_SQL_URL}

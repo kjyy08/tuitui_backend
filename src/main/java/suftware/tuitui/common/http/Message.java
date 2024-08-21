@@ -24,4 +24,9 @@ public class Message {
         this.code = null;
         this.data = null;
     }
+
+    public Message(HttpStatus status, String message){
+        this.status = status;
+        this.message = message;
+    }
 }

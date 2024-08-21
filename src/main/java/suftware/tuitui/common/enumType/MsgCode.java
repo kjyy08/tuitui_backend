@@ -44,7 +44,7 @@ public enum MsgCode {
     USER_BAD_REQUEST(HttpStatus.BAD_REQUEST, "USER-000", "유저 정보 불일치"),
     USER_NOT_VALID(HttpStatus.BAD_REQUEST, "USER-000", "유효하지 않은 정보"),
     USER_EXIST(HttpStatus.BAD_REQUEST, "USER-000", "이미 생성된 계정"),
-    LOGIN_FAIL(HttpStatus.BAD_REQUEST,"USER-000", "로그인 실패"),
+    USER_LOGIN_FAIL(HttpStatus.BAD_REQUEST,"USER-000", "로그인 실패"),
     PROFILE_CREATE_FAIL(HttpStatus.BAD_REQUEST,"PROFILE-000", "프로필 생성 실패"),
     PROFILE_NOT_VALID(HttpStatus.BAD_REQUEST,"PROFILE-000", "유효하지 않은 정보"),
     PROFILE_EXIT(HttpStatus.BAD_REQUEST,"PROFILE-000","이미 존재하는 프로필"),
@@ -52,6 +52,9 @@ public enum MsgCode {
     CAPSULE_CREATE_FAIL(HttpStatus.BAD_REQUEST,"CAPSULE-000", "캡슐 생성 실패"),
     CAPSULE_LIKE_EXIST(HttpStatus.BAD_REQUEST, "CAPSULE-000", "좋아요가 이미 존재함"),
     FOLLOWS_EXIT(HttpStatus.BAD_REQUEST, "FOLLOW-000", "이미 팔로우 중인 유저"),
+
+    //  401
+    USER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "USER-000", "토큰 검증 실패"),
 
     //  404
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER-000", "유저를 찾을 수 없음"),
