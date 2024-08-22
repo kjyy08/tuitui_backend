@@ -3,6 +3,7 @@ package suftware.tuitui.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
+import suftware.tuitui.common.enumType.Gender;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,19 +27,26 @@ public class Profile {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, unique = true)
     User user;
 
-    @Column(name = "nickname", nullable = false, length = 20, unique = true)
+    @Column(name = "name", nullable = false, length = 16)
+    String name;
+
+    @Column(name = "phone", nullable = false, unique = true, length = 13)
+    String phone;
+
+    @Column(name = "nickname", nullable = false, length = 45, unique = true)
     String nickname;
 
     @Column(name = "describe_self", length = 100)
     String describeSelf;
 
-    @Column(name = "gender", nullable = false, length = 4)
-    String gender;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
+    Gender gender;
 
     @Column(name = "birth")
     LocalDate birth;
 
-    @Column(name = "profile_image")
+    @Column(name = "profile_image", length = 2083)
     String profileImgPath;
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)

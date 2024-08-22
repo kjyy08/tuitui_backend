@@ -24,17 +24,11 @@ public class User {
     @Column(name = "account", length = 60, nullable = false, unique = true)
     String account;
 
-    @Column(name = "password", nullable = false, length = 60)
+    @Column(name = "password", nullable = false, length = 300)
     String password;
 
-    @Column(name = "phone", nullable = false, length = 13)
-    String phone;
-
-    @Column(name = "name", nullable = false, length = 16)
-    String name;
-
-    @Column(name = "account_created_date")
-    Timestamp accountCreatedDate;
+    @Column(name = "created_at")
+    Timestamp createdAt;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Profile profile;

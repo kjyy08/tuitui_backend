@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import java.util.List;
 public class TimeCapsule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "capsule_id", nullable = false)
+    @Column(name = "capsule_id", nullable = false, unique = true)
     Integer timeCapsuleId;
     
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,7 +29,7 @@ public class TimeCapsule {
     @JsonIgnore
     Profile profile;
     
-    @Column(name = "content", nullable = false)
+    @Column(name = "content")
     String content;
     
     @Column(name = "write_at", insertable = false, updatable = false)
@@ -42,6 +43,12 @@ public class TimeCapsule {
     
     @Column(name = "remind_date", nullable = false)
     Integer remindDate;
+
+    @Column(name = "latitude", precision = 10, scale = 8)
+    BigDecimal latitude;
+
+    @Column(name = "longitude", precision = 11, scale = 8)
+    BigDecimal longitude;
 
     @OneToOne(mappedBy = "timeCapsule", cascade = CascadeType.ALL, orphanRemoval = true)
     private TimeCapsuleVisit timeCapsuleVisit;

@@ -26,7 +26,7 @@ public class ProfileResponseDto {
                 .profileId(profile.getProfileId())
                 .userId(profile.getUser().getUserId())
                 .nickname(profile.getNickname())
-                .gender(profile.getGender())
+                .gender(profile.getGender().toString())
                 .describeSelf(profile.getDescribeSelf())
                 .birth(profile.getBirth())
                 .profileImgPath(profile.getProfileImgPath());

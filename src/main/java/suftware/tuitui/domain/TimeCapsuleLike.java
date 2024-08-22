@@ -18,10 +18,10 @@ public class TimeCapsuleLike {
     Integer capsuleLikeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "profile_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "profile_id", unique = true, nullable = false)
     Profile profile;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "capsule_id", referencedColumnName = "capsule_id")
+    @JoinColumn(name = "capsule_id", referencedColumnName = "capsule_id", unique = true, nullable = false)
     TimeCapsule timeCapsule;
 }

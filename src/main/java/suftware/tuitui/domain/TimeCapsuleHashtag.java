@@ -18,10 +18,10 @@ public class TimeCapsuleHashtag {
     Integer timeCapsuleHashtagId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "capsule_id", referencedColumnName = "capsule_id")
+    @JoinColumn(name = "capsule_id", referencedColumnName = "capsule_id", nullable = false)
     TimeCapsule timeCapsule;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hashtag_id", referencedColumnName = "hashtag_id")
+    @JoinColumn(name = "hashtag_id", referencedColumnName = "hashtag_id", nullable = false)
     Hashtag hashtag;
 }

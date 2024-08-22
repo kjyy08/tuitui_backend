@@ -18,7 +18,6 @@ import suftware.tuitui.dto.request.ProfileRequestDto;
 import suftware.tuitui.dto.response.ProfileResponseDto;
 import suftware.tuitui.service.ProfileService;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -124,7 +123,7 @@ public class ProfileController {
 
     //  프로필 수정, 이미지 미포함
     @PutMapping(value = "profiles")
-    public ResponseEntity<Message> updateProfile(@RequestBody ProfileRequestDto profileRequestDto, BindingResult bindingResult) {
+    public ResponseEntity<Message> updateProfile(@RequestBody @Valid ProfileRequestDto profileRequestDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()){
             throw new CustomException(MsgCode.PROFILE_NOT_VALID, getValidatorResult(bindingResult));
         }

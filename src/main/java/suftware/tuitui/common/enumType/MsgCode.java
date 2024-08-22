@@ -51,6 +51,7 @@ public enum MsgCode {
     PROFILE_CREATE_FAIL(HttpStatus.BAD_REQUEST,"PROFILE-000", "프로필 생성 실패"),
     PROFILE_NOT_VALID(HttpStatus.BAD_REQUEST,"PROFILE-000", "유효하지 않은 정보"),
     PROFILE_EXIST(HttpStatus.BAD_REQUEST,"PROFILE-000","이미 존재하는 프로필"),
+    PROFILE_EXIST_PHONE(HttpStatus.BAD_REQUEST,"PROFILE-000","이미 가입된 전화번호"),
     PROFILE_EXIST_NICKNAME(HttpStatus.BAD_REQUEST, "PROFILE-000", "닉네임 중복"),
     CAPSULE_CREATE_FAIL(HttpStatus.BAD_REQUEST,"CAPSULE-000", "캡슐 생성 실패"),
     CAPSULE_LIKE_EXIST(HttpStatus.BAD_REQUEST, "CAPSULE-000", "좋아요가 이미 존재함"),

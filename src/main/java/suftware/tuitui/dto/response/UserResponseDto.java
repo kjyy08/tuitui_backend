@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import suftware.tuitui.domain.User;
 
-import java.sql.Timestamp;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,8 +15,8 @@ public class UserResponseDto {
     Integer userId;
     //  String account;
     //  String password;
-    String phone;
-    String name;
+    //  String phone;
+    //  String name;
     String accountCreatedDate;
 
     public static UserResponseDto toDTO(User user){
@@ -26,9 +24,9 @@ public class UserResponseDto {
                 .userId(user.getUserId())
                 //  .account(user.getAccount())
                 //  .password(user.getPassword())
-                .phone(user.getPhone())
-                .name(user.getName())
-                .accountCreatedDate(user.getAccountCreatedDate().toString())
+                //  .phone(user.getPhone())
+                //  .name(user.getName())
+                .accountCreatedDate(user.getCreatedAt().toString())
                 .build();
     }
 }

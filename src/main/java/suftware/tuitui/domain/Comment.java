@@ -19,21 +19,21 @@ import java.sql.Timestamp;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id", unique = true)
+    @Column(name = "capsule_comment_id", nullable = false, unique = true)
     Integer commentId;
 
     @Column(name = "reference_comment_id")
     Integer refCommentId;
 
-    @Column(name = "comment")
+    @Column(name = "comment", nullable = false)
     String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "profile_id")
+    @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "profile_id")
     Profile profile;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "capsule_id", referencedColumnName = "capsule_id")
+    @JoinColumn(name = "capsule_id", nullable = false, referencedColumnName = "capsule_id")
     TimeCapsule timeCapsule;
 
     @Column(name = "write_at")

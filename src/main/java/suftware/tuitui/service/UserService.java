@@ -81,17 +81,7 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new CustomException(MsgCode.USER_NOT_FOUND));
 
-        if (!(userRequestDto.getName() == null)) {
-            user.setName(userRequestDto.getName());
-        }
-        if (!(userRequestDto.getPhone() == null)) {
-            user.setPhone(userRequestDto.getPhone());
-        }
         if (!(userRequestDto.getPassword() == null)) {
-            if (!passwordEncoder.matches(userRequestDto.getCheckPassword(), user.getPassword())) {
-                throw new CustomException(MsgCode.USER_BAD_REQUEST);
-            }
-
             String hashPassword = passwordEncoder.encode(userRequestDto.getPassword());
 
             if (!passwordEncoder.matches(userRequestDto.getPassword(), hashPassword)) {

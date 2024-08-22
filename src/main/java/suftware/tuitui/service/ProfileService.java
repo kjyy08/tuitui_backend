@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import suftware.tuitui.common.enumType.Gender;
 import suftware.tuitui.common.exception.CustomException;
 import suftware.tuitui.common.enumType.MsgCode;
 import suftware.tuitui.domain.Profile;
@@ -110,6 +111,16 @@ public class ProfileService {
         Profile profile = profileRepository.findByUser_UserId(profileRequestDto.getUserId())
                 .orElseThrow(() -> new CustomException(MsgCode.USER_NOT_FOUND));
 
+        //  전화번호 수정
+        if (!(profileRequestDto.getPhone() == null)){
+            if (profileRepository.existsByPhone(profileRequestDto.getPhone())){
+                throw new CustomException(MsgCode.PROFILE_EXIST_PHONE);
+            }
+
+            profile.setPhone(profileRequestDto.getPhone());
+        }
+
+        //  닉네임 수정
         if (!(profileRequestDto.getNickname() == null)){
             if (profileRepository.existsByNickname(profileRequestDto.getNickname())){
                 throw new CustomException(MsgCode.PROFILE_EXIST_NICKNAME);
@@ -117,10 +128,14 @@ public class ProfileService {
 
             profile.setNickname(profileRequestDto.getNickname());
         }
+
+        //  자기소개 수정
         if (!(profileRequestDto.getDescribeSelf() == null))
             profile.setDescribeSelf(profileRequestDto.getDescribeSelf());
+
+        //  성별 수정
         if (!(profileRequestDto.getGender() == null))
-            profile.setGender(profileRequestDto.getGender());
+            profile.setGender(Gender.valueOf(profileRequestDto.getGender()));
 
         return Optional.of(ProfileResponseDto.toDTO(profile));
     }

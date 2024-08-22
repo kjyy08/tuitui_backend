@@ -26,7 +26,6 @@ import java.util.*;
 @RequestMapping("api/")
 public class UserController {
     private final UserService userService;
-    private final JwtUtil jwtUtil;
 
     private HashMap<String, String> getValidatorResult(BindingResult bindingResult) {
         HashMap<String, String> validatorResult = new HashMap<>();
