@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum MsgCode {
     //  200
     USER_LOGIN_SUCCESS(HttpStatus.OK, "USER-000", "로그인 성공"),
+    USER_LOGOUT_SUCCESS(HttpStatus.OK, "USER-000", "로그아웃 성공"),
     USER_READ_SUCCESS(HttpStatus.OK, "USER-000", "유저 조회 성공"),
     USER_UPDATE_SUCCESS(HttpStatus.OK, "USER-000", "유저 업데이트 성공"),
     USER_DELETE_SUCCESS(HttpStatus.OK, "USER-000", "유저 삭제 성공"),
@@ -40,18 +41,20 @@ public enum MsgCode {
 
     //  400
     USER_SIGNUP_FAIL(HttpStatus.BAD_REQUEST,"USER-000", "회원가입 실패"),
+    USER_LOGOUT_FAIL(HttpStatus.BAD_REQUEST, "USER-000", "로그아웃 실패"),
     USER_SIGNUP_FAIL_NOT_ENCODED(HttpStatus.BAD_REQUEST, "USER-000", "암호화 실패"),
     USER_BAD_REQUEST(HttpStatus.BAD_REQUEST, "USER-000", "유저 정보 불일치"),
     USER_NOT_VALID(HttpStatus.BAD_REQUEST, "USER-000", "유효하지 않은 정보"),
     USER_EXIST(HttpStatus.BAD_REQUEST, "USER-000", "이미 생성된 계정"),
     USER_LOGIN_FAIL(HttpStatus.BAD_REQUEST,"USER-000", "로그인 실패"),
+    USER_LOGIN_FAIL_EXIST(HttpStatus.BAD_REQUEST, "USER-000", "이미 로그인된 유저"),
     PROFILE_CREATE_FAIL(HttpStatus.BAD_REQUEST,"PROFILE-000", "프로필 생성 실패"),
     PROFILE_NOT_VALID(HttpStatus.BAD_REQUEST,"PROFILE-000", "유효하지 않은 정보"),
-    PROFILE_EXIT(HttpStatus.BAD_REQUEST,"PROFILE-000","이미 존재하는 프로필"),
-    PROFILE_EXIT_NICKNAME(HttpStatus.BAD_REQUEST, "PROFILE-000", "닉네임 중복"),
+    PROFILE_EXIST(HttpStatus.BAD_REQUEST,"PROFILE-000","이미 존재하는 프로필"),
+    PROFILE_EXIST_NICKNAME(HttpStatus.BAD_REQUEST, "PROFILE-000", "닉네임 중복"),
     CAPSULE_CREATE_FAIL(HttpStatus.BAD_REQUEST,"CAPSULE-000", "캡슐 생성 실패"),
     CAPSULE_LIKE_EXIST(HttpStatus.BAD_REQUEST, "CAPSULE-000", "좋아요가 이미 존재함"),
-    FOLLOWS_EXIT(HttpStatus.BAD_REQUEST, "FOLLOW-000", "이미 팔로우 중인 유저"),
+    FOLLOWS_EXIST(HttpStatus.BAD_REQUEST, "FOLLOW-000", "이미 팔로우 중인 유저"),
 
     //  401
     USER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "USER-000", "토큰 검증 실패"),

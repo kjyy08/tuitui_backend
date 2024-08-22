@@ -61,7 +61,7 @@ public class FollowService {
             followRepository.save(FollowRequestDto.toEntity(follower, following));
         }
         else {
-            throw new CustomException(MsgCode.FOLLOWS_EXIT);
+            throw new CustomException(MsgCode.FOLLOWS_EXIST);
         }
     }
 

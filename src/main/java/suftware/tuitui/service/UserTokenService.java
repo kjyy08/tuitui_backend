@@ -37,6 +37,7 @@ public class UserTokenService {
         if (refresh == null) {
             return Message.builder()
                     .status(HttpStatus.BAD_REQUEST)
+                    .code(JwtMsgCode.EMPTY.getCode())
                     .message(JwtMsgCode.EMPTY.getMsg())
                     .build();
         }
@@ -47,6 +48,7 @@ public class UserTokenService {
         if (!errorCode.equals(JwtMsgCode.OK)) {
             return Message.builder()
                     .status(errorCode.getStatus())
+                    .code(errorCode.getCode())
                     .message(errorCode.getMsg())
                     .build();
         }
@@ -57,6 +59,7 @@ public class UserTokenService {
         if (!tokenType.equals("refresh")){
             return Message.builder()
                     .status(HttpStatus.BAD_REQUEST)
+                    .code(JwtMsgCode.INVALID.getCode())
                     .message(JwtMsgCode.INVALID.getMsg())
                     .build();
         }
@@ -65,6 +68,7 @@ public class UserTokenService {
         if (!userTokenRepository.existsByRefresh(refresh)){
             return Message.builder()
                     .status(HttpStatus.BAD_REQUEST)
+                    .code(JwtMsgCode.INVALID.getCode())
                     .message(JwtMsgCode.INVALID.getMsg())
                     .build();
         }
@@ -77,7 +81,6 @@ public class UserTokenService {
 
         //  기존에 있던 리프레시 삭제 후 저장
         userTokenRepository.deleteByRefresh(refresh);
-        //userTokenRepository.updateExpiredByToken(refresh);
         userTokenRepository.save(UserToken.builder()
                 .account(account)
                 .refresh(newRefreshToken)
@@ -95,6 +98,7 @@ public class UserTokenService {
 
         return Message.builder()
                 .status(HttpStatus.OK)
+                .code(JwtMsgCode.CREATE_OK.getCode())
                 .message(JwtMsgCode.CREATE_OK.getMsg())
                 .build();
     }

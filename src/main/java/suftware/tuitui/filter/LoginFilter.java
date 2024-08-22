@@ -104,10 +104,23 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
                 .expiresIn(new Timestamp(System.currentTimeMillis() + jwtUtil.getRefreshTokenExpiresIn()))
                 .build();
 
+        if (userTokenRepository.existsByAccount(account)){
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().print(new ObjectMapper().writeValueAsString(Message.builder()
+                    .status(HttpStatus.BAD_REQUEST)
+                    .message(MsgCode.USER_LOGIN_FAIL_EXIST.getMsg())
+                    .code(MsgCode.USER_LOGIN_FAIL_EXIST.getCode())
+                    .build()));
+            return;
+        }
+
         userTokenRepository.save(userToken);
 
         Message message = Message.builder()
                 .status(HttpStatus.OK)
+                .code(MsgCode.USER_LOGOUT_SUCCESS.getCode())
                 .message(MsgCode.USER_LOGIN_SUCCESS.getMsg())
                 .build();
 
@@ -122,15 +135,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     //  로그인 실패시 실행
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
-        Message message = Message.builder()
-                .status(HttpStatus.BAD_REQUEST)
-                .message(MsgCode.USER_LOGIN_FAIL.getMsg())
-                .build();
-
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().print(new ObjectMapper().writeValueAsString(message));
+        response.getWriter().print(new ObjectMapper().writeValueAsString(Message.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .message(MsgCode.USER_LOGIN_FAIL.getMsg())
+                .code(MsgCode.USER_LOGIN_FAIL.getCode())
+                .build()));
     }
 
     private Cookie createCookie(String key, String value){

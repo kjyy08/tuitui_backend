@@ -73,11 +73,11 @@ public class ProfileService {
 
         //  해당 유저의 프로필이 존재하는지 확인
         if (profileRepository.existsByUser_UserId(profileRequestDto.getUserId())){
-            throw new CustomException(MsgCode.PROFILE_EXIT);
+            throw new CustomException(MsgCode.PROFILE_EXIST);
         }
         //  닉네임 중복 확인
         else if (profileRepository.existsByNickname(profileRequestDto.getNickname())){
-            throw new CustomException(MsgCode.PROFILE_EXIT_NICKNAME);
+            throw new CustomException(MsgCode.PROFILE_EXIST_NICKNAME);
         }
 
         String filePath = hostUrl + directoryPath + file.getOriginalFilename();
@@ -93,11 +93,11 @@ public class ProfileService {
 
         //  해당 유저의 프로필이 존재하는지 확인
         if (profileRepository.existsByUser_UserId(profileRequestDto.getUserId())){
-            throw new CustomException(MsgCode.PROFILE_EXIT);
+            throw new CustomException(MsgCode.PROFILE_EXIST);
         }
         //  닉네임 중복 확인
         else if (profileRepository.existsByNickname(profileRequestDto.getNickname())){
-            throw new CustomException(MsgCode.PROFILE_EXIT_NICKNAME);
+            throw new CustomException(MsgCode.PROFILE_EXIST_NICKNAME);
         }
 
         String filePath = hostUrl + directoryPath + basicProfileImgPath;
@@ -112,7 +112,7 @@ public class ProfileService {
 
         if (!(profileRequestDto.getNickname() == null)){
             if (profileRepository.existsByNickname(profileRequestDto.getNickname())){
-                throw new CustomException(MsgCode.PROFILE_EXIT_NICKNAME);
+                throw new CustomException(MsgCode.PROFILE_EXIST_NICKNAME);
             }
 
             profile.setNickname(profileRequestDto.getNickname());
