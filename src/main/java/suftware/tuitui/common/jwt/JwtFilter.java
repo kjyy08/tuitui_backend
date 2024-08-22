@@ -42,7 +42,8 @@ public class JwtFilter extends OncePerRequestFilter {
         if (!tokenType.equals("access")){
             Message message = Message.builder()
                     .status(HttpStatus.UNAUTHORIZED)
-                    .message(MsgCode.USER_UNAUTHORIZED.getMsg())
+                    .code(JwtMsgCode.INVALID.getCode())
+                    .message(JwtMsgCode.INVALID.getMsg())
                     .build();
 
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -57,6 +58,7 @@ public class JwtFilter extends OncePerRequestFilter {
         if (!userService.existsByAccount(account)){
             Message message = Message.builder()
                     .status(HttpStatus.NOT_FOUND)
+                    .code(MsgCode.USER_NOT_FOUND.getCode())
                     .message(MsgCode.USER_NOT_FOUND.getMsg())
                     .build();
 

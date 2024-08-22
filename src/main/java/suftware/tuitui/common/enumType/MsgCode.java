@@ -56,9 +56,6 @@ public enum MsgCode {
     CAPSULE_LIKE_EXIST(HttpStatus.BAD_REQUEST, "CAPSULE-000", "좋아요가 이미 존재함"),
     FOLLOWS_EXIST(HttpStatus.BAD_REQUEST, "FOLLOW-000", "이미 팔로우 중인 유저"),
 
-    //  401
-    USER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "USER-000", "토큰 검증 실패"),
-
     //  404
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER-000", "유저를 찾을 수 없음"),
     PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND,"PROFILE-000", "존재하지 않는 프로필"),
