@@ -19,14 +19,18 @@ import org.springframework.util.MimeTypeUtils;
 import suftware.tuitui.common.enumType.MsgCode;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.jwt.JwtUtil;
+import suftware.tuitui.domain.UserToken;
 import suftware.tuitui.dto.response.CustomUserDetails;
+import suftware.tuitui.repository.UserTokenRepository;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.stream.Collectors;
 
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final UserTokenRepository userTokenRepository;
 
     @Getter
     @Setter
@@ -36,9 +40,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         private String password;
     }
 
-    public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil){
+    public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserTokenRepository userTokenRepository){
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.userTokenRepository = userTokenRepository;
         setFilterProcessesUrl("/api/login");
         setUsernameParameter("account");
     }
@@ -90,8 +95,16 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String account = customUserDetails.getUsername();
 
         //  토큰 생성
-        String access = jwtUtil.createJwt("access", account,600000L);   //  10분의 생명주기를 가짐
-        String refresh = jwtUtil.createJwt("refresh", account, 86400000L);  //  1일의 생명주기를 가짐
+        String access = jwtUtil.createJwt("access", account);   //  1시간의 생명주기를 가짐
+        String refresh = jwtUtil.createJwt("refresh", account);  //  30일의 생명주기를 가짐
+
+        UserToken userToken = UserToken.builder()
+                .account(account)
+                .refresh(refresh)
+                .expiresIn(new Timestamp(System.currentTimeMillis() + jwtUtil.getRefreshTokenExpiresIn()))
+                .build();
+
+        userTokenRepository.save(userToken);
 
         Message message = Message.builder()
                 .status(HttpStatus.OK)
@@ -100,6 +113,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         response.addHeader("Authorization", "Bearer " + access);
         response.addCookie(createCookie("refresh", refresh));
+        response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
         response.getWriter().print(new ObjectMapper().writeValueAsString(message));
@@ -122,8 +136,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private Cookie createCookie(String key, String value){
         Cookie cookie = new Cookie(key, value);
 
-        cookie.setMaxAge(24 * 60 * 60); //  1일
+        cookie.setMaxAge(2592000); //  30일
         cookie.setHttpOnly(true);
+        cookie.setSecure(true);
 
         return cookie;
     }

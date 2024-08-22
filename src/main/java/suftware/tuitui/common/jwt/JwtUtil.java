@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,12 @@ import java.util.Date;
 @Component
 public class JwtUtil {
     private final SecretKey secretKey;
+    @Getter
+    @Value("${spring.jwt.access-expires-in}")
+    private Long accessTokenExpiresIn;
+    @Getter
+    @Value("${spring.jwt.refresh-expires-in}")
+    private Long refreshTokenExpiresIn;
 
     public JwtUtil(@Value("${spring.jwt.secret-key}") String secretKey){
         this.secretKey = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
@@ -55,7 +62,18 @@ public class JwtUtil {
     }
 
     //  토큰 생성
-    public String createJwt(String type, String account, Long expiredTime){
+    public String createJwt(String type, String account){
+        Long expiredTime = 0L;
+
+        switch (type){
+            case "access":
+                expiredTime = accessTokenExpiresIn;
+                break;
+            case "refresh":
+                expiredTime = refreshTokenExpiresIn;
+                break;
+        }
+
         return Jwts.builder()
                 //  클레임에 토큰 타입 저장
                 .claim("type", type)

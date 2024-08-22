@@ -16,6 +16,7 @@ import suftware.tuitui.common.jwt.JwtExceptionFilter;
 import suftware.tuitui.common.jwt.JwtFilter;
 import suftware.tuitui.common.jwt.JwtUtil;
 import suftware.tuitui.filter.LoginFilter;
+import suftware.tuitui.repository.UserTokenRepository;
 import suftware.tuitui.service.UserService;
 
 @Configuration
@@ -25,6 +26,7 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
     private final UserService userService;
+    private final UserTokenRepository userTokenRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
@@ -38,7 +40,7 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/api/signup"),
                                 new AntPathRequestMatcher("/api/reissue")).permitAll()
                         .anyRequest().authenticated())
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, userTokenRepository), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtFilter(jwtUtil, userService), LoginFilter.class)
                 .addFilterBefore(new JwtExceptionFilter(jwtUtil), JwtFilter.class)
                 //  jwt 사용을 위해 stateless로 설정
