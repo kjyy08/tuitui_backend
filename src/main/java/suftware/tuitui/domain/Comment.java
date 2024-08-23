@@ -36,8 +36,8 @@ public class Comment {
     @JoinColumn(name = "capsule_id", nullable = false, referencedColumnName = "capsule_id")
     TimeCapsule timeCapsule;
 
-    @Column(name = "write_at")
-    Timestamp writeAt;
+    @Column(name = "update_at")
+    Timestamp updateAt;
 
     @Column(name = "modified")
     Boolean modified;

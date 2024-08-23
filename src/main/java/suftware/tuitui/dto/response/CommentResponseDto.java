@@ -2,10 +2,7 @@ package suftware.tuitui.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 import suftware.tuitui.domain.Comment;
-
-import java.sql.Timestamp;
 
 @Getter
 @Builder
@@ -27,7 +24,7 @@ public class CommentResponseDto {
                 .refCommentId(comment.getRefCommentId())
                 .comment(comment.getComment())
                 .nickname(comment.getProfile().getNickname())
-                .writeAt(comment.getWriteAt().toString())
+                .writeAt(comment.getUpdateAt().toString())
                 .modified(comment.getModified())
                 .build();
     }

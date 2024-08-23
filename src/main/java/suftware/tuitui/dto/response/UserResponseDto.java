@@ -13,7 +13,7 @@ import suftware.tuitui.domain.User;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserResponseDto {
     Integer userId;
-    //  String account;
+    String account;
     //  String password;
     //  String phone;
     //  String name;

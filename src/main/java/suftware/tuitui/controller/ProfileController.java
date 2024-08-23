@@ -9,11 +9,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import suftware.tuitui.common.exception.CustomException;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.enumType.MsgCode;
+import suftware.tuitui.common.valid.ProfileValidationGroups;
 import suftware.tuitui.dto.request.ProfileRequestDto;
 import suftware.tuitui.dto.response.ProfileResponseDto;
 import suftware.tuitui.service.ProfileService;
@@ -89,7 +91,8 @@ public class ProfileController {
 
     //  프로필 생성, 이미지 미포함
     @PostMapping(value = "profiles/without-image")
-    public ResponseEntity<Message> createProfileJson(@RequestBody @Valid ProfileRequestDto profileRequestDto, BindingResult bindingResult) {
+    public ResponseEntity<Message> createProfileJson(@RequestBody @Validated({ProfileValidationGroups.modify.class, ProfileValidationGroups.request.class}) ProfileRequestDto profileRequestDto,
+                                                     BindingResult bindingResult) {
         if (bindingResult.hasErrors()){
             throw new CustomException(MsgCode.PROFILE_CREATE_FAIL, getValidatorResult(bindingResult));
         }
@@ -123,7 +126,8 @@ public class ProfileController {
 
     //  프로필 수정, 이미지 미포함
     @PutMapping(value = "profiles")
-    public ResponseEntity<Message> updateProfile(@RequestBody @Valid ProfileRequestDto profileRequestDto, BindingResult bindingResult) {
+    public ResponseEntity<Message> updateProfile(@RequestBody @Validated(ProfileValidationGroups.request.class) ProfileRequestDto profileRequestDto,
+                                                 BindingResult bindingResult) {
         if (bindingResult.hasErrors()){
             throw new CustomException(MsgCode.PROFILE_NOT_VALID, getValidatorResult(bindingResult));
         }
@@ -137,7 +141,7 @@ public class ProfileController {
                 .build());
     }
 
-    //  프로필 삭제, 이미지 미포함
+    //  프로필 삭제
     @DeleteMapping(value = "profiles/{profileId}")
     public ResponseEntity<Message> deleteProfile(@PathVariable(name = "profileId") Integer profileId){
         profileService.deleteProfile(profileId);

@@ -92,6 +92,11 @@ public class ProfileService {
         User user = userRepository.findById(profileRequestDto.getUserId())
                 .orElseThrow(() -> new CustomException(MsgCode.USER_NOT_FOUND));
 
+        //  전화번호 중복 가입 방지
+        if (profileRepository.existsByPhone(profileRequestDto.getPhone())) {
+            throw new CustomException(MsgCode.PROFILE_EXIST_PHONE);
+        }
+
         //  해당 유저의 프로필이 존재하는지 확인
         if (profileRepository.existsByUser_UserId(profileRequestDto.getUserId())){
             throw new CustomException(MsgCode.PROFILE_EXIST);
@@ -106,6 +111,7 @@ public class ProfileService {
         return Optional.of(ProfileResponseDto.toDTO(profile));
     }
 
+    //  프로필 업데이트
     @Transactional
     public Optional<ProfileResponseDto> updateProfile(ProfileRequestDto profileRequestDto) {
         Profile profile = profileRepository.findByUser_UserId(profileRequestDto.getUserId())

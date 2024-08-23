@@ -1,20 +1,17 @@
 package suftware.tuitui.controller;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import suftware.tuitui.common.exception.CustomException;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.enumType.MsgCode;
-import suftware.tuitui.common.jwt.JwtMsgCode;
-import suftware.tuitui.common.jwt.JwtUtil;
+import suftware.tuitui.common.valid.UserValidationGroups;
 import suftware.tuitui.dto.request.UserRequestDto;
 import suftware.tuitui.dto.response.*;
 import suftware.tuitui.service.UserService;
@@ -63,7 +60,8 @@ public class UserController {
 
     //  유저 생성
     @PostMapping(value = "signup")
-    public ResponseEntity<Message> createUser(@RequestBody @Valid UserRequestDto userRequestDto, BindingResult bindingResult) {
+    public ResponseEntity<Message> createUser(@RequestBody @Validated({UserValidationGroups.modify.class, UserValidationGroups.request.class}) UserRequestDto userRequestDto,
+                                              BindingResult bindingResult) {
         if (bindingResult.hasErrors()){
             throw new CustomException(MsgCode.USER_SIGNUP_FAIL, getValidatorResult(bindingResult));
         }
@@ -79,7 +77,9 @@ public class UserController {
 
     //  유저 업데이트
     @PutMapping(value = "users/{userId}")
-    public ResponseEntity<Message> updateUser(@PathVariable("userId") Integer id, @RequestBody @Valid UserRequestDto userRequestDto, BindingResult bindingResult) {
+    public ResponseEntity<Message> updateUser(@PathVariable("userId") Integer id,
+                                              @RequestBody @Validated(UserValidationGroups.request.class) UserRequestDto userRequestDto,
+                                              BindingResult bindingResult) {
         if (bindingResult.hasErrors()){
             throw new CustomException(MsgCode.USER_NOT_VALID, getValidatorResult(bindingResult));
         }
@@ -95,7 +95,8 @@ public class UserController {
 
     //  유저 삭제
     @DeleteMapping(value = "users")
-    public ResponseEntity<Message> deleteUser(@RequestBody @Valid UserRequestDto userRequestDto, BindingResult bindingResult){
+    public ResponseEntity<Message> deleteUser(@RequestBody @Validated(UserValidationGroups.modify.class) UserRequestDto userRequestDto,
+                                              BindingResult bindingResult){
         userService.deleteUser(userRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()

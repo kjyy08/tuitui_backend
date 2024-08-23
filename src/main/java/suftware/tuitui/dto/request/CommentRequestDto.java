@@ -28,7 +28,7 @@ public class CommentRequestDto {
                 .comment(commentRequestDto.getComment())
                 .profile(profile)
                 .timeCapsule(timeCapsule)
-                .writeAt(new Timestamp(System.currentTimeMillis()))
+                .updateAt(new Timestamp(System.currentTimeMillis()))
                 .modified(Boolean.FALSE)
                 .build();
     }
