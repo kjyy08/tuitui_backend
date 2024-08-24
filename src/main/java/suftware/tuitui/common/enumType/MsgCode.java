@@ -59,13 +59,13 @@ public enum MsgCode {
 
     // 404 Not Found responses
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER-001", "유저를 찾을 수 없음"),
-    PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFILE-002", "존재하지 않는 프로필"),
+    PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFILE-001", "존재하지 않는 프로필"),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT-001", "존재하지 않는 댓글"),
     CAPSULE_NOT_FOUND(HttpStatus.NOT_FOUND, "CAPSULE-001", "존재하지 않는 타임캡슐"),
     CAPSULE_LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "CAPSULE-002", "좋아요가 존재하지 않음"),
-    FOLLOWER_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFILE-003", "팔로워가 존재하지 않음"),
-    FOLLOWING_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFILE-004", "팔로잉이 존재하지 않음"),
-    FOLLOWS_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFILE-005", "팔로워 및 팔로잉이 존재하지 않음"),
+    FOLLOWER_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFILE-002", "팔로워가 존재하지 않음"),
+    FOLLOWING_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFILE-003", "팔로잉이 존재하지 않음"),
+    FOLLOWS_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFILE-004", "팔로워 및 팔로잉이 존재하지 않음"),
     FILE_NOT_FOUND(HttpStatus.BAD_REQUEST, "FILE-001", "파일을 찾을 수 없음"),
     IMAGES_NOT_FOUND(HttpStatus.BAD_REQUEST, "IMAGE-001", "이미지를 찾을 수 없음");
 
