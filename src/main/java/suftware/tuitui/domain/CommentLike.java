@@ -19,9 +19,11 @@ public class CommentLike {
     @Column(name = "comment_like_id", nullable = false, unique = true)
     Integer commentLikeId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id", referencedColumnName = "capsule_comment_id", nullable = false)
     Comment comment;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id", referencedColumnName = "profile_id", nullable = false)
     Profile profile;
 }
