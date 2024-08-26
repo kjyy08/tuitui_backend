@@ -10,6 +10,11 @@ import suftware.tuitui.common.enumType.MsgCode;
 import suftware.tuitui.dto.request.CommentRequestDto;
 import suftware.tuitui.dto.response.CommentResponseDto;
 import suftware.tuitui.service.CommentService;
+import suftware.tuitui.service.CommentLikeService;
+import suftware.tuitui.dto.request.CommentLikeRequestDto;
+import suftware.tuitui.dto.response.CommentLikeResponseDto;
+
+
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +24,7 @@ import java.util.Optional;
 @RequestMapping("api/")
 public class CommentController {
     private final CommentService commentService;
+    private final CommentLikeService commentLikeService;
 
     //  캡슐 id에 해당하는 모든 댓글 조회
     @GetMapping(value = "capsules/{capsuleId}/comments")
@@ -78,4 +84,39 @@ public class CommentController {
                 .message(MsgCode.COMMENT_DELETE_SUCCESS.getMsg())
                 .build());
     }
+
+    // 댓글 좋아요 추가
+    @PostMapping(value = "comments/likes")
+    public ResponseEntity<Message> addCommentLike(@RequestBody CommentLikeRequestDto commentLikeRequestDto){
+        commentLikeService.saveCapsuleLike(commentLikeRequestDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
+                .status(HttpStatus.CREATED)
+                .message(MsgCode.COMMENT_LIKE_CREATE_SUCCESS.getMsg())
+                .build());
+    }
+
+    // 댓글 좋아요 삭제
+    @DeleteMapping(value = "comments/likes")
+    public ResponseEntity<Message> deleteCommentLike(@RequestBody CommentLikeRequestDto commentLikeRequestDto){
+        commentLikeService.removeCapsuleLike(commentLikeRequestDto);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Message.builder()
+                .status(HttpStatus.NO_CONTENT)
+                .message(MsgCode.COMMENT_LIKE_DELETE_SUCCESS.getMsg())
+                .build());
+    }
+    
+    // 댓글 좋아요 유저 조회
+    @GetMapping(value = "comments/likes/{commentId}")
+    public ResponseEntity<Message> readCommentLike(@PathVariable(name = "commentId") Integer id){
+        List<CommentLikeResponseDto> likes = commentLikeService.getCommentLike(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+                .status(HttpStatus.OK)
+                .message(MsgCode.COMMENT_LIKE_READ_SUCCESS.getMsg())
+                .data(likes)
+                .build());
+    }
+
 }

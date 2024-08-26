@@ -28,6 +28,9 @@ public enum MsgCode {
     FOLLOWS_READ_SUCCESS(HttpStatus.OK, "FOLLOW-001", "팔로워 및 팔로잉 조회 성공"),
     FOLLOWS_DELETE_SUCCESS(HttpStatus.OK, "FOLLOW-002", "팔로우 삭제 성공"),
     IMAGES_DELETE_SUCCESS(HttpStatus.OK, "IMAGE-001", "이미지 삭제 성공"),
+    COMMENT_LIKE_DELETE_SUCCESS(HttpStatus.OK, "COMMENT-004", "좋아요 삭제 성공"),
+    COMMENT_LIKE_READ_SUCCESS(HttpStatus.OK, "COMMENT-005", "좋아요 조회 성공"),
+
 
     // 201 Created responses
     USER_SIGNUP_SUCCESS(HttpStatus.CREATED, "USER-001", "회원가입 성공"),
@@ -38,6 +41,7 @@ public enum MsgCode {
     COMMENT_CREATE_SUCCESS(HttpStatus.CREATED, "COMMENT-001", "댓글 생성 성공"),
     FOLLOWS_CREATE_SUCCESS(HttpStatus.CREATED, "FOLLOW-001", "팔로우 생성 성공"),
     IMAGES_CREATE_SUCCESS(HttpStatus.CREATED, "IMAGE-001", "이미지 업로드 성공"),
+    COMMENT_LIKE_CREATE_SUCCESS(HttpStatus.CREATED, "COMMENT-002", "좋아요 생성 성공"),
 
     // 400 Bad Request responses
     USER_SIGNUP_FAIL(HttpStatus.BAD_REQUEST, "USER-001", "회원가입 실패"),
@@ -55,6 +59,7 @@ public enum MsgCode {
     PROFILE_EXIST_NICKNAME(HttpStatus.BAD_REQUEST, "PROFILE-005", "닉네임 중복"),
     CAPSULE_CREATE_FAIL(HttpStatus.BAD_REQUEST, "CAPSULE-001", "캡슐 생성 실패"),
     CAPSULE_LIKE_EXIST(HttpStatus.BAD_REQUEST, "CAPSULE-002", "좋아요가 이미 존재함"),
+    COMMENT_LIKE_EXIST(HttpStatus.BAD_REQUEST, "COMMENT-002", "좋아요가 이미 존재함"),
     FOLLOWS_EXIST(HttpStatus.BAD_REQUEST, "FOLLOW-001", "이미 팔로우 중인 유저"),
 
     // 404 Not Found responses
@@ -66,6 +71,7 @@ public enum MsgCode {
     FOLLOWER_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFILE-002", "팔로워가 존재하지 않음"),
     FOLLOWING_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFILE-003", "팔로잉이 존재하지 않음"),
     FOLLOWS_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFILE-004", "팔로워 및 팔로잉이 존재하지 않음"),
+    COMMENT_LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT-002", "존재하지 않는 좋아요"),
     FILE_NOT_FOUND(HttpStatus.BAD_REQUEST, "FILE-001", "파일을 찾을 수 없음"),
     IMAGES_NOT_FOUND(HttpStatus.BAD_REQUEST, "IMAGE-001", "이미지를 찾을 수 없음");
 

@@ -13,7 +13,7 @@ import suftware.tuitui.domain.Comment;
 public class CommentResponseDto {
     Integer commentId;
 //    Integer refCommentId;
-    Comment referenceCommentId;
+    Integer referenceCommentId;
     String comment;
     String nickname;
     String writeAt;
@@ -23,7 +23,7 @@ public class CommentResponseDto {
         return CommentResponseDto.builder()
                 .commentId(comment.getCommentId())
 //                .refCommentId(comment.getRefCommentId())
-                .referenceCommentId(comment.getReferenceCommentId())
+                .referenceCommentId(comment.getReferenceCommentId() != null ? comment.getReferenceCommentId().getCommentId() : null)
                 .comment(comment.getComment())
                 .nickname(comment.getProfile().getNickname())
                 .writeAt(comment.getUpdateAt().toString())
