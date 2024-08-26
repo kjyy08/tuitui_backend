@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
-    public List<Comment> findByTimeCapsule_TimeCapsuleId(Integer id, Sort sort);
-    public Optional<Comment> findByTimeCapsule_TimeCapsuleIdAndProfile_ProfileId(Integer timeCapsuleId, Integer userId);
+    List<Comment> findByTimeCapsule_TimeCapsuleId(Integer id, Sort sort);
+    Optional<Comment> findByTimeCapsule_TimeCapsuleIdAndProfile_ProfileId(Integer timeCapsuleId, Integer userId);
 }

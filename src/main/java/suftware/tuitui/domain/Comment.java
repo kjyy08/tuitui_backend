@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,13 +23,9 @@ public class Comment {
     @Column(name = "capsule_comment_id", nullable = false, unique = true)
     Integer commentId;
 
-//    @Column(name = "reference_comment_id")
-//    Integer refCommentId;
-
-    // reference_comment_id가 외래키 설정 안되어 있어서 변경합니다
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reference_comment_id", referencedColumnName = "capsule_comment_id")
-    Comment referenceCommentId;
+    Comment parentComment;
 
     @Column(name = "comment", nullable = false)
     String comment;
@@ -46,4 +43,8 @@ public class Comment {
 
     @Column(name = "modified")
     Boolean modified;
+
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> childComments;
+
 }

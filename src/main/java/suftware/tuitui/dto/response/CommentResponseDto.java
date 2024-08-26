@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import suftware.tuitui.domain.Comment;
 
+import java.util.List;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -12,22 +14,37 @@ import suftware.tuitui.domain.Comment;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentResponseDto {
     Integer commentId;
-//    Integer refCommentId;
-    Integer referenceCommentId;
+    Integer parentCommentId;
     String comment;
     String nickname;
-    String writeAt;
+    String updateAt;
     Boolean modified;
+    List<Comment> childCommentList;
 
     public static CommentResponseDto toDTO(Comment comment){
-        return CommentResponseDto.builder()
+        CommentResponseDto.CommentResponseDtoBuilder builder = CommentResponseDto.builder()
                 .commentId(comment.getCommentId())
-//                .refCommentId(comment.getRefCommentId())
-                .referenceCommentId(comment.getReferenceCommentId() != null ? comment.getReferenceCommentId().getCommentId() : null)
                 .comment(comment.getComment())
                 .nickname(comment.getProfile().getNickname())
-                .writeAt(comment.getUpdateAt().toString())
+                .updateAt(comment.getUpdateAt().toString())
+                .modified(comment.getModified());
+
+        if (comment.getParentComment() != null) {
+            builder.parentCommentId(comment.getParentComment().getCommentId());
+        }
+
+        return builder.build();
+    }
+
+    public static CommentResponseDto toDTO(Comment comment, List<Comment> childCommentList){
+        CommentResponseDto.CommentResponseDtoBuilder builder = CommentResponseDto.builder()
+                .commentId(comment.getCommentId())
+                .comment(comment.getComment())
+                .nickname(comment.getProfile().getNickname())
+                .updateAt(comment.getUpdateAt().toString())
                 .modified(comment.getModified())
-                .build();
+                .childCommentList(childCommentList);
+
+        return builder.build();
     }
 }

@@ -13,9 +13,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentRequestDto {
-    Integer refCommentId;
-
-//    Comment referenceCommentId;
+    Integer parentCommentId;
 
     @NotEmpty(message = "빈 댓글은 작성이 불가합니다.")
     String comment;
@@ -24,10 +22,21 @@ public class CommentRequestDto {
 
     Integer timeCapsuleId;
 
-    public static Comment toEntity(CommentRequestDto commentRequestDto, Profile profile, TimeCapsule timeCapsule, Comment referenceComment){
+    //  제일 최상단 부모 댓글 엔티티 생성
+    public static Comment toEntity(CommentRequestDto commentRequestDto, Profile profile, TimeCapsule timeCapsule){
         return Comment.builder()
-//                .refCommentId(commentRequestDto.getRefCommentId())
-                .referenceCommentId(referenceComment)
+                .comment(commentRequestDto.getComment())
+                .profile(profile)
+                .timeCapsule(timeCapsule)
+                .updateAt(new Timestamp(System.currentTimeMillis()))
+                .modified(Boolean.FALSE)
+                .build();
+    }
+
+    //  대댓글에 해당하는 자식 댓글 엔티티 생성
+    public static Comment toEntity(CommentRequestDto commentRequestDto, Comment childComment, Profile profile, TimeCapsule timeCapsule){
+        return Comment.builder()
+                .parentComment(childComment)
                 .comment(commentRequestDto.getComment())
                 .profile(profile)
                 .timeCapsule(timeCapsule)

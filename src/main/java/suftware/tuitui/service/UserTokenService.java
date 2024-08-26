@@ -93,7 +93,7 @@ public class UserTokenService {
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
 
-        response.setHeader("access", "Bearer " + newAccessToken);
+        response.setHeader("Authorization", "Bearer " + newAccessToken);
         response.addCookie(cookie);
 
         return Message.builder()

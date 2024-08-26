@@ -85,38 +85,4 @@ public class CommentController {
                 .build());
     }
 
-    // 댓글 좋아요 추가
-    @PostMapping(value = "comments/likes")
-    public ResponseEntity<Message> addCommentLike(@RequestBody CommentLikeRequestDto commentLikeRequestDto){
-        commentLikeService.saveCapsuleLike(commentLikeRequestDto);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
-                .status(HttpStatus.CREATED)
-                .message(MsgCode.COMMENT_LIKE_CREATE_SUCCESS.getMsg())
-                .build());
-    }
-
-    // 댓글 좋아요 삭제
-    @DeleteMapping(value = "comments/likes")
-    public ResponseEntity<Message> deleteCommentLike(@RequestBody CommentLikeRequestDto commentLikeRequestDto){
-        commentLikeService.removeCapsuleLike(commentLikeRequestDto);
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Message.builder()
-                .status(HttpStatus.NO_CONTENT)
-                .message(MsgCode.COMMENT_LIKE_DELETE_SUCCESS.getMsg())
-                .build());
-    }
-    
-    // 댓글 좋아요 유저 조회
-    @GetMapping(value = "comments/likes/{commentId}")
-    public ResponseEntity<Message> readCommentLike(@PathVariable(name = "commentId") Integer id){
-        List<CommentLikeResponseDto> likes = commentLikeService.getCommentLike(id);
-
-        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
-                .status(HttpStatus.OK)
-                .message(MsgCode.COMMENT_LIKE_READ_SUCCESS.getMsg())
-                .data(likes)
-                .build());
-    }
-
 }

@@ -44,7 +44,7 @@ public class ProfileRequestDto {
     byte[] profileImg;
 
     public static Profile toEntity(ProfileRequestDto profileRequestDto, User user, String profileImgPath){
-        Profile.ProfileBuilder profile = Profile.builder()
+        Profile.ProfileBuilder builder = Profile.builder()
                 .user(user)
                 .name(profileRequestDto.getName())
                 .phone(profileRequestDto.getPhone())
@@ -54,14 +54,14 @@ public class ProfileRequestDto {
 
         // gender 값이 null이면 OTHER로 저장
         if (profileRequestDto.getGender() == null) {
-            profile.gender(Gender.OTHER);
+            builder.gender(Gender.OTHER);
         }
 
         // birth 값이 null이 아닌 경우에만 저장
         if (profileRequestDto.getBirth() != null) {
-            profile.birth(profileRequestDto.getBirth());
+            builder.birth(profileRequestDto.getBirth());
         }
 
-        return profile.build();
+        return builder.build();
     }
 }

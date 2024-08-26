@@ -23,7 +23,4 @@ public class CommentLikeRequestDto {
                 .build();
     }
 
-    public void setCommentId(Integer commentId){
-        this.commentId = commentId;
-    }
 }

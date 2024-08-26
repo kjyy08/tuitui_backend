@@ -19,13 +19,24 @@ public class TimeCapsuleRequestDto {
     Timestamp updateAt;
 
     public static TimeCapsule toEntity(TimeCapsuleRequestDto timeCapsuleRequestDto, Profile profile) {
-        return TimeCapsule.builder()
+        TimeCapsule.TimeCapsuleBuilder builder = TimeCapsule.builder()
                 .profile(profile)
-                .writeAt(timeCapsuleRequestDto.getWriteAt())
-                .updateAt(timeCapsuleRequestDto.getUpdateAt())
                 .content(timeCapsuleRequestDto.getContent())
                 .location(timeCapsuleRequestDto.getLocation())
-                .remindDate(timeCapsuleRequestDto.getRemindDate())
-                .build();
+                .remindDate(timeCapsuleRequestDto.getRemindDate());
+
+        if (timeCapsuleRequestDto.getWriteAt() == null){
+            builder.writeAt(new Timestamp(System.currentTimeMillis()));
+        } else {
+            builder.writeAt(timeCapsuleRequestDto.getWriteAt());
+        }
+
+        if (timeCapsuleRequestDto.getUpdateAt() == null){
+            builder.updateAt(new Timestamp(System.currentTimeMillis()));
+        } else {
+            builder.updateAt(timeCapsuleRequestDto.getUpdateAt());
+        }
+
+        return builder.build();
     }
 }
