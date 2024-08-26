@@ -65,8 +65,13 @@ public class CommentService {
 
         TimeCapsule timeCapsule = timeCapsuleRepository.findById(commentRequestDto.getTimeCapsuleId())
                 .orElseThrow(() -> new CustomException(MsgCode.CAPSULE_NOT_FOUND));
+        Comment referenceComment = null;
+        if (commentRequestDto.getRefCommentId() != null){
+            referenceComment = commentRepository.findById(commentRequestDto.getRefCommentId())
+                    .orElseThrow(() -> new CustomException(MsgCode.COMMENT_NOT_FOUND));
+        }
 
-        Comment comment = commentRepository.save(CommentRequestDto.toEntity(commentRequestDto, profile, timeCapsule));
+        Comment comment = commentRepository.save(CommentRequestDto.toEntity(commentRequestDto, profile, timeCapsule, referenceComment));
         return Optional.of(CommentResponseDto.toDTO(comment));
     }
 
@@ -92,4 +97,5 @@ public class CommentService {
             commentRepository.deleteById(id);
         }
     }
+
 }

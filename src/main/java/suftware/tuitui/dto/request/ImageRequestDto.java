@@ -21,7 +21,7 @@ public class ImageRequestDto {
                 .build();
     }
 
-    public void setTimeCapsuleId(Integer timeCapsuleId) {
-        this.timeCapsuleId = timeCapsuleId;
-    }
+//    public void setTimeCapsuleId(Integer timeCapsuleId) {
+//        this.timeCapsuleId = timeCapsuleId;
+//    }
 }

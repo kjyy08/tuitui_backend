@@ -15,6 +15,8 @@ import java.sql.Timestamp;
 public class CommentRequestDto {
     Integer refCommentId;
 
+//    Comment referenceCommentId;
+
     @NotEmpty(message = "빈 댓글은 작성이 불가합니다.")
     String comment;
 
@@ -22,9 +24,10 @@ public class CommentRequestDto {
 
     Integer timeCapsuleId;
 
-    public static Comment toEntity(CommentRequestDto commentRequestDto, Profile profile, TimeCapsule timeCapsule){
+    public static Comment toEntity(CommentRequestDto commentRequestDto, Profile profile, TimeCapsule timeCapsule, Comment referenceComment){
         return Comment.builder()
-                .refCommentId(commentRequestDto.getRefCommentId())
+//                .refCommentId(commentRequestDto.getRefCommentId())
+                .referenceCommentId(referenceComment)
                 .comment(commentRequestDto.getComment())
                 .profile(profile)
                 .timeCapsule(timeCapsule)
