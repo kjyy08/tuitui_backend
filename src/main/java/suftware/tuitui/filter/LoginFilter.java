@@ -150,7 +150,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         cookie.setMaxAge(2592000); //  30일
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        //cookie.setSecure(true);
 
         return cookie;
     }
