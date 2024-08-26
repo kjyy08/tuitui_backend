@@ -11,5 +11,4 @@ import java.util.Optional;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> findByTimeCapsule_TimeCapsuleId(Integer id, Sort sort);
-    Optional<Comment> findByTimeCapsule_TimeCapsuleIdAndProfile_ProfileId(Integer timeCapsuleId, Integer userId);
 }

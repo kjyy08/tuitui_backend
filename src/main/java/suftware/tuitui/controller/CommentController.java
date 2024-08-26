@@ -11,8 +11,6 @@ import suftware.tuitui.dto.request.CommentRequestDto;
 import suftware.tuitui.dto.response.CommentResponseDto;
 import suftware.tuitui.service.CommentService;
 import suftware.tuitui.service.CommentLikeService;
-import suftware.tuitui.dto.request.CommentLikeRequestDto;
-import suftware.tuitui.dto.response.CommentLikeResponseDto;
 
 
 
@@ -24,7 +22,6 @@ import java.util.Optional;
 @RequestMapping("api/")
 public class CommentController {
     private final CommentService commentService;
-    private final CommentLikeService commentLikeService;
 
     //  캡슐 id에 해당하는 모든 댓글 조회
     @GetMapping(value = "capsules/{capsuleId}/comments")
