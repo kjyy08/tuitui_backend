@@ -91,7 +91,7 @@ public class UserTokenService {
         Cookie cookie = new Cookie("refresh", newRefreshToken);
         cookie.setMaxAge(2592000);  //  30일까지 유효
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        //cookie.setSecure(true);
 
         response.setHeader("Authorization", "Bearer " + newAccessToken);
         response.addCookie(cookie);
