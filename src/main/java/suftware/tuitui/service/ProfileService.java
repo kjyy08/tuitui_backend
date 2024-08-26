@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import suftware.tuitui.common.enumType.Gender;
 import suftware.tuitui.common.exception.CustomException;
 import suftware.tuitui.common.enumType.MsgCode;
 import suftware.tuitui.domain.Profile;
@@ -73,7 +74,11 @@ public class ProfileService {
 
         //  해당 유저의 프로필이 존재하는지 확인
         if (profileRepository.existsByUser_UserId(profileRequestDto.getUserId())){
-            throw new CustomException(MsgCode.PROFILE_EXIT);
+            throw new CustomException(MsgCode.PROFILE_EXIST);
+        }
+        //  닉네임 중복 확인
+        else if (profileRepository.existsByNickname(profileRequestDto.getNickname())){
+            throw new CustomException(MsgCode.PROFILE_EXIST_NICKNAME);
         }
 
         String filePath = hostUrl + directoryPath + file.getOriginalFilename();
@@ -83,25 +88,60 @@ public class ProfileService {
 
     //  파일 미포함 프로필 저장
     public Optional<ProfileResponseDto> saveProfile(ProfileRequestDto profileRequestDto) {
+        //  유저가 존재하는지 확인
         User user = userRepository.findById(profileRequestDto.getUserId())
                 .orElseThrow(() -> new CustomException(MsgCode.USER_NOT_FOUND));
+
+        //  전화번호 중복 가입 방지
+        if (profileRepository.existsByPhone(profileRequestDto.getPhone())) {
+            throw new CustomException(MsgCode.PROFILE_EXIST_PHONE);
+        }
+
+        //  해당 유저의 프로필이 존재하는지 확인
+        if (profileRepository.existsByUser_UserId(profileRequestDto.getUserId())){
+            throw new CustomException(MsgCode.PROFILE_EXIST);
+        }
+        //  닉네임 중복 확인
+        else if (profileRepository.existsByNickname(profileRequestDto.getNickname())){
+            throw new CustomException(MsgCode.PROFILE_EXIST_NICKNAME);
+        }
 
         String filePath = hostUrl + directoryPath + basicProfileImgPath;
         Profile profile = profileRepository.save(ProfileRequestDto.toEntity(profileRequestDto, user, filePath));
         return Optional.of(ProfileResponseDto.toDTO(profile));
     }
 
+    //  프로필 업데이트
     @Transactional
     public Optional<ProfileResponseDto> updateProfile(ProfileRequestDto profileRequestDto) {
         Profile profile = profileRepository.findByUser_UserId(profileRequestDto.getUserId())
                 .orElseThrow(() -> new CustomException(MsgCode.USER_NOT_FOUND));
 
-        if (!(profileRequestDto.getNickname() == null))
+        //  전화번호 수정
+        if (!(profileRequestDto.getPhone() == null)){
+            if (profileRepository.existsByPhone(profileRequestDto.getPhone())){
+                throw new CustomException(MsgCode.PROFILE_EXIST_PHONE);
+            }
+
+            profile.setPhone(profileRequestDto.getPhone());
+        }
+
+        //  닉네임 수정
+        if (!(profileRequestDto.getNickname() == null)){
+            if (profileRepository.existsByNickname(profileRequestDto.getNickname())){
+                throw new CustomException(MsgCode.PROFILE_EXIST_NICKNAME);
+            }
+
             profile.setNickname(profileRequestDto.getNickname());
+        }
+
+        //  자기소개 수정
         if (!(profileRequestDto.getDescribeSelf() == null))
             profile.setDescribeSelf(profileRequestDto.getDescribeSelf());
+
+        //  성별 수정
         if (!(profileRequestDto.getGender() == null))
-            profile.setGender(profileRequestDto.getGender());
+            profile.setGender(Gender.valueOf(profileRequestDto.getGender()));
 
         return Optional.of(ProfileResponseDto.toDTO(profile));
     }

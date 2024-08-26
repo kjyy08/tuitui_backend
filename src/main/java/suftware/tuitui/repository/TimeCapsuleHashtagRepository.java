@@ -1,11 +1,10 @@
 package suftware.tuitui.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import suftware.tuitui.domain.Hashtag;
+import org.springframework.stereotype.Repository;
 import suftware.tuitui.domain.TimeCapsuleHashtag;
 
-import java.util.List;
-
+@Repository
 public interface TimeCapsuleHashtagRepository extends JpaRepository<TimeCapsuleHashtag, Integer> {
 
 }

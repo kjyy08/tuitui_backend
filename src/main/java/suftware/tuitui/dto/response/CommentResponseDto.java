@@ -2,10 +2,9 @@ package suftware.tuitui.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 import suftware.tuitui.domain.Comment;
 
-import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
 @Builder
@@ -15,20 +14,37 @@ import java.sql.Timestamp;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentResponseDto {
     Integer commentId;
-    Integer refCommentId;
+    Integer parentCommentId;
     String comment;
     String nickname;
-    String writeAt;
+    String updateAt;
     Boolean modified;
+    List<Comment> childCommentList;
 
     public static CommentResponseDto toDTO(Comment comment){
-        return CommentResponseDto.builder()
+        CommentResponseDto.CommentResponseDtoBuilder builder = CommentResponseDto.builder()
                 .commentId(comment.getCommentId())
-                .refCommentId(comment.getRefCommentId())
                 .comment(comment.getComment())
                 .nickname(comment.getProfile().getNickname())
-                .writeAt(comment.getWriteAt().toString())
+                .updateAt(comment.getUpdateAt().toString())
+                .modified(comment.getModified());
+
+        if (comment.getParentComment() != null) {
+            builder.parentCommentId(comment.getParentComment().getCommentId());
+        }
+
+        return builder.build();
+    }
+
+    public static CommentResponseDto toDTO(Comment comment, List<Comment> childCommentList){
+        CommentResponseDto.CommentResponseDtoBuilder builder = CommentResponseDto.builder()
+                .commentId(comment.getCommentId())
+                .comment(comment.getComment())
+                .nickname(comment.getProfile().getNickname())
+                .updateAt(comment.getUpdateAt().toString())
                 .modified(comment.getModified())
-                .build();
+                .childCommentList(childCommentList);
+
+        return builder.build();
     }
 }

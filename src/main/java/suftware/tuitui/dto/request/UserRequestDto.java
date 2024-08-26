@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import suftware.tuitui.common.valid.UserValidationGroups;
 import suftware.tuitui.domain.User;
 
 import java.sql.Timestamp;
@@ -14,20 +15,17 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRequestDto {
-    @Email(message = "아이디는 이메일 형식으로 입력해야 합니다.")
-    @NotEmpty(message = "아이디는 필수 입력 값입니다.")
+    @Email(message = "아이디는 이메일 형식으로 입력해야 합니다.", groups = {UserValidationGroups.modify.class, UserValidationGroups.request.class})
+    @NotEmpty(message = "아이디는 필수 입력 값입니다.", groups = UserValidationGroups.modify.class)
     String account;
 
-    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,20}", message = "비밀번호는 8~20자 영문 대 소문자, 숫자, 특수문자를 사용하세요.")
-    @NotEmpty(message = "비밀번호는 필수 입력 값입니다.")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*?&]{8,20}$", message = "비밀번호는 8~20자 영문 1자 이상, 숫자, 특수문자를 조합하여 입력해주세요.",
+            groups = {UserValidationGroups.modify.class, UserValidationGroups.request.class})
+    @NotEmpty(message = "비밀번호는 필수 입력 값입니다.", groups = UserValidationGroups.modify.class)
     String password;
 
-    @Pattern(regexp = "\\d{3}-\\d{4}-\\d{4}", message = "전화번호 형식에 맞게 입력해주세요.")
-    @NotEmpty(message = "전화번호는 필수 입력 값입니다.")
-    String phone;
-
-    @NotEmpty(message = "이름은 필수 입력 값입니다.")
-    String name;
+    @NotEmpty(message = "비밀번호 확인을 위해 필수로 입력해주세요.", groups = {UserValidationGroups.modify.class})
+    String checkPassword;
 
     Timestamp accountCreatedDate;
 
@@ -35,9 +33,9 @@ public class UserRequestDto {
         return User.builder()
                 .account(userRequestDto.getAccount())
                 .password(userRequestDto.getPassword())
-                .phone(userRequestDto.getPhone())
-                .name(userRequestDto.getName())
-                .accountCreatedDate(new Timestamp(System.currentTimeMillis()))
+                //  .phone(userRequestDto.getPhone())
+                //  .name(userRequestDto.getName())
+                .createdAt(new Timestamp(System.currentTimeMillis()))
                 .build();
     }
 }

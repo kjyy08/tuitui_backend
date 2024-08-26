@@ -15,6 +15,8 @@ import java.time.LocalDate;
 public class ProfileResponseDto {
     Integer profileId;
     Integer userId;
+    String name;
+    String phone;
     String nickname;
     String describeSelf;
     String gender;
@@ -25,8 +27,10 @@ public class ProfileResponseDto {
         ProfileResponseDtoBuilder builder = ProfileResponseDto.builder()
                 .profileId(profile.getProfileId())
                 .userId(profile.getUser().getUserId())
+                .name(profile.getName())
+                .phone(profile.getPhone())
                 .nickname(profile.getNickname())
-                .gender(profile.getGender())
+                .gender(profile.getGender().toString())
                 .describeSelf(profile.getDescribeSelf())
                 .birth(profile.getBirth())
                 .profileImgPath(profile.getProfileImgPath());

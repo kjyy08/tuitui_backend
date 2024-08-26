@@ -15,27 +15,28 @@ public class TimeCapsuleRequestDto {
     String content;
     String location;
     Integer remindDate;
+    Timestamp writeAt;
+    Timestamp updateAt;
 
-    //  캡슐 생성에 사용
     public static TimeCapsule toEntity(TimeCapsuleRequestDto timeCapsuleRequestDto, Profile profile) {
-        return TimeCapsule.builder()
+        TimeCapsule.TimeCapsuleBuilder builder = TimeCapsule.builder()
                 .profile(profile)
-                .writeAt(new Timestamp(System.currentTimeMillis()))
-                .updateAt(new Timestamp(System.currentTimeMillis()))
                 .content(timeCapsuleRequestDto.getContent())
                 .location(timeCapsuleRequestDto.getLocation())
-                .remindDate(timeCapsuleRequestDto.getRemindDate())
-                .build();
-    }
+                .remindDate(timeCapsuleRequestDto.getRemindDate());
 
-    //  캡슐 업데이트에 사용
-    public static TimeCapsule toEntity(TimeCapsuleRequestDto timeCapsuleRequestDto, Profile profile, Timestamp updateAt) {
-        return TimeCapsule.builder()
-                .profile(profile)
-                .updateAt(updateAt)
-                .content(timeCapsuleRequestDto.getContent())
-                .location(timeCapsuleRequestDto.getLocation())
-                .remindDate(timeCapsuleRequestDto.getRemindDate())
-                .build();
+        if (timeCapsuleRequestDto.getWriteAt() == null){
+            builder.writeAt(new Timestamp(System.currentTimeMillis()));
+        } else {
+            builder.writeAt(timeCapsuleRequestDto.getWriteAt());
+        }
+
+        if (timeCapsuleRequestDto.getUpdateAt() == null){
+            builder.updateAt(new Timestamp(System.currentTimeMillis()));
+        } else {
+            builder.updateAt(timeCapsuleRequestDto.getUpdateAt());
+        }
+
+        return builder.build();
     }
 }

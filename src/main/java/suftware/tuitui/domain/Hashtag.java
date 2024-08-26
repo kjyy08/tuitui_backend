@@ -13,10 +13,10 @@ import lombok.*;
 @Table(name = "hashtag_label")
 public class Hashtag {
     @Id
-    @Column(name = "hashtag_id")
+    @Column(name = "hashtag_id", nullable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer hashtagId;
 
-    @Column(name = "hashtag", unique = true, length = 45)
+    @Column(name = "hashtag", length = 100)
     String tag;
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface TimeCapsuleRepository extends JpaRepository<TimeCapsule, Integer> {
-    public List<TimeCapsule> findByProfile_ProfileId(Integer id);
-    public List<TimeCapsule> findByProfile_Nickname(String nickname);
+    List<TimeCapsule> findByProfile_ProfileId(Integer id);
+    List<TimeCapsule> findByProfile_Nickname(String nickname);
 
 }

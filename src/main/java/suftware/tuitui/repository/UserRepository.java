@@ -8,12 +8,10 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
-    public Optional<User> findByAccount(String account);
+    Optional<User> findByAccount(String account);
 
-    public Optional<User> findByAccountAndPassword(String account, String password);
-    public boolean existsByAccount(String account);
+    boolean existsByAccount(String account);
 
-    public boolean existsByAccountAndPassword(String account, String password);
 
-    public void deleteByAccount(String account);
+    void deleteByAccount(String account);
 }

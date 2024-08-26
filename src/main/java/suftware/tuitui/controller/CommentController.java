@@ -10,6 +10,9 @@ import suftware.tuitui.common.enumType.MsgCode;
 import suftware.tuitui.dto.request.CommentRequestDto;
 import suftware.tuitui.dto.response.CommentResponseDto;
 import suftware.tuitui.service.CommentService;
+import suftware.tuitui.service.CommentLikeService;
+
+
 
 import java.util.List;
 import java.util.Optional;
@@ -78,4 +81,5 @@ public class CommentController {
                 .message(MsgCode.COMMENT_DELETE_SUCCESS.getMsg())
                 .build());
     }
+
 }

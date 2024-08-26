@@ -10,11 +10,11 @@ import java.util.Optional;
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Integer> {
     //  이미지 이름 기준 조회
-    public Optional<Image> findByImageName(String name);
+    Optional<Image> findByImageName(String name);
     //  이미지 이름에 해당하는 이미지가 있는지 확인
-    public boolean existsByImageName(String name);
+    boolean existsByImageName(String name);
     //  timeCapsule id에 일치하는 이미지 리스트로 반환
-    public List<Image> findByTimeCapsule_TimeCapsuleId(Integer id);
+    List<Image> findByTimeCapsule_TimeCapsuleId(Integer id);
 
 
 }

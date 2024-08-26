@@ -4,22 +4,35 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import suftware.tuitui.common.exception.CustomException;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.enumType.MsgCode;
+import suftware.tuitui.common.valid.UserValidationGroups;
 import suftware.tuitui.dto.request.UserRequestDto;
 import suftware.tuitui.dto.response.*;
 import suftware.tuitui.service.UserService;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/")
 public class UserController {
     private final UserService userService;
+
+    private HashMap<String, String> getValidatorResult(BindingResult bindingResult) {
+        HashMap<String, String> validatorResult = new HashMap<>();
+
+        for (FieldError fieldError : bindingResult.getFieldErrors()) {
+            validatorResult.put(fieldError.getField(), fieldError.getDefaultMessage());
+        }
+
+        return validatorResult;
+    }
 
     //  전체 유저 조회
     @GetMapping(value = "users")
@@ -46,8 +59,13 @@ public class UserController {
     }
 
     //  유저 생성
-    @PostMapping(value = "users")
-    public ResponseEntity<Message> createUser(@RequestBody @Valid UserRequestDto userRequestDto, Errors errors) {
+    @PostMapping(value = "signup")
+    public ResponseEntity<Message> createUser(@RequestBody @Validated({UserValidationGroups.modify.class, UserValidationGroups.request.class}) UserRequestDto userRequestDto,
+                                              BindingResult bindingResult) {
+        if (bindingResult.hasErrors()){
+            throw new CustomException(MsgCode.USER_SIGNUP_FAIL, getValidatorResult(bindingResult));
+        }
+
         Optional<UserResponseDto> userResponseDto = userService.save(userRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
@@ -58,9 +76,15 @@ public class UserController {
     }
 
     //  유저 업데이트
-    @PutMapping(value = "users")
-    public ResponseEntity<Message> updateUser(@RequestBody UserRequestDto userRequestDto) {
-        Optional<UserResponseDto> userResponseDto = userService.updateUser(userRequestDto);
+    @PutMapping(value = "users/{userId}")
+    public ResponseEntity<Message> updateUser(@PathVariable("userId") Integer id,
+                                              @RequestBody @Validated(UserValidationGroups.request.class) UserRequestDto userRequestDto,
+                                              BindingResult bindingResult) {
+        if (bindingResult.hasErrors()){
+            throw new CustomException(MsgCode.USER_NOT_VALID, getValidatorResult(bindingResult));
+        }
+
+        Optional<UserResponseDto> userResponseDto = userService.updateUser(id, userRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
@@ -71,7 +95,8 @@ public class UserController {
 
     //  유저 삭제
     @DeleteMapping(value = "users")
-    public ResponseEntity<Message> deleteUser(@RequestBody UserRequestDto userRequestDto){
+    public ResponseEntity<Message> deleteUser(@RequestBody @Validated(UserValidationGroups.modify.class) UserRequestDto userRequestDto,
+                                              BindingResult bindingResult){
         userService.deleteUser(userRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
@@ -81,14 +106,16 @@ public class UserController {
     }
 
     //  유저 로그인
-    @PostMapping(value = "login")
-    public ResponseEntity<Message> loginUser(@RequestBody UserRequestDto userRequestDto) {
-        Optional<UserResponseDto> userResponseDto = userService.login(userRequestDto);
+    //  @PostMapping(value = "login")
+    //  public String loginUser(@RequestBody @Valid UserRequestDto userRequestDto, BindingResult bindingResult) {
+    //      //Optional<UserResponseDto> userResponseDto = userService.login(userRequestDto);
+    //
+    //      return "ok";
+    //      //  return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+    //      //          .status(HttpStatus.OK)
+    //      //          //.message(MsgCode.USER_LOGIN_SUCCESS.getMsg())
+    //      //          //.data(userResponseDto)
+    //      //          .build());
+    //  }
 
-        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
-                .status(HttpStatus.OK)
-                .message(MsgCode.USER_LOGIN_SUCCESS.getMsg())
-                .data(userResponseDto)
-                .build());
-    }
 }

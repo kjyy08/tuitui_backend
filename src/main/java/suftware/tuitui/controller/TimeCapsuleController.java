@@ -93,40 +93,6 @@ public class TimeCapsuleController {
                 .build());
     }
 
-    //  캡슐 저장, 이미지 포함, 테스트해보고 괜찮으면 url 수정
-    @PostMapping(value = "capsules/with-image", consumes = "multipart/form-data")
-    public ResponseEntity<Message> createCapsuleMultipartImage(@RequestPart(name = "request") TimeCapsuleRequestDto timeCapsuleRequestDto,
-                                                               @RequestPart(name = "file", required = false ) List<MultipartFile> files) throws IOException {
-        // TimeCapsule 저장 부분
-        TimeCapsuleResponseDto timeCapsuleResponseDto = timeCapsuleService.save(timeCapsuleRequestDto)
-                .orElseThrow(() -> new CustomException(MsgCode.CAPSULE_CREATE_FAIL));
-
-        // imageUpload 부분
-        List<ImageResponseDto> imageResponseDtoList = new ArrayList<>();
-        if(files != null && !files.isEmpty()){
-            for(MultipartFile file: files){
-                imageResponseDtoList.add(imageService.uploadImage("image_image", timeCapsuleResponseDto.getCapsuleId(), file)
-                        .orElseThrow(() -> new CustomException(MsgCode.IMAGES_CREATE_FAIL)));
-            }
-
-            timeCapsuleResponseDto.setImageList(imageResponseDtoList);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
-                    .status(HttpStatus.CREATED)
-                    .message(MsgCode.CAPSULE_CREATE_SUCCESS.getMsg())
-                    .data(timeCapsuleResponseDto)
-                    .build());
-        }
-        //  파일이 비어있는 상태
-        else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    Message.builder()
-                            .status(HttpStatus.BAD_REQUEST)
-                            .message(MsgCode.CAPSULE_CREATE_FAIL.getMsg())
-                            .build());
-        }
-    }
-
     //  캡슐 수정
     @PutMapping(value = "capsules/{capsuleId}")
     public ResponseEntity<Message> updateCapsule(@PathVariable(name = "capsuleId") Integer id, @RequestBody TimeCapsuleRequestDto timeCapsuleRequestDto) {

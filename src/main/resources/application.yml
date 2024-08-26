@@ -1,5 +1,9 @@
 # JPA
 spring:
+  jwt:
+    secret-key: ${JWT_SECRET_KEY}
+    access-expires-in: 3600000
+    refresh-expires-in: 2592000000
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${SPRING_SQL_URL}
@@ -7,7 +11,6 @@ spring:
     password: ${SPRING_SQL_PASSWORD}
   jpa:
     database: mysql
-    database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true
     hibernate:
       ddl-auto: update
