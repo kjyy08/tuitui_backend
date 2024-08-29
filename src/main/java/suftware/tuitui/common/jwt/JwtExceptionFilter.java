@@ -27,7 +27,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         String accessToken = request.getHeader("Authorization");
         JwtMsgCode errorCode = null;
 
-        if (accessToken == null){
+        if (accessToken == null || accessToken.isEmpty()){
             errorCode = JwtMsgCode.EMPTY;
         }
         else if (!accessToken.startsWith("Bearer ")){
@@ -57,7 +57,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String[] excludePath = {"/api/login", "/api/signup", "/api/reissue"};
+        String[] excludePath = {"/api/login", "/api/signup", "/api/token"};
         String path = request.getRequestURI();
         return Arrays.stream(excludePath).anyMatch(path::startsWith);
     }

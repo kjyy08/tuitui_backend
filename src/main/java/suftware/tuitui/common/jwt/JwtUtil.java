@@ -35,6 +35,15 @@ public class JwtUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("account", String.class);
     }
 
+    //  payload에 저장된 토큰의 남은 시간 초 단위로 반환
+    public Long getExpiresIn(String token){
+        long expiresIn = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().getTime();
+
+        expiresIn = expiresIn - System.currentTimeMillis();
+
+        return expiresIn / 1000;
+    }
+
     //  token, secretKey를 이용하여 검증 후 현재 시간과 비교하여 token 소멸 여부 확인
     public Boolean isExpired(String token){
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
@@ -63,14 +72,14 @@ public class JwtUtil {
 
     //  토큰 생성
     public String createJwt(String type, String account){
-        Long expiredTime = 0L;
+        Long expiration = 0L;
 
         switch (type){
             case "access":
-                expiredTime = accessTokenExpiresIn;
+                expiration = accessTokenExpiresIn;
                 break;
             case "refresh":
-                expiredTime = refreshTokenExpiresIn;
+                expiration = refreshTokenExpiresIn;
                 break;
         }
 
@@ -82,9 +91,10 @@ public class JwtUtil {
                 //  토큰의 발행 시간
                 .issuedAt(new Date(System.currentTimeMillis()))
                 //  토큰의 소멸 시간
-                .expiration(new Date(System.currentTimeMillis() + expiredTime))
+                .expiration(new Date(System.currentTimeMillis() + expiration))
                 //  jwt 시그니처에 secretKey 설정
                 .signWith(secretKey)
                 .compact();
     }
+
 }

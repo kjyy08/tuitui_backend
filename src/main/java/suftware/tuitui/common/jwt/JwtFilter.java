@@ -65,8 +65,6 @@ public class JwtFilter extends OncePerRequestFilter {
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(new ObjectMapper().writeValueAsString(message));
-
-            filterChain.doFilter(request, response);
             return;
         }
 
@@ -82,7 +80,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String[] excludePath = {"/api/login", "/api/signup", "/api/reissue"};
+        String[] excludePath = {"/api/login", "/api/signup", "/api/token"};
         String path = request.getRequestURI();
         return Arrays.stream(excludePath).anyMatch(path::startsWith);
     }

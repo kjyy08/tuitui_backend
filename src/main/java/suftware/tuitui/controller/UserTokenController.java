@@ -1,13 +1,9 @@
 package suftware.tuitui.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.service.UserTokenService;
 
@@ -19,9 +15,9 @@ public class UserTokenController {
     private final UserTokenService userTokenService;
 
     //  jwt 토큰 재발급
-    @PostMapping(value = "reissue")
-    public ResponseEntity<Message> reissue(HttpServletRequest request, HttpServletResponse response){
-        Message message = userTokenService.reissueToken(request, response);
+    @PostMapping(value = "token")
+    public ResponseEntity<Message> token(@RequestParam(name = "refreshToken") String refreshToken){
+        Message message = userTokenService.getToken(refreshToken);
 
         return ResponseEntity.status(message.getStatus()).body(message);
 
