@@ -56,10 +56,6 @@ public class UserService {
             throw new CustomException(MsgCode.USER_EXIST);
         }
 
-        if (!userRequestDto.getPassword().equals(userRequestDto.getCheckPassword())){
-            throw new CustomException(MsgCode.USER_BAD_REQUEST);
-        }
-
         User user = UserRequestDto.toEntity(userRequestDto);
 
         //  비밀번호 암호화
@@ -99,18 +95,12 @@ public class UserService {
         User user = userRepository.findByAccount(userRequestDto.getAccount())
                 .orElseThrow(() -> new CustomException(MsgCode.USER_NOT_FOUND));
 
-        //  재확인 비밀번호가 일치하는지 확인
-        if (!userRequestDto.getPassword().equals(userRequestDto.getCheckPassword())) {
+        //  복호화시킨 비밀번호와 일치하는지 확인
+        if (!passwordEncoder.matches(userRequestDto.getPassword(), user.getPassword())) {
             throw new CustomException(MsgCode.USER_BAD_REQUEST);
         }
-        else {
-            //  복호화시킨 비밀번호와 일치하는지 확인
-            if (!passwordEncoder.matches(userRequestDto.getPassword(), user.getPassword())) {
-                throw new CustomException(MsgCode.USER_BAD_REQUEST);
-            }
 
-            userRepository.deleteByAccount(userRequestDto.getAccount());
-        }
+        userRepository.deleteByAccount(userRequestDto.getAccount());
     }
 
     public boolean existsByAccount(String account){

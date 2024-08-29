@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.util.MimeTypeUtils;
 import suftware.tuitui.common.enumType.MsgCode;
 import suftware.tuitui.common.http.Message;
+import suftware.tuitui.common.jwt.JwtResponseDto;
 import suftware.tuitui.common.jwt.JwtUtil;
 import suftware.tuitui.domain.UserToken;
 import suftware.tuitui.dto.response.CustomUserDetails;
@@ -118,14 +119,19 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         userTokenRepository.save(userToken);
 
+        JwtResponseDto jwtResponseDto = JwtResponseDto.toDto("Bearer", access, jwtUtil.getExpiresIn(access), refresh, jwtUtil.getExpiresIn(refresh));
+
         Message message = Message.builder()
                 .status(HttpStatus.OK)
                 .code(MsgCode.USER_LOGOUT_SUCCESS.getCode())
                 .message(MsgCode.USER_LOGIN_SUCCESS.getMsg())
+                .data(jwtResponseDto)
                 .build();
 
-        response.addHeader("Authorization", "Bearer " + access);
-        response.addCookie(createCookie("refresh", refresh));
+        //  24.08.27
+        //  토큰 응답 body로 옮김
+        //  response.addHeader("Authorization", "Bearer " + access);
+        //  response.addCookie(createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");

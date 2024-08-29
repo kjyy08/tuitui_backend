@@ -38,23 +38,19 @@ public class CustomLogoutFilter extends GenericFilter {
             return;
         }
 
-        String refresh = null;
-        JwtMsgCode errorCode = JwtMsgCode.OK;
-
-        //  refresh 토큰을 쿠키에서 가져옴
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("refresh")) {
-                refresh = cookie.getValue();
-            }
-        }
+        String access = request.getHeader("Authorization");
+        JwtMsgCode errorCode;
 
         //  refresh 토큰 검증
-        if (refresh == null) {
+        if (access == null || access.isEmpty()) {
             errorCode = JwtMsgCode.EMPTY;
         }
+        else if (!access.startsWith("Bearer ")){
+            errorCode = JwtMsgCode.UNSUPPORTED;
+        }
         else{
-            errorCode = jwtUtil.validateToken(refresh);
+            access = access.split(" ")[1];
+            errorCode = jwtUtil.validateToken(access);
         }
 
         //  refresh 토큰 검증 실패
@@ -70,11 +66,11 @@ public class CustomLogoutFilter extends GenericFilter {
             return;
         }
 
-        // 토큰이 refresh인지 확인 (발급시 페이로드에 명시)
-        String tokenType = jwtUtil.getTokenType(refresh);
+        // 토큰이 access인지 확인 (발급시 페이로드에 명시)
+        String tokenType = jwtUtil.getTokenType(access);
 
-        //  쿠키에 담긴 값이 refresh가 아님
-        if (!tokenType.equals("refresh")) {
+        //  쿠키에 담긴 값이 access가 아니면 잘못된 요청
+        if (!tokenType.equals("access")) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
@@ -86,14 +82,16 @@ public class CustomLogoutFilter extends GenericFilter {
             return;
         }
 
+        String account = jwtUtil.getAccount(access);
+
         //DB에 저장되어 있는지 확인
-        if (!userTokenRepository.existsByRefresh(refresh)) {
+        if (!userTokenRepository.existsByAccount(account)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(new ObjectMapper().writeValueAsString(Message.builder()
                         .status(HttpStatus.BAD_REQUEST)
-                        .code(JwtMsgCode.INVALID.getCode())
+                        .code(JwtMsgCode.EXPIRED.getCode())
                         .message(MsgCode.USER_LOGOUT_FAIL.getMsg())
                         .build()));
             return;
@@ -101,14 +99,8 @@ public class CustomLogoutFilter extends GenericFilter {
 
         //로그아웃 진행
         //Refresh 토큰 DB에서 제거
-        userTokenRepository.deleteByRefresh(refresh);
+        userTokenRepository.deleteByAccount(account);
 
-        //Refresh 토큰 Cookie 값 0
-        Cookie cookie = new Cookie("refresh", null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-
-        response.addCookie(cookie);
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");

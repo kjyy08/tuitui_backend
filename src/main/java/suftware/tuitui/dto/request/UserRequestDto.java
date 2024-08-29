@@ -24,9 +24,6 @@ public class UserRequestDto {
     @NotEmpty(message = "비밀번호는 필수 입력 값입니다.", groups = UserValidationGroups.modify.class)
     String password;
 
-    @NotEmpty(message = "비밀번호 확인을 위해 필수로 입력해주세요.", groups = {UserValidationGroups.modify.class})
-    String checkPassword;
-
     Timestamp accountCreatedDate;
 
     public static User toEntity(UserRequestDto userRequestDto){

@@ -40,7 +40,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 new AntPathRequestMatcher("/api/login"),
                                 new AntPathRequestMatcher("/api/signup"),
-                                new AntPathRequestMatcher("/api/reissue")).permitAll()
+                                new AntPathRequestMatcher("/api/token")).permitAll()
                         .anyRequest().authenticated())
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, userTokenRepository), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, userTokenRepository), LogoutFilter.class)
