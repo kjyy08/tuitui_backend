@@ -61,6 +61,7 @@ public enum MsgCode {
     CAPSULE_LIKE_EXIST(HttpStatus.BAD_REQUEST, "CAPSULE-002", "좋아요가 이미 존재함"),
     COMMENT_LIKE_EXIST(HttpStatus.BAD_REQUEST, "COMMENT-002", "좋아요가 이미 존재함"),
     FOLLOWS_EXIST(HttpStatus.BAD_REQUEST, "FOLLOW-001", "이미 팔로우 중인 유저"),
+    IMAGE_CREATE_FAIL(HttpStatus.BAD_REQUEST, "IMAGE-001", "이미지 생성 실패"),
 
     // 404 Not Found responses
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER-001", "유저를 찾을 수 없음"),

@@ -32,7 +32,7 @@ public class ImageController {
     private final ImageService imageService;
     private static final Logger logger = LoggerFactory.getLogger(ImageController.class);
 
-    //  이미지 업로드, 이미지 추가로 업로드 할때 사용할듯
+    //  이미지 업로드, 이미지 추가로 업로드 할때 사용할듯 혹은 수정?
     //  Parameters: {request: ImageRequestDto(Json 'timeCapsuleId')}, {file: 이미지}, {directory: S3 폴더 이름}
     @PostMapping(value = "/upload", consumes = "multipart/form-data")
     public Optional<ImageResponseDto> uploadImage(@RequestPart(name = "request") ImageRequestDto imageRequestDto,
