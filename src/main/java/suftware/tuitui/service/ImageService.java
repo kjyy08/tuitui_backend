@@ -67,12 +67,12 @@ public class ImageService {
 
     //  uploadImages: S3에 이미지를 저장하고 반환된 URL을 DB에 저장
     //  Parameters: {path: S3 폴더 이름}, {ImageRequestDto: TimeCapsule_id}, {file: 이미지}
-    public Optional<ImageResponseDto> uploadImage(String path, ImageRequestDto imageRequestDto,MultipartFile file) throws IOException {
-        logger.info("ImageService.uploadImages ---------- Starting the image upload process. Path: {}, TimeCapsule ID: {}", path, imageRequestDto.getTimeCapsuleId());
+    public Optional<ImageResponseDto> uploadImage(String path, Integer capsuleId,MultipartFile file) throws IOException {
+        logger.info("ImageService.uploadImages ---------- Starting the image upload process. Path: {}, TimeCapsule ID: {}", path, capsuleId);
         String url;     // 반환된 URL을 저장할 변수
 
         // TimeCapsule 조회
-        TimeCapsule timeCapsule = timeCapsuleRepository.findById(imageRequestDto.getTimeCapsuleId())
+        TimeCapsule timeCapsule = timeCapsuleRepository.findById(capsuleId)
                 .orElseThrow(() -> new NoSuchElementException("TimeCapsule Not Found"));
         logger.info("ImageService.uploadImages ---------- Successfully retrieved TimeCapsule ID: {}", timeCapsule.getTimeCapsuleId());
 
@@ -131,6 +131,8 @@ public class ImageService {
         imageRepository.delete(image);
         logger.info("ImageService.deleteImage ---------- The target image has been deleted.");
     }
+    
+    // 프로필 이미지 변경
 
 
 }

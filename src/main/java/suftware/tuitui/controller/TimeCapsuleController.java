@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import suftware.tuitui.common.exception.CustomException;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.enumType.MsgCode;
+import suftware.tuitui.domain.TimeCapsule;
 import suftware.tuitui.dto.request.ImageRequestDto;
 import suftware.tuitui.dto.request.TimeCapsuleRequestDto;
 import suftware.tuitui.dto.response.ImageResponseDto;
@@ -81,6 +82,42 @@ public class TimeCapsuleController {
                 .build());
     }
 
+    // 캡슐 저장 이미지 포함
+    // 이거 왜 어디갔어
+    @PostMapping(value = "capsules/with-image", consumes = "multipart/form-data")
+    public ResponseEntity<Message> createCapsuleImage(@RequestPart(name = "request") TimeCapsuleRequestDto timeCapsuleRequestDto,
+                                                      @RequestPart(name = "file", required = false) List<MultipartFile> files) throws IOException{
+
+        // TimeCapsule 저장
+        TimeCapsuleResponseDto timeCapsuleResponseDto = timeCapsuleService.save(timeCapsuleRequestDto)
+                .orElseThrow(() -> new CustomException(MsgCode.CAPSULE_CREATE_FAIL));
+
+        // Image 저장
+        List<ImageResponseDto> imageResponseDtoList = new ArrayList<>();
+        if(files != null && !files.isEmpty()){
+            for(MultipartFile file: files){
+                imageResponseDtoList.add(imageService.uploadImage("image_image", timeCapsuleResponseDto.getCapsuleId(), file)
+                        .orElseThrow(() -> new CustomException(MsgCode.IMAGE_CREATE_FAIL)));
+            }
+
+            timeCapsuleResponseDto.setImageList(imageResponseDtoList);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
+                    .status(HttpStatus.CREATED)
+                    .message(MsgCode.CAPSULE_CREATE_SUCCESS.getMsg())
+                    .data(timeCapsuleResponseDto)
+                    .build());
+        }
+
+        else{
+            return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+                    .status(HttpStatus.OK)
+                    .message(MsgCode.CAPSULE_CREATE_FAIL.getMsg())
+                    .build());
+        }
+
+    }
+    
     //  캡슐 저장
     @PostMapping(value = "capsules/without-image")
     public ResponseEntity<Message> createCapsuleJson(@RequestBody TimeCapsuleRequestDto timeCapsuleRequestDto) {
