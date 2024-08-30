@@ -113,6 +113,7 @@ public class TimeCapsuleController {
             return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                     .status(HttpStatus.OK)
                     .message(MsgCode.CAPSULE_CREATE_FAIL.getMsg())
+                    .code(MsgCode.CAPSULE_CREATE_FAIL.getCode())
                     .build());
         }
 

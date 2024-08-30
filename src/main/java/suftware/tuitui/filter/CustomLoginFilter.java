@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.stream.Collectors;
 
-public class LoginFilter extends UsernamePasswordAuthenticationFilter {
+public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final UserTokenRepository userTokenRepository;
@@ -41,7 +41,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         private String password;
     }
 
-    public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserTokenRepository userTokenRepository){
+    public CustomLoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserTokenRepository userTokenRepository){
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.userTokenRepository = userTokenRepository;
