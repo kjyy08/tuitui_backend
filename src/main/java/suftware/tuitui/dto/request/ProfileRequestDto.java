@@ -55,6 +55,8 @@ public class ProfileRequestDto {
         // gender 값이 null이면 OTHER로 저장
         if (profileRequestDto.getGender() == null) {
             builder.gender(Gender.OTHER);
+        } else {
+            builder.gender(Gender.valueOf(profileRequestDto.getGender()));
         }
 
         // birth 값이 null이 아닌 경우에만 저장

@@ -6,12 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import suftware.tuitui.common.http.Message;
-import suftware.tuitui.common.enumType.MsgCode;
+import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.dto.request.CommentRequestDto;
 import suftware.tuitui.dto.response.CommentResponseDto;
 import suftware.tuitui.service.CommentService;
-import suftware.tuitui.service.CommentLikeService;
-
 
 
 import java.util.List;
@@ -30,7 +28,7 @@ public class CommentController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.COMMENT_READ_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.COMMENT_READ_SUCCESS.getMsg())
                 .data(commentResponseDtoList)
                 .build());
     }
@@ -42,7 +40,7 @@ public class CommentController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.COMMENT_READ_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.COMMENT_READ_SUCCESS.getMsg())
                 .data(commentResponseDtoList)
                 .build());
     }
@@ -54,7 +52,7 @@ public class CommentController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.COMMENT_CREATE_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.COMMENT_CREATE_SUCCESS.getMsg())
                 .data(commentResponseDto)
                 .build());
     }
@@ -66,7 +64,7 @@ public class CommentController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.COMMENT_UPDATE_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.COMMENT_UPDATE_SUCCESS.getMsg())
                 .data(commentResponseDto)
                 .build());
     }
@@ -78,7 +76,7 @@ public class CommentController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.COMMENT_DELETE_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.COMMENT_DELETE_SUCCESS.getMsg())
                 .build());
     }
 

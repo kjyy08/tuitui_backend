@@ -2,15 +2,12 @@ package suftware.tuitui.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import suftware.tuitui.common.exception.CustomException;
 import suftware.tuitui.common.http.Message;
-import suftware.tuitui.common.enumType.MsgCode;
-import suftware.tuitui.domain.TimeCapsule;
-import suftware.tuitui.dto.request.ImageRequestDto;
+import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.dto.request.TimeCapsuleRequestDto;
 import suftware.tuitui.dto.response.ImageResponseDto;
 import suftware.tuitui.dto.response.TimeCapsuleResponseDto;
@@ -41,7 +38,7 @@ public class TimeCapsuleController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.CAPSULE_READ_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getMsg())
                 .data(timeCapsuleResponseDtoList)
                 .build());
     }
@@ -53,7 +50,7 @@ public class TimeCapsuleController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.CAPSULE_READ_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getMsg())
                 .data(timeCapsuleResponseDto)
                 .build());
     }
@@ -65,7 +62,7 @@ public class TimeCapsuleController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.CAPSULE_READ_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getMsg())
                 .data(timeCapsuleResponseDtoList)
                 .build());
     }
@@ -77,7 +74,7 @@ public class TimeCapsuleController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.CAPSULE_READ_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getMsg())
                 .data(timeCapsuleResponseDtoList)
                 .build());
     }
@@ -90,21 +87,21 @@ public class TimeCapsuleController {
 
         // TimeCapsule 저장
         TimeCapsuleResponseDto timeCapsuleResponseDto = timeCapsuleService.save(timeCapsuleRequestDto)
-                .orElseThrow(() -> new CustomException(MsgCode.CAPSULE_CREATE_FAIL));
+                .orElseThrow(() -> new CustomException(TuiTuiMsgCode.CAPSULE_CREATE_FAIL));
 
         // Image 저장
         List<ImageResponseDto> imageResponseDtoList = new ArrayList<>();
         if(files != null && !files.isEmpty()){
             for(MultipartFile file: files){
                 imageResponseDtoList.add(imageService.uploadImage("image_image", timeCapsuleResponseDto.getCapsuleId(), file)
-                        .orElseThrow(() -> new CustomException(MsgCode.IMAGE_CREATE_FAIL)));
+                        .orElseThrow(() -> new CustomException(TuiTuiMsgCode.IMAGE_CREATE_FAIL)));
             }
 
             timeCapsuleResponseDto.setImageList(imageResponseDtoList);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
                     .status(HttpStatus.CREATED)
-                    .message(MsgCode.CAPSULE_CREATE_SUCCESS.getMsg())
+                    .message(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS.getMsg())
                     .data(timeCapsuleResponseDto)
                     .build());
         }
@@ -112,8 +109,8 @@ public class TimeCapsuleController {
         else{
             return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                     .status(HttpStatus.OK)
-                    .message(MsgCode.CAPSULE_CREATE_FAIL.getMsg())
-                    .code(MsgCode.CAPSULE_CREATE_FAIL.getCode())
+                    .message(TuiTuiMsgCode.CAPSULE_CREATE_FAIL.getMsg())
+                    .code(TuiTuiMsgCode.CAPSULE_CREATE_FAIL.getCode())
                     .build());
         }
 
@@ -126,7 +123,7 @@ public class TimeCapsuleController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
                 .status(HttpStatus.CREATED)
-                .message(MsgCode.CAPSULE_CREATE_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS.getMsg())
                 .data(timeCapsuleResponseDto)
                 .build());
     }
@@ -138,7 +135,7 @@ public class TimeCapsuleController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.CAPSULE_UPDATE_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.CAPSULE_UPDATE_SUCCESS.getMsg())
                 .data(timeCapsuleResponseDto)
                 .build());
     }
@@ -150,7 +147,7 @@ public class TimeCapsuleController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.CAPSULE_DELETE_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.CAPSULE_DELETE_SUCCESS.getMsg())
                 .build());
     }
 
@@ -168,12 +165,12 @@ public class TimeCapsuleController {
         }
 
         if (timeCapsuleResponseDtoList.isEmpty()){
-            throw new CustomException(MsgCode.CAPSULE_NOT_FOUND);
+            throw new CustomException(TuiTuiMsgCode.CAPSULE_NOT_FOUND);
         }
         else {
             return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                     .status(HttpStatus.OK)
-                    .message(MsgCode.CAPSULE_READ_SUCCESS.getMsg())
+                    .message(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getMsg())
                     .data(timeCapsuleResponseDtoList)
                     .build());
         }

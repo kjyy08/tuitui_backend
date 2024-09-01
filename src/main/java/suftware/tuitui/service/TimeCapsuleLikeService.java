@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import suftware.tuitui.common.exception.CustomException;
-import suftware.tuitui.common.enumType.MsgCode;
+import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.domain.Profile;
 import suftware.tuitui.domain.TimeCapsule;
 import suftware.tuitui.domain.TimeCapsuleLike;
@@ -41,16 +41,16 @@ public class TimeCapsuleLikeService {
     //  캡슐 좋아요 저장
     public Optional<TimeCapsuleLikeResponseDto> saveCapsuleLike(TimeCapsuleLikeRequestDto timeCapsuleLikeRequestDto){
         Profile profile = profileRepository.findById(timeCapsuleLikeRequestDto.getProfileId())
-                .orElseThrow(() -> new CustomException(MsgCode.PROFILE_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
         TimeCapsule timeCapsule = timeCapsuleRepository.findById(timeCapsuleLikeRequestDto.getTimeCapsuleId())
-                .orElseThrow(() -> new CustomException(MsgCode.CAPSULE_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(TuiTuiMsgCode.CAPSULE_NOT_FOUND));
 
         if (!timeCapsuleLikeRepository.existsByProfile_ProfileIdAndTimeCapsule_TimeCapsuleId(profile.getProfileId(), timeCapsule.getTimeCapsuleId())){
             TimeCapsuleLike timeCapsuleLike = timeCapsuleLikeRepository.save(TimeCapsuleLikeRequestDto.toEntity(timeCapsule, profile));
             return Optional.of(TimeCapsuleLikeResponseDto.toDto(timeCapsuleLike));
         }
         else {
-            throw new CustomException(MsgCode.CAPSULE_LIKE_EXIST);
+            throw new CustomException(TuiTuiMsgCode.CAPSULE_LIKE_EXIST);
         }
     }
 
@@ -58,7 +58,7 @@ public class TimeCapsuleLikeService {
     @Transactional
     public void deleteCapsuleLike(Integer id) {
         if (!timeCapsuleLikeRepository.existsById(id.longValue())) {
-            throw new CustomException(MsgCode.CAPSULE_LIKE_NOT_FOUND);
+            throw new CustomException(TuiTuiMsgCode.CAPSULE_LIKE_NOT_FOUND);
         }
 
         timeCapsuleLikeRepository.deleteById(id.longValue());

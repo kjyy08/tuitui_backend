@@ -16,7 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.MimeTypeUtils;
-import suftware.tuitui.common.enumType.MsgCode;
+import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.jwt.JwtResponseDto;
 import suftware.tuitui.common.jwt.JwtUtil;
@@ -111,8 +111,8 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(new ObjectMapper().writeValueAsString(Message.builder()
                     .status(HttpStatus.BAD_REQUEST)
-                    .message(MsgCode.USER_LOGIN_FAIL_EXIST.getMsg())
-                    .code(MsgCode.USER_LOGIN_FAIL_EXIST.getCode())
+                    .message(TuiTuiMsgCode.USER_LOGIN_FAIL_EXIST.getMsg())
+                    .code(TuiTuiMsgCode.USER_LOGIN_FAIL_EXIST.getCode())
                     .build()));
             return;
         }
@@ -123,8 +123,8 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
 
         Message message = Message.builder()
                 .status(HttpStatus.OK)
-                .code(MsgCode.USER_LOGOUT_SUCCESS.getCode())
-                .message(MsgCode.USER_LOGIN_SUCCESS.getMsg())
+                .code(TuiTuiMsgCode.USER_LOGOUT_SUCCESS.getCode())
+                .message(TuiTuiMsgCode.USER_LOGIN_SUCCESS.getMsg())
                 .data(jwtResponseDto)
                 .build();
 
@@ -146,8 +146,8 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setCharacterEncoding("UTF-8");
         response.getWriter().print(new ObjectMapper().writeValueAsString(Message.builder()
                 .status(HttpStatus.BAD_REQUEST)
-                .message(MsgCode.USER_LOGIN_FAIL.getMsg())
-                .code(MsgCode.USER_LOGIN_FAIL.getCode())
+                .message(TuiTuiMsgCode.USER_LOGIN_FAIL.getMsg())
+                .code(TuiTuiMsgCode.USER_LOGIN_FAIL.getCode())
                 .build()));
     }
 

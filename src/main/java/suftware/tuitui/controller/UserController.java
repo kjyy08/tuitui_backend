@@ -1,6 +1,5 @@
 package suftware.tuitui.controller;
 
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,9 +7,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import suftware.tuitui.common.exception.CustomException;
 import suftware.tuitui.common.http.Message;
-import suftware.tuitui.common.enumType.MsgCode;
+import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.common.valid.UserValidationGroups;
 import suftware.tuitui.dto.request.UserRequestDto;
 import suftware.tuitui.dto.response.*;
@@ -41,7 +39,7 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.USER_READ_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.USER_READ_SUCCESS.getMsg())
                 .data(userResponseDtoList)
                 .build());
     }
@@ -53,45 +51,45 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.USER_READ_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.USER_READ_SUCCESS.getMsg())
                 .data(userResponseDto)
                 .build());
     }
 
-    //  유저 생성
-    @PostMapping(value = "signup")
-    public ResponseEntity<Message> createUser(@RequestBody @Validated({UserValidationGroups.modify.class, UserValidationGroups.request.class}) UserRequestDto userRequestDto,
-                                              BindingResult bindingResult) {
-        if (bindingResult.hasErrors()){
-            throw new CustomException(MsgCode.USER_SIGNUP_FAIL, getValidatorResult(bindingResult));
-        }
+//    //  유저 생성
+//    @PostMapping(value = "signup")
+//    public ResponseEntity<Message> createUser(@RequestBody @Validated({UserValidationGroups.modify.class, UserValidationGroups.request.class}) UserRequestDto userRequestDto,
+//                                              BindingResult bindingResult) {
+//        if (bindingResult.hasErrors()){
+//            throw new CustomException(MsgCode.USER_SIGNUP_FAIL, getValidatorResult(bindingResult));
+//        }
+//
+//        Optional<UserResponseDto> userResponseDto = userService.save(userRequestDto);
+//
+//        return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
+//                .status(HttpStatus.CREATED)
+//                .message(MsgCode.USER_SIGNUP_SUCCESS.getMsg())
+//                .data(userResponseDto)
+//                .build());
+//    }
 
-        Optional<UserResponseDto> userResponseDto = userService.save(userRequestDto);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
-                .status(HttpStatus.CREATED)
-                .message(MsgCode.USER_SIGNUP_SUCCESS.getMsg())
-                .data(userResponseDto)
-                .build());
-    }
-
-    //  유저 업데이트
-    @PutMapping(value = "users/{userId}")
-    public ResponseEntity<Message> updateUser(@PathVariable("userId") Integer id,
-                                              @RequestBody @Validated(UserValidationGroups.request.class) UserRequestDto userRequestDto,
-                                              BindingResult bindingResult) {
-        if (bindingResult.hasErrors()){
-            throw new CustomException(MsgCode.USER_NOT_VALID, getValidatorResult(bindingResult));
-        }
-
-        Optional<UserResponseDto> userResponseDto = userService.updateUser(id, userRequestDto);
-
-        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
-                .status(HttpStatus.OK)
-                .message(MsgCode.USER_UPDATE_SUCCESS.getMsg())
-                .data(userResponseDto)
-                .build());
-    }
+//    //  유저 업데이트
+//    @PutMapping(value = "users/{userId}")
+//    public ResponseEntity<Message> updateUser(@PathVariable("userId") Integer id,
+//                                              @RequestBody @Validated(UserValidationGroups.request.class) UserRequestDto userRequestDto,
+//                                              BindingResult bindingResult) {
+//        if (bindingResult.hasErrors()){
+//            throw new CustomException(MsgCode.USER_NOT_VALID, getValidatorResult(bindingResult));
+//        }
+//
+//        Optional<UserResponseDto> userResponseDto = userService.updateUser(id, userRequestDto);
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+//                .status(HttpStatus.OK)
+//                .message(MsgCode.USER_UPDATE_SUCCESS.getMsg())
+//                .data(userResponseDto)
+//                .build());
+//    }
 
     //  유저 삭제
     @DeleteMapping(value = "users")
@@ -101,7 +99,7 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.USER_DELETE_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.USER_DELETE_SUCCESS.getMsg())
                 .build());
     }
 

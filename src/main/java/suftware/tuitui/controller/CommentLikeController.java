@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import suftware.tuitui.common.enumType.MsgCode;
+import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.dto.request.CommentLikeRequestDto;
 import suftware.tuitui.dto.response.CommentLikeResponseDto;
@@ -27,7 +27,7 @@ public class CommentLikeController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.COMMENT_LIKE_READ_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.COMMENT_LIKE_READ_SUCCESS.getMsg())
                 .data(likes)
                 .build());
     }
@@ -39,7 +39,7 @@ public class CommentLikeController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
                 .status(HttpStatus.CREATED)
-                .message(MsgCode.COMMENT_LIKE_CREATE_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.COMMENT_LIKE_CREATE_SUCCESS.getMsg())
                 .data(commentLikeResponseDto)
                 .build());
     }
@@ -51,7 +51,7 @@ public class CommentLikeController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.COMMENT_LIKE_DELETE_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.COMMENT_LIKE_DELETE_SUCCESS.getMsg())
                 .build());
     }
 }

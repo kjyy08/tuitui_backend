@@ -5,7 +5,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import suftware.tuitui.common.exception.CustomException;
-import suftware.tuitui.common.enumType.MsgCode;
+import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.domain.Comment;
 import suftware.tuitui.domain.Profile;
 import suftware.tuitui.domain.TimeCapsule;
@@ -33,7 +33,7 @@ public class CommentService {
         List<Comment> commentList =  commentRepository.findAll();
 
         if (commentList.isEmpty()){
-            throw new CustomException(MsgCode.COMMENT_NOT_FOUND);
+            throw new CustomException(TuiTuiMsgCode.COMMENT_NOT_FOUND);
         }
 
         List<CommentResponseDto> commentRequestDtoList = new ArrayList<>();
@@ -51,7 +51,7 @@ public class CommentService {
 
         //  캡슐에 댓글이 없음
         if (commentList.isEmpty()){
-            throw new CustomException(MsgCode.COMMENT_NOT_FOUND);
+            throw new CustomException(TuiTuiMsgCode.COMMENT_NOT_FOUND);
         }
 
         List<CommentResponseDto> commentRequestDtoList = new ArrayList<>();
@@ -65,16 +65,16 @@ public class CommentService {
     //  댓글 저장
     public Optional<CommentResponseDto> saveCapsuleComment(CommentRequestDto commentRequestDto) {
         Profile profile = profileRepository.findById(commentRequestDto.getProfileId())
-                .orElseThrow(() -> new CustomException(MsgCode.PROFILE_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
 
         TimeCapsule timeCapsule = timeCapsuleRepository.findById(commentRequestDto.getTimeCapsuleId())
-                .orElseThrow(() -> new CustomException(MsgCode.CAPSULE_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(TuiTuiMsgCode.CAPSULE_NOT_FOUND));
 
         Comment comment;
 
         if (!(commentRequestDto.getParentCommentId() == null)) {
             Comment childComment = commentRepository.findById(commentRequestDto.getParentCommentId())
-                    .orElseThrow(() -> new CustomException(MsgCode.COMMENT_NOT_FOUND));
+                    .orElseThrow(() -> new CustomException(TuiTuiMsgCode.COMMENT_NOT_FOUND));
 
             comment = commentRepository.save(CommentRequestDto.toEntity(commentRequestDto, childComment, profile, timeCapsule));
         } else {
@@ -88,7 +88,7 @@ public class CommentService {
     @Transactional
     public Optional<CommentResponseDto> updateCapsuleComment(Integer id, CommentRequestDto commentRequestDto) {
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new CustomException(MsgCode.COMMENT_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(TuiTuiMsgCode.COMMENT_NOT_FOUND));
 
         comment.setComment(commentRequestDto.getComment());
         comment.setUpdateAt(new Timestamp(System.currentTimeMillis()));
@@ -101,7 +101,7 @@ public class CommentService {
     @Transactional
     public void deleteCapsuleComment(Integer id){
         if (!commentRepository.existsById(id)) {
-            throw new CustomException(MsgCode.COMMENT_NOT_FOUND);
+            throw new CustomException(TuiTuiMsgCode.COMMENT_NOT_FOUND);
         }
         else {
             commentRepository.deleteById(id);

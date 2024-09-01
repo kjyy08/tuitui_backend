@@ -38,18 +38,20 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers(
-                                new AntPathRequestMatcher("/api/login"),
-                                new AntPathRequestMatcher("/api/signup"),
+                                //  new AntPathRequestMatcher("/api/login"),
+                                //  new AntPathRequestMatcher("/api/signup"),
                                 new AntPathRequestMatcher("/api/token")).permitAll()
                         .anyRequest().authenticated())
-                .addFilterAt(new CustomLoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, userTokenRepository), UsernamePasswordAuthenticationFilter.class)
+                //  24.08.30 회원가입부터 로그인을 소셜로그인으로 대체하며 미사용
+                //.addFilterAt(new CustomLoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, userTokenRepository), UsernamePasswordAuthenticationFilter.class)
+
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, userTokenRepository), LogoutFilter.class)
                 .addFilterBefore(new JwtFilter(jwtUtil, userService), CustomLoginFilter.class)
                 .addFilterBefore(new JwtExceptionFilter(jwtUtil), JwtFilter.class)
+
                 //  jwt 사용을 위해 stateless로 설정
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
                 .build();
     }
 

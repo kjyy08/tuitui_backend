@@ -6,21 +6,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import suftware.tuitui.common.enumType.MsgCode;
+import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.domain.Image;
 import suftware.tuitui.dto.request.ImageRequestDto;
 import suftware.tuitui.dto.response.ImageResponseDto;
 import suftware.tuitui.service.ImageService;
 
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
 import java.io.IOException;
-import java.util.UUID;
 
 //import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 //import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -81,7 +79,7 @@ public class ImageController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.IMAGES_DELETE_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.IMAGES_DELETE_SUCCESS.getMsg())
                 .build());
     }
 

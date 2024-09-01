@@ -24,8 +24,8 @@ public class User {
     @Column(name = "account", length = 60, nullable = false, unique = true)
     String account;
 
-    @Column(name = "password", nullable = false, length = 300)
-    String password;
+    //  @Column(name = "password", nullable = false, length = 300)
+    //  String password;
 
     @Column(name = "created_at")
     Timestamp createdAt;

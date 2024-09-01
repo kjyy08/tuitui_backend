@@ -14,7 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import suftware.tuitui.common.enumType.MsgCode;
+import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.domain.User;
 import suftware.tuitui.dto.response.CustomUserDetails;
@@ -58,8 +58,8 @@ public class JwtFilter extends OncePerRequestFilter {
         if (!userService.existsByAccount(account)){
             Message message = Message.builder()
                     .status(HttpStatus.NOT_FOUND)
-                    .code(MsgCode.USER_NOT_FOUND.getCode())
-                    .message(MsgCode.USER_NOT_FOUND.getMsg())
+                    .code(TuiTuiMsgCode.USER_NOT_FOUND.getCode())
+                    .message(TuiTuiMsgCode.USER_NOT_FOUND.getMsg())
                     .build();
 
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -80,7 +80,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String[] excludePath = {"/api/login", "/api/signup", "/api/token"};
+        String[] excludePath = {"/api/token"};
         String path = request.getRequestURI();
         return Arrays.stream(excludePath).anyMatch(path::startsWith);
     }

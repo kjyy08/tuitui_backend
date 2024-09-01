@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import suftware.tuitui.common.exception.CustomException;
-import suftware.tuitui.common.enumType.MsgCode;
+import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.domain.Image;
 import suftware.tuitui.domain.Profile;
 import suftware.tuitui.domain.TimeCapsule;
@@ -57,7 +57,7 @@ public class TimeCapsuleService {
         List<TimeCapsule> timeCapsuleList = timeCapsuleRepository.findAll();
 
         if (timeCapsuleList.isEmpty()){
-            throw new CustomException(MsgCode.CAPSULE_NOT_FOUND);
+            throw new CustomException(TuiTuiMsgCode.CAPSULE_NOT_FOUND);
         }
 
         List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = new ArrayList<>();
@@ -80,7 +80,7 @@ public class TimeCapsuleService {
     @Transactional(readOnly = true)
     public Optional<TimeCapsuleResponseDto> getCapsule(Integer id){
         TimeCapsule timeCapsule = timeCapsuleRepository.findById(id)
-                .orElseThrow(() -> new CustomException(MsgCode.CAPSULE_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(TuiTuiMsgCode.CAPSULE_NOT_FOUND));
 
         List<ImageResponseDto> imageResponseDtoList = getCapsuleImageList(timeCapsule.getTimeCapsuleId());
 
@@ -98,7 +98,7 @@ public class TimeCapsuleService {
         List<TimeCapsule> timeCapsuleList = timeCapsuleRepository.findByProfile_ProfileId(id);
 
         if (timeCapsuleList.isEmpty()){
-            throw new CustomException(MsgCode.CAPSULE_NOT_FOUND);
+            throw new CustomException(TuiTuiMsgCode.CAPSULE_NOT_FOUND);
         }
 
         List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = new ArrayList<>();
@@ -123,7 +123,7 @@ public class TimeCapsuleService {
         List<TimeCapsule> timeCapsuleList = timeCapsuleRepository.findByProfile_Nickname(nickname);
 
         if (timeCapsuleList.isEmpty()){
-            throw new CustomException(MsgCode.CAPSULE_NOT_FOUND);
+            throw new CustomException(TuiTuiMsgCode.CAPSULE_NOT_FOUND);
         }
 
         List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = new ArrayList<>();
@@ -153,7 +153,7 @@ public class TimeCapsuleService {
         Profile writeUser;
         try {
             writeUser = profileRepository.findByNickname(timeCapsuleRequestDto.getWriteUser())
-                    .orElseThrow(() -> new CustomException(MsgCode.PROFILE_NOT_FOUND));
+                    .orElseThrow(() -> new CustomException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
             logger.debug("TimeCapsuleService.save ---------- Found writeUser profile: {}", writeUser.getNickname());
         }
         catch (CustomException e) {
@@ -167,7 +167,7 @@ public class TimeCapsuleService {
             logger.info("TimeCapsuleService.save ---------- TimeCapsule saved with ID: {}", timeCapsule.getTimeCapsuleId());
         } catch (Exception e) {
             logger.error("TimeCapsuleService.save ---------- Error saving TimeCapsule: {}", e.getMessage(), e);
-            throw new CustomException(MsgCode.CAPSULE_CREATE_FAIL, e);  // 이건 한 번도 안 써봤는데 궁금해서 넣어봄
+            throw new CustomException(TuiTuiMsgCode.CAPSULE_CREATE_FAIL, e);  // 이건 한 번도 안 써봤는데 궁금해서 넣어봄
         }
 
         TimeCapsuleResponseDto responseDto = TimeCapsuleResponseDto.toDTO(timeCapsule);
@@ -180,7 +180,7 @@ public class TimeCapsuleService {
     @Transactional
     public Optional<TimeCapsuleResponseDto> updateCapsule(Integer id, TimeCapsuleRequestDto timeCapsuleRequestDto) {
         TimeCapsule timeCapsule = timeCapsuleRepository.findById(id)
-                .orElseThrow(() -> new CustomException(MsgCode.CAPSULE_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(TuiTuiMsgCode.CAPSULE_NOT_FOUND));
 
         if (!(timeCapsuleRequestDto.getContent() == null))
             timeCapsule.setContent(timeCapsuleRequestDto.getContent());
@@ -195,7 +195,7 @@ public class TimeCapsuleService {
     @Transactional
     public void deleteCapsule(Integer id) {
         if (!timeCapsuleRepository.existsById(id)) {
-            throw new CustomException(MsgCode.CAPSULE_NOT_FOUND);
+            throw new CustomException(TuiTuiMsgCode.CAPSULE_NOT_FOUND);
         }
 
         timeCapsuleRepository.deleteById(id);

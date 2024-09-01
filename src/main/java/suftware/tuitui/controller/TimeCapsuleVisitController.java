@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import suftware.tuitui.common.http.Message;
-import suftware.tuitui.common.enumType.MsgCode;
+import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.dto.response.TimeCapsuleVisitResponseDto;
 import suftware.tuitui.service.TimeCapsuleVisitService;
 
@@ -24,7 +24,7 @@ public class TimeCapsuleVisitController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.CAPSULE_VISIT_READ_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.CAPSULE_VISIT_READ_SUCCESS.getMsg())
                 .data(timeCapsuleVisitResponseDto)
                 .build());
     }
@@ -38,7 +38,7 @@ public class TimeCapsuleVisitController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
                 .status(HttpStatus.CREATED)
-                .message(MsgCode.CAPSULE_VISIT_CREATE_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.CAPSULE_VISIT_CREATE_SUCCESS.getMsg())
                 .data(timeCapsuleVisitResponseDto)
                 .build());
     }

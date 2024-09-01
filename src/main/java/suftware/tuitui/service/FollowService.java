@@ -3,7 +3,7 @@ package suftware.tuitui.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import suftware.tuitui.common.enumType.MsgCode;
+import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.common.exception.CustomException;
 import suftware.tuitui.domain.Profile;
 import suftware.tuitui.dto.request.FollowRequestDto;
@@ -22,7 +22,7 @@ public class FollowService {
     //  팔로워 리스트를 가져옴
     public List<FollowDto> getFollowerList(Integer id) {
         if (!profileRepository.existsById(id)) {
-            throw new CustomException(MsgCode.PROFILE_NOT_FOUND);
+            throw new CustomException(TuiTuiMsgCode.PROFILE_NOT_FOUND);
         }
 
         List<FollowDto> followerList = followRepository.findByFollower(id);
@@ -37,7 +37,7 @@ public class FollowService {
     //  팔로윙 리스트를 가져옴
     public List<FollowDto> getFollowingList(Integer id) {
         if (!profileRepository.existsById(id)) {
-            throw new CustomException(MsgCode.PROFILE_NOT_FOUND);
+            throw new CustomException(TuiTuiMsgCode.PROFILE_NOT_FOUND);
         }
 
         List<FollowDto> followingList = followRepository.findByFollowing(id);
@@ -54,14 +54,14 @@ public class FollowService {
         if (!followRepository.existsByFollower_ProfileIdAndFollowing_ProfileId(followRequestDto.getFollowerId(),
                 followRequestDto.getFollowingId())) {
             Profile follower = profileRepository.findById(followRequestDto.getFollowerId())
-                    .orElseThrow(() -> new CustomException(MsgCode.PROFILE_NOT_FOUND));
+                    .orElseThrow(() -> new CustomException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
             Profile following = profileRepository.findById(followRequestDto.getFollowingId())
-                    .orElseThrow(() -> new CustomException(MsgCode.PROFILE_NOT_FOUND));
+                    .orElseThrow(() -> new CustomException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
 
             followRepository.save(FollowRequestDto.toEntity(follower, following));
         }
         else {
-            throw new CustomException(MsgCode.FOLLOWS_EXIST);
+            throw new CustomException(TuiTuiMsgCode.FOLLOWS_EXIST);
         }
     }
 
@@ -71,14 +71,14 @@ public class FollowService {
         if (followRepository.existsByFollower_ProfileIdAndFollowing_ProfileId(followRequestDto.getFollowerId(),
                 followRequestDto.getFollowingId())) {
             Profile follower = profileRepository.findById(followRequestDto.getFollowerId())
-                    .orElseThrow(() -> new CustomException(MsgCode.PROFILE_NOT_FOUND));
+                    .orElseThrow(() -> new CustomException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
             Profile following = profileRepository.findById(followRequestDto.getFollowingId())
-                    .orElseThrow(() -> new CustomException(MsgCode.PROFILE_NOT_FOUND));
+                    .orElseThrow(() -> new CustomException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
 
             followRepository.deleteById(follower.getProfileId(), following.getProfileId());
         }
         else {
-            throw new CustomException(MsgCode.FOLLOWS_NOT_FOUND);
+            throw new CustomException(TuiTuiMsgCode.FOLLOWS_NOT_FOUND);
         }
     }
 }

@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import suftware.tuitui.common.http.Message;
-import suftware.tuitui.common.enumType.MsgCode;
+import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.dto.request.FollowRequestDto;
 import suftware.tuitui.dto.response.FollowDto;
 import suftware.tuitui.dto.response.FollowResponseDto;
@@ -28,7 +28,7 @@ public class FollowController {
         if (followerList == null && followingList == null){
             return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                     .status(HttpStatus.OK)
-                    .message(MsgCode.FOLLOWS_NOT_FOUND.getMsg())
+                    .message(TuiTuiMsgCode.FOLLOWS_NOT_FOUND.getMsg())
                     .build());
         }
         else {
@@ -36,7 +36,7 @@ public class FollowController {
 
             return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                     .status(HttpStatus.OK)
-                    .message(MsgCode.FOLLOWS_READ_SUCCESS.getMsg())
+                    .message(TuiTuiMsgCode.FOLLOWS_READ_SUCCESS.getMsg())
                     .data(followResponseDtoList)
                     .build());
         }
@@ -48,7 +48,7 @@ public class FollowController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.FOLLOWS_CREATE_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.FOLLOWS_CREATE_SUCCESS.getMsg())
                 .build());
     }
 
@@ -58,7 +58,7 @@ public class FollowController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.FOLLOWS_DELETE_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.FOLLOWS_DELETE_SUCCESS.getMsg())
                 .build());
     }
 }

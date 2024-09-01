@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import suftware.tuitui.common.http.Message;
-import suftware.tuitui.common.enumType.MsgCode;
+import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.dto.request.TimeCapsuleLikeRequestDto;
 import suftware.tuitui.dto.response.ProfileResponseDto;
 import suftware.tuitui.dto.response.TimeCapsuleLikeResponseDto;
@@ -28,13 +28,13 @@ public class TimeCapsuleLikeController {
         if (profileResponseDtoList.isEmpty()){
             return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                     .status(HttpStatus.OK)
-                    .message(MsgCode.CAPSULE_LIKE_NOT_FOUND.getMsg())
+                    .message(TuiTuiMsgCode.CAPSULE_LIKE_NOT_FOUND.getMsg())
                     .build());
         }
         else {
             return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                     .status(HttpStatus.OK)
-                    .message(MsgCode.CAPSULE_LIKE_READ_SUCCESS.getMsg())
+                    .message(TuiTuiMsgCode.CAPSULE_LIKE_READ_SUCCESS.getMsg())
                     .data(profileResponseDtoList)
                     .build());
         }
@@ -47,7 +47,7 @@ public class TimeCapsuleLikeController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
                 .status(HttpStatus.CREATED)
-                .message(MsgCode.CAPSULE_LIKE_CREATE_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.CAPSULE_LIKE_CREATE_SUCCESS.getMsg())
                 .data(timeCapsuleLikeResponseDto)
                 .build());
     }
@@ -59,7 +59,7 @@ public class TimeCapsuleLikeController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
-                .message(MsgCode.CAPSULE_LIKE_DELETE_SUCCESS.getMsg())
+                .message(TuiTuiMsgCode.CAPSULE_LIKE_DELETE_SUCCESS.getMsg())
                 .build());
     }
 }

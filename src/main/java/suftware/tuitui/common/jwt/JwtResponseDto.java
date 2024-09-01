@@ -11,15 +11,15 @@ import lombok.*;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class JwtResponseDto {
-    String tokentType;
+    String tokenType;
     String accessToken;
     Long accessTokenExpiresIn;
     String refreshToken;
     Long refreshTokenExpiresIn;
 
-    public static JwtResponseDto toDto(String tokentType, String accessToken, Long accessTokenExpiresIn, String refreshToken, Long refreshTokenExpiresIn){
+    public static JwtResponseDto toDto(String tokenType, String accessToken, Long accessTokenExpiresIn, String refreshToken, Long refreshTokenExpiresIn){
         return JwtResponseDto.builder()
-                .tokentType(tokentType)
+                .tokenType(tokenType)
                 .accessToken(accessToken)
                 .accessTokenExpiresIn(accessTokenExpiresIn)
                 .refreshToken(refreshToken)
