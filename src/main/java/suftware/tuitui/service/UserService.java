@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import suftware.tuitui.common.exception.CustomException;
+import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.domain.User;
 import suftware.tuitui.dto.request.UserRequestDto;
@@ -23,7 +23,7 @@ public class UserService {
 
     public Optional<UserResponseDto> getUser(Integer id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new CustomException(TuiTuiMsgCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
 
         return Optional.of(UserResponseDto.toDTO(user));
     }
@@ -32,7 +32,7 @@ public class UserService {
         List<User> userList = userRepository.findAll();
 
         if (userList.isEmpty()){
-            throw new CustomException(TuiTuiMsgCode.USER_NOT_FOUND);
+            throw new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND);
         }
 
         List<UserResponseDto> userResponseDtoList = new ArrayList<>();
@@ -46,7 +46,7 @@ public class UserService {
 
     public Optional<UserResponseDto> getUserByAccount(String account) {
         User user = userRepository.findByAccount(account)
-                .orElseThrow(() -> new CustomException(TuiTuiMsgCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
 
         return Optional.of(UserResponseDto.toDTO(user));
     }
@@ -95,7 +95,7 @@ public class UserService {
     @Transactional
     public void deleteUser(UserRequestDto userRequestDto) {
         User user = userRepository.findByAccount(userRequestDto.getAccount())
-                .orElseThrow(() -> new CustomException(TuiTuiMsgCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
 
             //  24.08.30 회원가입을 소셜 로그인으로 대체하며 비밀번호 미사용
 //        //  복호화시킨 비밀번호와 일치하는지 확인

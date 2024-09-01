@@ -10,10 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import suftware.tuitui.common.jwt.JwtExceptionFilter;
+import suftware.tuitui.common.jwt.JwtAuthFilter;
 import suftware.tuitui.common.jwt.JwtFilter;
 import suftware.tuitui.common.jwt.JwtUtil;
 import suftware.tuitui.filter.CustomLoginFilter;
@@ -47,7 +46,7 @@ public class SecurityConfig {
 
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, userTokenRepository), LogoutFilter.class)
                 .addFilterBefore(new JwtFilter(jwtUtil, userService), CustomLoginFilter.class)
-                .addFilterBefore(new JwtExceptionFilter(jwtUtil), JwtFilter.class)
+                .addFilterBefore(new JwtAuthFilter(jwtUtil), JwtFilter.class)
 
                 //  jwt 사용을 위해 stateless로 설정
                 .sessionManagement((session) -> session

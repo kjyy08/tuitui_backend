@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import suftware.tuitui.common.exception.CustomException;
+import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.dto.request.TimeCapsuleRequestDto;
@@ -87,14 +87,14 @@ public class TimeCapsuleController {
 
         // TimeCapsule 저장
         TimeCapsuleResponseDto timeCapsuleResponseDto = timeCapsuleService.save(timeCapsuleRequestDto)
-                .orElseThrow(() -> new CustomException(TuiTuiMsgCode.CAPSULE_CREATE_FAIL));
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.CAPSULE_CREATE_FAIL));
 
         // Image 저장
         List<ImageResponseDto> imageResponseDtoList = new ArrayList<>();
         if(files != null && !files.isEmpty()){
             for(MultipartFile file: files){
                 imageResponseDtoList.add(imageService.uploadImage("image_image", timeCapsuleResponseDto.getCapsuleId(), file)
-                        .orElseThrow(() -> new CustomException(TuiTuiMsgCode.IMAGE_CREATE_FAIL)));
+                        .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.IMAGE_CREATE_FAIL)));
             }
 
             timeCapsuleResponseDto.setImageList(imageResponseDtoList);
@@ -165,7 +165,7 @@ public class TimeCapsuleController {
         }
 
         if (timeCapsuleResponseDtoList.isEmpty()){
-            throw new CustomException(TuiTuiMsgCode.CAPSULE_NOT_FOUND);
+            throw new TuiTuiException(TuiTuiMsgCode.CAPSULE_NOT_FOUND);
         }
         else {
             return ResponseEntity.status(HttpStatus.OK).body(Message.builder()

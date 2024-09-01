@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import suftware.tuitui.common.enumType.Gender;
-import suftware.tuitui.common.exception.CustomException;
+import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.domain.Profile;
 import suftware.tuitui.domain.User;
@@ -32,21 +32,21 @@ public class ProfileService {
 
     public Optional<ProfileResponseDto> getProfile(Integer id) {
         Profile profile = profileRepository.findById(id)
-                .orElseThrow(() -> new CustomException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
 
         return Optional.of(ProfileResponseDto.toDTO(profile));
     }
 
     public Optional<ProfileResponseDto> getProfileByNickname(String nickname) {
         Profile profile = profileRepository.findByNickname(nickname)
-                .orElseThrow(() -> new CustomException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
 
         return Optional.of(ProfileResponseDto.toDTO(profile));
     }
 
     public Optional<ProfileResponseDto> getProfileByUserId(Integer id) {
         Profile profile = profileRepository.findByUser_UserId(id)
-                .orElseThrow(() -> new CustomException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
 
         return Optional.of(ProfileResponseDto.toDTO(profile));
     }
@@ -55,7 +55,7 @@ public class ProfileService {
         List<Profile> profileList = profileRepository.findAll();
 
         if (profileList.isEmpty()){
-            throw new CustomException(TuiTuiMsgCode.PROFILE_NOT_FOUND);
+            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND);
         }
 
         List<ProfileResponseDto> profileResponseDtoList = new ArrayList<>();
@@ -70,15 +70,15 @@ public class ProfileService {
     public Optional<ProfileResponseDto> saveProfile(ProfileRequestDto profileRequestDto, MultipartFile file) {
         //  유저가 존재하는지 확인
         User user = userRepository.findById(profileRequestDto.getUserId())
-                .orElseThrow(() -> new CustomException(TuiTuiMsgCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
 
         //  해당 유저의 프로필이 존재하는지 확인
         if (profileRepository.existsByUser_UserId(profileRequestDto.getUserId())){
-            throw new CustomException(TuiTuiMsgCode.PROFILE_EXIST);
+            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST);
         }
         //  닉네임 중복 확인
         else if (profileRepository.existsByNickname(profileRequestDto.getNickname())){
-            throw new CustomException(TuiTuiMsgCode.PROFILE_EXIST_NICKNAME);
+            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_NICKNAME);
         }
 
         String filePath = hostUrl + directoryPath + file.getOriginalFilename();
@@ -90,20 +90,20 @@ public class ProfileService {
     public Optional<ProfileResponseDto> saveProfile(ProfileRequestDto profileRequestDto) {
         //  유저가 존재하는지 확인
         User user = userRepository.findById(profileRequestDto.getUserId())
-                .orElseThrow(() -> new CustomException(TuiTuiMsgCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
 
         //  전화번호 중복 가입 방지
         if (profileRepository.existsByPhone(profileRequestDto.getPhone())) {
-            throw new CustomException(TuiTuiMsgCode.PROFILE_EXIST_PHONE);
+            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_PHONE);
         }
 
         //  해당 유저의 프로필이 존재하는지 확인
         if (profileRepository.existsByUser_UserId(profileRequestDto.getUserId())){
-            throw new CustomException(TuiTuiMsgCode.PROFILE_EXIST);
+            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST);
         }
         //  닉네임 중복 확인
         else if (profileRepository.existsByNickname(profileRequestDto.getNickname())){
-            throw new CustomException(TuiTuiMsgCode.PROFILE_EXIST_NICKNAME);
+            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_NICKNAME);
         }
 
         String filePath = hostUrl + directoryPath + basicProfileImgPath;
@@ -115,12 +115,12 @@ public class ProfileService {
     @Transactional
     public Optional<ProfileResponseDto> updateProfile(ProfileRequestDto profileRequestDto) {
         Profile profile = profileRepository.findByUser_UserId(profileRequestDto.getUserId())
-                .orElseThrow(() -> new CustomException(TuiTuiMsgCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
 
         //  전화번호 수정
         if (!(profileRequestDto.getPhone() == null)){
             if (profileRepository.existsByPhone(profileRequestDto.getPhone())){
-                throw new CustomException(TuiTuiMsgCode.PROFILE_EXIST_PHONE);
+                throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_PHONE);
             }
 
             profile.setPhone(profileRequestDto.getPhone());
@@ -129,7 +129,7 @@ public class ProfileService {
         //  닉네임 수정
         if (!(profileRequestDto.getNickname() == null)){
             if (profileRepository.existsByNickname(profileRequestDto.getNickname())){
-                throw new CustomException(TuiTuiMsgCode.PROFILE_EXIST_NICKNAME);
+                throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_NICKNAME);
             }
 
             profile.setNickname(profileRequestDto.getNickname());
@@ -150,7 +150,7 @@ public class ProfileService {
     @Transactional
     public void deleteProfile(Integer profileId){
         if (!profileRepository.existsById(profileId)) {
-            throw new CustomException(TuiTuiMsgCode.PROFILE_NOT_FOUND);
+            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND);
         }
         else {
             profileRepository.deleteById(profileId);

@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import suftware.tuitui.auth.kakao.KakaoAuthService;
 import suftware.tuitui.auth.kakao.KakaoResponse;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
+import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.common.http.Message;
+import suftware.tuitui.common.jwt.JwtException;
 import suftware.tuitui.common.jwt.JwtMsgCode;
 import suftware.tuitui.common.jwt.JwtResponseDto;
 import suftware.tuitui.common.jwt.JwtUtil;
@@ -64,20 +66,12 @@ public class UserTokenService {
 
         //  계정 이메일 주소가 없음
         if (account == null || account.isEmpty()){
-            return Message.builder()
-                    .status(JwtMsgCode.BAD_REQUEST.getStatus())
-                    .code(JwtMsgCode.BAD_REQUEST.getCode())
-                    .message(JwtMsgCode.BAD_REQUEST.getMsg())
-                    .build();
+            throw new JwtException(JwtMsgCode.BAD_REQUEST);
         }
 
         //  계정이 이미 생성됐는지 확인
         if (userRepository.existsByAccount(account)){
-            return Message.builder()
-                    .status(TuiTuiMsgCode.USER_EXIST.getHttpStatus())
-                    .code(TuiTuiMsgCode.USER_EXIST.getCode())
-                    .message(TuiTuiMsgCode.USER_EXIST.getMsg())
-                    .build();
+            throw new TuiTuiException(TuiTuiMsgCode.USER_EXIST);
         }
 
         //  유저 테이블에 저장
@@ -91,11 +85,7 @@ public class UserTokenService {
 
         //  DB에 해당 계정이 토큰을 이미 발급받았는지 확인
         if (userTokenRepository.existsByAccount(account)) {
-            return Message.builder()
-                    .status(JwtMsgCode.BAD_REQUEST.getStatus())
-                    .code(JwtMsgCode.BAD_REQUEST.getCode())
-                    .message(JwtMsgCode.BAD_REQUEST.getMsg())
-                    .build();
+            throw new JwtException(JwtMsgCode.BAD_REQUEST);
         }
 
         //  토큰 생성
@@ -127,50 +117,30 @@ public class UserTokenService {
     @Transactional
     public Message getRefreshToken(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = null;
+
         try {
             refreshToken = URLDecoder.decode(request.getParameter("refresh_token"), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-
-        //  refreshToken 토큰이 존재하지 않는 경우
-        if (refreshToken == null || refreshToken.isEmpty()) {
-            return Message.builder()
-                    .status(JwtMsgCode.EMPTY.getStatus())
-                    .code(JwtMsgCode.EMPTY.getCode())
-                    .message(JwtMsgCode.EMPTY.getMsg())
-                    .build();
-        }
-
-        //  토큰이 refreshToken 토큰인지 확인
-        String tokenType = jwtUtil.getTokenType(refreshToken);
-
-        if (!tokenType.equals("refresh")){
-            return Message.builder()
-                    .status(JwtMsgCode.INVALID.getStatus())
-                    .code(JwtMsgCode.INVALID.getCode())
-                    .message(JwtMsgCode.INVALID.getMsg())
-                    .build();
+        } catch (NullPointerException | UnsupportedEncodingException e) {
+            throw new JwtException(JwtMsgCode.EMPTY);
         }
 
         //  refreshToken 토큰 검증
         JwtMsgCode errorCode = jwtUtil.validateToken(refreshToken);
 
         if (!errorCode.equals(JwtMsgCode.OK)) {
-            return Message.builder()
-                    .status(errorCode.getStatus())
-                    .code(errorCode.getCode())
-                    .message(errorCode.getMsg())
-                    .build();
+            throw new JwtException(errorCode);
+        }
+
+        //  토큰이 refreshToken 토큰인지 확인
+        String tokenType = jwtUtil.getTokenType(refreshToken);
+
+        if (!tokenType.equals("refresh")){
+            throw new JwtException(JwtMsgCode.INVALID);
         }
 
         //  DB에 refreshToken 토큰이 존재하는지 확인
         if (!userTokenRepository.existsByRefresh(refreshToken)){
-            return Message.builder()
-                    .status(JwtMsgCode.EXPIRED.getStatus())
-                    .code(JwtMsgCode.EXPIRED.getCode())
-                    .message(JwtMsgCode.EXPIRED.getMsg())
-                    .build();
+            throw new JwtException(JwtMsgCode.EXPIRED);
         }
 
         String account = jwtUtil.getAccount(refreshToken);
@@ -189,13 +159,6 @@ public class UserTokenService {
 
         JwtResponseDto jwtResponseDto = JwtResponseDto.toDto("Bearer", newAccessToken, jwtUtil.getExpiresIn(newAccessToken),
                 newRefreshToken, jwtUtil.getExpiresIn(newRefreshToken));
-
-        //  24.08.29 토큰 응답 body로 옮기면서 쿠키 사용 안함.
-        //  쿠키에 refreshToken 토큰 저장
-        //  Cookie cookie = new Cookie("refreshToken", newRefreshToken);
-        //  cookie.setMaxAge(2592000);  //  30일까지 유효
-        //  cookie.setHttpOnly(true);
-        //  cookie.setSecure(true);
 
         return Message.builder()
                 .status(JwtMsgCode.OK.getStatus())

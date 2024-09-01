@@ -12,7 +12,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import suftware.tuitui.common.exception.CustomException;
+import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.common.valid.ProfileValidationGroups;
@@ -94,7 +94,7 @@ public class ProfileController {
     public ResponseEntity<Message> createProfileJson(@RequestBody @Validated({ProfileValidationGroups.modify.class, ProfileValidationGroups.request.class}) ProfileRequestDto profileRequestDto,
                                                      BindingResult bindingResult) {
         if (bindingResult.hasErrors()){
-            throw new CustomException(TuiTuiMsgCode.PROFILE_CREATE_FAIL, getValidatorResult(bindingResult));
+            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_CREATE_FAIL, getValidatorResult(bindingResult));
         }
 
         //  프로필 생성
@@ -112,7 +112,7 @@ public class ProfileController {
     public ResponseEntity<Message> createProfileMultipart(@RequestPart(name = "request") @Valid ProfileRequestDto profileRequestDto,
                                                         @RequestPart(name = "file", required = false) MultipartFile file, BindingResult bindingResult) {
         if (bindingResult.hasErrors()){
-            throw new CustomException(TuiTuiMsgCode.PROFILE_CREATE_FAIL, getValidatorResult(bindingResult));
+            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_CREATE_FAIL, getValidatorResult(bindingResult));
         }
 
         Optional<ProfileResponseDto> profileResponseDto = profileService.saveProfile(profileRequestDto, file);
@@ -129,7 +129,7 @@ public class ProfileController {
     public ResponseEntity<Message> updateProfile(@RequestBody @Validated(ProfileValidationGroups.request.class) ProfileRequestDto profileRequestDto,
                                                  BindingResult bindingResult) {
         if (bindingResult.hasErrors()){
-            throw new CustomException(TuiTuiMsgCode.PROFILE_NOT_VALID, getValidatorResult(bindingResult));
+            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_VALID, getValidatorResult(bindingResult));
         }
 
         Optional<ProfileResponseDto> profileResponseDto = profileService.updateProfile(profileRequestDto);
