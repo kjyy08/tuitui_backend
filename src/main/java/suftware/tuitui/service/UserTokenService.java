@@ -38,7 +38,7 @@ public class UserTokenService {
     public boolean authenticate(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
         String snsType = request.getParameter("sns_type");
         String accessToken = URLDecoder.decode(request.getParameter("access_token"), "UTF-8");
-        String account = request.getParameter("account");
+        String account = URLDecoder.decode(request.getParameter("account"), "UTF-8");
 
         try {
             if (snsType.equals("kakao")) {
@@ -61,8 +61,8 @@ public class UserTokenService {
     }
 
     //  토큰 발급 요청
-    public Message authorization(HttpServletRequest request, HttpServletResponse response){
-        String account = request.getParameter("account");
+    public Message authorization(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
+        String account = URLDecoder.decode(request.getParameter("account"), "UTF-8");
 
         //  계정 이메일 주소가 없음
         if (account == null || account.isEmpty()){
