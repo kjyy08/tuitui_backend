@@ -22,7 +22,7 @@ public class UserTokenController {
     private final UserTokenService userTokenService;
 
     //  jwt 토큰 발급
-    @PostMapping(value = "token")
+    @GetMapping(value = "token")
     public ResponseEntity<Message> token(HttpServletRequest request, HttpServletResponse response){
         Message message = null;
         String grantType = request.getParameter("grant_type");
