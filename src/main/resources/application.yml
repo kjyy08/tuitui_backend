@@ -1,11 +1,10 @@
 server:
-  port: 443
+  port: 8443
   ssl:
     enabled: true
-    key-store: src/main/resources/tuituiSSL.p12
+    key-store: /home/ubuntu/ssl/tuituissl.p12
     key-store-password: ${SSL_PASSWORD}
     key-store-type: PKCS12
-    key-alias: tuituiSSL
 
 # JPA
 spring:
