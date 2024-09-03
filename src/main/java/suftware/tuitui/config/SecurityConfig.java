@@ -20,6 +20,7 @@ import suftware.tuitui.common.jwt.JwtFilter;
 import suftware.tuitui.common.jwt.JwtUtil;
 import suftware.tuitui.filter.CustomLoginFilter;
 import suftware.tuitui.filter.CustomLogoutFilter;
+import suftware.tuitui.repository.UserRepository;
 import suftware.tuitui.repository.UserTokenRepository;
 import suftware.tuitui.service.UserService;
 
@@ -31,7 +32,7 @@ import java.util.Collections;
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
-    private final UserService userService;
+    private final UserRepository userRepository;
     private final UserTokenRepository userTokenRepository;
 
     @Bean
@@ -50,7 +51,7 @@ public class SecurityConfig {
                 //.addFilterAt(new CustomLoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, userTokenRepository), UsernamePasswordAuthenticationFilter.class)
 
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, userTokenRepository), LogoutFilter.class)
-                .addFilterBefore(new JwtFilter(jwtUtil, userService), CustomLoginFilter.class)
+                .addFilterBefore(new JwtFilter(jwtUtil, userRepository), CustomLoginFilter.class)
                 .addFilterBefore(new JwtAuthFilter(jwtUtil), JwtFilter.class)
 
                 //  jwt 사용을 위해 stateless로 설정

@@ -18,6 +18,7 @@ import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.domain.User;
 import suftware.tuitui.dto.response.CustomUserDetails;
+import suftware.tuitui.repository.UserRepository;
 import suftware.tuitui.service.UserService;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ import java.util.Arrays;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -55,7 +56,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String account = jwtUtil.getAccount(accessToken);
 
         //  유저가 존재하지 않음
-        if (!userService.existsByAccount(account)){
+        if (!userRepository.existsByAccount(account)){
             Message message = Message.builder()
                     .status(HttpStatus.NOT_FOUND)
                     .code(TuiTuiMsgCode.USER_NOT_FOUND.getCode())
