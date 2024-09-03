@@ -125,7 +125,7 @@ public class ImageService {
     
     // 이미지 id 기준으로 삭제
     @Transactional
-    public void deleteImage(int imageId){
+    public void deleteImage(Integer imageId){
         logger.info("ImageService.deleteImage ---------- Starting the image remove process. image id: {}", imageId);
         Image image = imageRepository.findById(imageId).orElseThrow(() -> new NoSuchElementException("Image not found with id: " + imageId));
         imageRepository.delete(image);

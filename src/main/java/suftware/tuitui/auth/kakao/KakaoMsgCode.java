@@ -23,4 +23,14 @@ public enum KakaoMsgCode {
     private final HttpStatus httpStatus;
     private final String code;
     private final String msg;
+
+    public static String getMessage(String code){
+        for (KakaoMsgCode errorCode : values()) {
+            if (errorCode.code.equals(code)) {
+                return errorCode.msg;
+            }
+        }
+
+        return code;
+    }
 }

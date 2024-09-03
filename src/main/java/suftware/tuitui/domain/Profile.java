@@ -30,7 +30,7 @@ public class Profile {
     @Column(name = "name", nullable = false, length = 16)
     String name;
 
-    @Column(name = "phone", nullable = false, unique = true, length = 13)
+    @Column(name = "phone", nullable = false, unique = true, length = 25)
     String phone;
 
     @Column(name = "nickname", nullable = false, length = 45, unique = true)

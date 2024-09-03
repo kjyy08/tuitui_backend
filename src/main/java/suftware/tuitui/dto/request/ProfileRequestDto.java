@@ -23,8 +23,8 @@ public class ProfileRequestDto {
     @NotEmpty(message = "이름은 필수 입력 값입니다.", groups = ProfileValidationGroups.modify.class)
     String name;
 
-    @Pattern(regexp = "^\\d{3}-\\d{3,4}-\\d{4}$", message = "전화번호 형식에 맞게 입력해주세요.",
-            groups = {ProfileValidationGroups.modify.class, ProfileValidationGroups.request.class})
+    //  @Pattern(regexp = "^\\d{3}-\\d{3,4}-\\d{4}$", message = "전화번호 형식에 맞게 입력해주세요.",
+    //          groups = {ProfileValidationGroups.modify.class, ProfileValidationGroups.request.class})
     @NotEmpty(message = "전화번호는 필수 입력 값입니다.", groups = ProfileValidationGroups.modify.class)
     String phone;
 

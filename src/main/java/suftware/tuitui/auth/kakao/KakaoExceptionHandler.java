@@ -11,7 +11,8 @@ public class KakaoExceptionHandler{
     protected ResponseEntity<Message> handleKakaoException(KakaoException e){
         return ResponseEntity.status(e.getHttpStatus()).body(Message.builder()
                 .status(e.getHttpStatus())
-                .data(e.getBody())
+                .code(e.getCode())
+                .message(e.getMessage())
                 .build());
     }
 }

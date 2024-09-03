@@ -15,6 +15,8 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRequestDto {
+    Integer userId;
+
     @Email(message = "아이디는 이메일 형식으로 입력해야 합니다.", groups = {UserValidationGroups.modify.class, UserValidationGroups.request.class})
     @NotEmpty(message = "아이디는 필수 입력 값입니다.", groups = UserValidationGroups.modify.class)
     String account;

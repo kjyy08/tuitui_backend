@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
+import suftware.tuitui.common.jwt.JwtUtil;
 import suftware.tuitui.domain.User;
 import suftware.tuitui.dto.request.UserRequestDto;
 import suftware.tuitui.dto.response.UserResponseDto;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     public Optional<UserResponseDto> getUser(Integer id) {
         User user = userRepository.findById(id)
@@ -94,7 +96,7 @@ public class UserService {
 
     @Transactional
     public void deleteUser(UserRequestDto userRequestDto) {
-        User user = userRepository.findByAccount(userRequestDto.getAccount())
+        User user = userRepository.findByUserIdAndAccount(userRequestDto.getUserId(), userRequestDto.getAccount())
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
 
             //  24.08.30 회원가입을 소셜 로그인으로 대체하며 비밀번호 미사용
@@ -103,13 +105,8 @@ public class UserService {
 //            throw new CustomException(MsgCode.USER_BAD_REQUEST);
 //        }
 
-        userRepository.deleteByAccount(userRequestDto.getAccount());
+        userRepository.delete(user);
     }
-
-    public boolean existsByAccount(String account){
-        return userRepository.existsByAccount(account);
-    }
-
     //  24.08.30 로그인 처리 프론트에서 소셜 로그인으로 대체
 //    public Optional<UserResponseDto> login(UserRequestDto loginRequestDto) {
 //        User user = userRepository.findByAccount(loginRequestDto.getAccount())
