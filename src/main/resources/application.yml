@@ -1,0 +1,48 @@
+server:
+  port: 8443
+  ssl:
+    enabled: true
+    key-store: {SSL_KEY_PATH}
+    key-store-password: ${SSL_PASSWORD}
+    key-store-type: PKCS12
+
+# JPA
+spring:
+  jwt:
+    secret-key: ${JWT_SECRET_KEY}
+    access-expires-in: 3600000
+    refresh-expires-in: 2592000000
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${SPRING_SQL_URL}
+    username: root
+    password: ${SPRING_SQL_PASSWORD}
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  servlet:
+    multipart:
+      enabled: true # 멀티파트 업로드 지원여부 (default: true)
+      file-size-threshold: 0B # 파일을 디스크에 저장하지 않고 메모리에 저장하는 최소 크기 (default: 0B)
+      location: ${MULTIPART_TEMP_ROOT} # 업로드된 파일이 임시로 저장되는 디스크 위치 (default: WAS가 결정), 서버에 업로드 된 위치 변경 필요
+      max-file-size: 10MB # 한개 파일의 최대 사이즈 (default: 1MB)
+      max-request-size: 10MB # 한개 요청의 최대 사이즈 (default: 10MB)
+
+cloud:
+  aws:
+    cloud-front: ${CLOUD_FRONT_URL}
+    s3:
+      bucket: ${S3_BUCKET_NAME} # {버킷명}
+    credentials:
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_ACCESS_KEY}
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
