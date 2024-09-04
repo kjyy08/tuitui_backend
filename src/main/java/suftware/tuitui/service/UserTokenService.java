@@ -69,18 +69,23 @@ public class UserTokenService {
             throw new JwtException(JwtMsgCode.BAD_REQUEST);
         }
 
+        User user;
+
         //  계정이 이미 생성됐는지 확인
         if (userRepository.existsByAccount(account)){
-            throw new TuiTuiException(TuiTuiMsgCode.USER_EXIST);
+            //  이미 생성된 유저는 로그인 처리
+            user = userRepository.findByAccount(account)
+                    .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
+        } else {
+            //  유저 정보가 없다면 회원가입 처리
+            user = User.builder()
+                    .account(account)
+                    .createdAt(new Timestamp(System.currentTimeMillis()))
+                    .build();
+
+            userRepository.save(user);
         }
 
-        //  유저 테이블에 저장
-        User user = User.builder()
-                        .account(account)
-                        .createdAt(new Timestamp(System.currentTimeMillis()))
-                        .build();
-
-        userRepository.save(user);
         UserResponseDto userResponseDto = UserResponseDto.toDTO(user);
 
         //  DB에 해당 계정이 토큰을 이미 발급받았는지 확인
