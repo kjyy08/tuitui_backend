@@ -2,7 +2,7 @@ server:
   port: 8443
   ssl:
     enabled: true
-    key-store: {SSL_KEY_PATH}
+    key-store: /home/ubuntu/ssl/tuituissl.p12
     key-store-password: ${SSL_PASSWORD}
     key-store-type: PKCS12
 
