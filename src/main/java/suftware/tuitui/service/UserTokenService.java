@@ -154,7 +154,7 @@ public class UserTokenService {
         userTokenRepository.save(UserToken.builder()
                 .account(account)
                 .refresh(newRefreshToken)
-                .expiresIn(new Timestamp(jwtUtil.getExpiresIn(newRefreshToken) * 1000))
+                .expiresIn(new Timestamp(System.currentTimeMillis() + (jwtUtil.getExpiresIn(newRefreshToken) * 1000)))
                 .build());
 
         JwtResponseDto jwtResponseDto = JwtResponseDto.toDto("Bearer", newAccessToken, jwtUtil.getExpiresIn(newAccessToken),
