@@ -69,6 +69,7 @@ public class UserTokenService {
         } catch (NullPointerException e){
             return false;
         }
+
         log.info("jwt token authenticate success");
         return true;
     }
@@ -76,6 +77,7 @@ public class UserTokenService {
     //  토큰 발급 요청
     public Message authorization(HttpServletRequest request, HttpServletResponse response) {
         String account = request.getParameter("account");
+        log.info("jwt token authorization -> account: {}", account);
 
         //  계정 이메일 주소가 없음
         if (account == null || account.isEmpty()){
@@ -124,6 +126,7 @@ public class UserTokenService {
         responseData.put("user", userResponseDto);
         responseData.put("token", jwtResponseDto);
 
+        log.info("jwt token authorization success");
         return Message.builder()
                 .status(JwtMsgCode.OK.getStatus())
                 .code(JwtMsgCode.OK.getCode())

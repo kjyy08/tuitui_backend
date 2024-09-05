@@ -12,12 +12,12 @@ import suftware.tuitui.common.http.Message;
 public class TuiTuiExceptionHandler {
     @ExceptionHandler(TuiTuiException.class)
     protected ResponseEntity<Message> handleCustomException(TuiTuiException e){
-
+        log.error("TuiTui Exception Handler -> status: {}, code: {}, message: {}",
+                e.getMsg().getHttpStatus().toString(), e.getMsg().getCode(), e.getMsg().getMsg());
         return ResponseEntity.status(e.getMsg().getHttpStatus()).body(Message.builder()
                 .status(e.getMsg().getHttpStatus())
                 .message(e.getMsg().getMsg())
                 .code(e.getMsg().getCode())
-                .data(e.getObj())
                 .build());
     }
 }
