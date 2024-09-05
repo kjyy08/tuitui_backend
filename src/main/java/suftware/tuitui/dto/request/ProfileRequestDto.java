@@ -28,7 +28,7 @@ public class ProfileRequestDto {
     @NotEmpty(message = "전화번호는 필수 입력 값입니다.", groups = ProfileValidationGroups.modify.class)
     String phone;
 
-    @Pattern(regexp = "^[a-zA-Z0-9_.]{2,20}$", message = "닉네임은 영어, 숫자, '_', '.' 조합으로 2자 이상 20자 이하로 입력해주세요.",
+    @Pattern(regexp = "^[a-zA-Z0-9_.]{2,15}$", message = "닉네임은 영어, 숫자, '_', '.' 조합으로 2자 이상 15자 이하로 입력해주세요.",
             groups = {ProfileValidationGroups.modify.class, ProfileValidationGroups.request.class})
     @NotEmpty(message = "닉네임은 필수 입력 값입니다.", groups = ProfileValidationGroups.modify.class)
     String nickname;

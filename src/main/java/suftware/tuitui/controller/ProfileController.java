@@ -128,6 +128,17 @@ public class ProfileController {
     @PutMapping(value = "profiles")
     public ResponseEntity<Message> updateProfile(@RequestBody @Validated(ProfileValidationGroups.request.class) ProfileRequestDto profileRequestDto,
                                                  BindingResult bindingResult) {
+        try {
+            log.info("update profile -> userId={}, name={}, nickname={}, describe_self={}, gender={}",
+                    profileRequestDto.getUserId(),
+                    profileRequestDto.getName(),
+                    profileRequestDto.getNickname(),
+                    profileRequestDto.getDescribeSelf(),
+                    profileRequestDto.getGender());
+        } catch (NullPointerException e){
+            log.info("update profile -> {}", e.getMessage());
+        }
+
         if (bindingResult.hasErrors()){
             throw new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_VALID, getValidatorResult(bindingResult));
         }
