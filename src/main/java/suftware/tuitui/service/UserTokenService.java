@@ -25,9 +25,7 @@ import suftware.tuitui.repository.UserTokenRepository;
 import suftware.tuitui.sns.naver.NaverAuthService;
 import suftware.tuitui.sns.naver.NaverResponse;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
+
 import java.sql.Timestamp;
 import java.util.HashMap;
 
@@ -138,7 +136,7 @@ public class UserTokenService {
     //  토큰 갱신 요청
     @Transactional
     public Message getRefreshToken(HttpServletRequest request, HttpServletResponse response) {
-        String refreshToken = null;
+        String refreshToken;
 
         try {
             refreshToken = request.getParameter("refresh_token");
