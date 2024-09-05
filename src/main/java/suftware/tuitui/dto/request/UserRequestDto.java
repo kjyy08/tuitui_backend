@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import suftware.tuitui.common.enumType.Role;
 import suftware.tuitui.common.valid.UserValidationGroups;
 import suftware.tuitui.domain.User;
 
@@ -35,6 +36,18 @@ public class UserRequestDto {
                 //  .phone(userRequestDto.getPhone())
                 //  .name(userRequestDto.getName())
                 .createdAt(new Timestamp(System.currentTimeMillis()))
+                .role(Role.USER)
+                .build();
+    }
+
+    public static User toEntity(UserRequestDto userRequestDto, String role){
+        return User.builder()
+                .account(userRequestDto.getAccount())
+                //  .password(userRequestDto.getPassword())
+                //  .phone(userRequestDto.getPhone())
+                //  .name(userRequestDto.getName())
+                .createdAt(new Timestamp(System.currentTimeMillis()))
+                .role(Role.valueOf(role))
                 .build();
     }
 }

@@ -3,6 +3,7 @@ package suftware.tuitui.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
+import suftware.tuitui.common.enumType.Role;
 
 import java.sql.Timestamp;
 
@@ -29,6 +30,9 @@ public class User {
 
     @Column(name = "created_at")
     Timestamp createdAt;
+
+    @Column(name = "role")
+    Role role;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Profile profile;

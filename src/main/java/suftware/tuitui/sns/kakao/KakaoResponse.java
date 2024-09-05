@@ -1,4 +1,4 @@
-package suftware.tuitui.auth.kakao;
+package suftware.tuitui.sns.kakao;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

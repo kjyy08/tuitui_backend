@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import suftware.tuitui.auth.kakao.KakaoAuthService;
-import suftware.tuitui.auth.kakao.KakaoResponse;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.jwt.JwtMsgCode;
 import suftware.tuitui.service.UserTokenService;

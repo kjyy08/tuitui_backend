@@ -6,8 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import suftware.tuitui.auth.kakao.KakaoAuthService;
-import suftware.tuitui.auth.kakao.KakaoResponse;
+import suftware.tuitui.common.enumType.Role;
+import suftware.tuitui.sns.kakao.KakaoAuthService;
+import suftware.tuitui.sns.kakao.KakaoResponse;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.common.http.Message;
@@ -20,6 +21,8 @@ import suftware.tuitui.domain.UserToken;
 import suftware.tuitui.dto.response.UserResponseDto;
 import suftware.tuitui.repository.UserRepository;
 import suftware.tuitui.repository.UserTokenRepository;
+import suftware.tuitui.sns.naver.NaverAuthService;
+import suftware.tuitui.sns.naver.NaverResponse;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -33,14 +36,15 @@ public class UserTokenService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private final KakaoAuthService kakaoAuthService;
+    private final NaverAuthService naverAuthService;
 
     //  파라미터로 넘겨받은 account와 소셜 로그인에서 받은 account 비교하여 인증
     public boolean authenticate(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
-        String snsType = request.getParameter("sns_type");
-        String accessToken = URLDecoder.decode(request.getParameter("access_token"), "UTF-8");
-        String account = URLDecoder.decode(request.getParameter("account"), "UTF-8");
-
         try {
+            String snsType = request.getParameter("sns_type");
+            String accessToken = URLDecoder.decode(request.getParameter("access_token"), "UTF-8");
+            String account = URLDecoder.decode(request.getParameter("account"), "UTF-8");
+
             if (snsType.equals("kakao")) {
                 ResponseEntity<KakaoResponse> kakaoResponse = kakaoAuthService.isSignedUp(accessToken);
 
@@ -49,7 +53,12 @@ public class UserTokenService {
                     return false;
                 }
             } else if (snsType.equals("naver")) {
+                ResponseEntity<NaverResponse> naverResponse = naverAuthService.isSignedUp(accessToken);
 
+                //  파라미터로 넘겨받은 account와 카카오 서버에서 받은 account 비교
+                if (!account.equals(naverResponse.getBody().getNaverAccount().getEmail())) {
+                    return false;
+                }
             } else {
                 return false;
             }
@@ -81,6 +90,7 @@ public class UserTokenService {
             user = User.builder()
                     .account(account)
                     .createdAt(new Timestamp(System.currentTimeMillis()))
+                    .role(Role.USER)
                     .build();
 
             userRepository.save(user);
@@ -94,8 +104,8 @@ public class UserTokenService {
         }
 
         //  토큰 생성
-        String access = jwtUtil.createJwt("access", account);   //  1시간의 생명주기를 가짐
-        String refresh = jwtUtil.createJwt("refresh", account);  //  30일의 생명주기를 가짐
+        String access = jwtUtil.createJwt("access", account, Role.USER.getValue());   //  1시간의 생명주기를 가짐
+        String refresh = jwtUtil.createJwt("refresh", account, Role.USER.getValue());  //  30일의 생명주기를 가짐
         UserToken userToken = UserToken.builder()
                 .account(account)
                 .refresh(refresh)
@@ -138,6 +148,7 @@ public class UserTokenService {
 
         //  토큰이 refreshToken 토큰인지 확인
         String tokenType = jwtUtil.getTokenType(refreshToken);
+        String role = jwtUtil.getRole(refreshToken);
 
         if (!tokenType.equals("refresh")){
             throw new JwtException(JwtMsgCode.INVALID);
@@ -150,9 +161,9 @@ public class UserTokenService {
 
         String account = jwtUtil.getAccount(refreshToken);
         //  엑세스 토큰 발급
-        String newAccessToken = jwtUtil.createJwt("access", account);
+        String newAccessToken = jwtUtil.createJwt("access", account, role);
         //  리프레시 토큰 발급
-        String newRefreshToken = jwtUtil.createJwt("refresh", account);
+        String newRefreshToken = jwtUtil.createJwt("refresh", account, role);
 
         //  기존에 있던 리프레시 삭제 후 저장
         userTokenRepository.deleteByRefresh(refreshToken);

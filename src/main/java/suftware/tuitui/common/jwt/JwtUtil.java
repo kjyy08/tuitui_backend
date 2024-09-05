@@ -35,6 +35,11 @@ public class JwtUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("account", String.class);
     }
 
+    //  토큰에 담긴 권한 정보 반환
+    public String getRole(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
+    }
+
     //  payload에 저장된 토큰의 남은 시간 초 단위로 반환
     public Long getExpiresIn(String token){
         long expiresIn = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().getTime();
@@ -71,7 +76,7 @@ public class JwtUtil {
     }
 
     //  토큰 생성
-    public String createJwt(String type, String account){
+    public String createJwt(String type, String account, String role){
         Long expiration = 0L;
 
         switch (type){
@@ -88,6 +93,7 @@ public class JwtUtil {
                 .claim("type", type)
                 //  클레임에 account 저장
                 .claim("account", account)
+                .claim("role", role)
                 //  토큰의 발행 시간
                 .issuedAt(new Date(System.currentTimeMillis()))
                 //  토큰의 소멸 시간

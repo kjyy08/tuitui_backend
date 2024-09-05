@@ -93,7 +93,7 @@ public class TimeCapsuleController {
         List<ImageResponseDto> imageResponseDtoList = new ArrayList<>();
         if(files != null && !files.isEmpty()){
             for(MultipartFile file: files){
-                imageResponseDtoList.add(imageService.uploadImage("image_image", timeCapsuleResponseDto.getCapsuleId(), file)
+                imageResponseDtoList.add(imageService.uploadImage("image_image/", timeCapsuleResponseDto.getCapsuleId(), file)
                         .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.IMAGE_CREATE_FAIL)));
             }
 

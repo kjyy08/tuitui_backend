@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.MimeTypeUtils;
+import suftware.tuitui.common.enumType.Role;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.jwt.JwtResponseDto;
@@ -96,8 +97,8 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
         String account = customUserDetails.getUsername();
 
         //  토큰 생성
-        String access = jwtUtil.createJwt("access", account);   //  1시간의 생명주기를 가짐
-        String refresh = jwtUtil.createJwt("refresh", account);  //  30일의 생명주기를 가짐
+        String access = jwtUtil.createJwt("access", account, Role.USER.getValue());   //  1시간의 생명주기를 가짐
+        String refresh = jwtUtil.createJwt("refresh", account, Role.USER.getValue());  //  30일의 생명주기를 가짐
 
         UserToken userToken = UserToken.builder()
                 .account(account)
