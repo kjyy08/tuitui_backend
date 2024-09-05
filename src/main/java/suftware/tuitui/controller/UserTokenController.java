@@ -23,9 +23,10 @@ public class UserTokenController {
     @GetMapping(value = "token")
     public ResponseEntity<Message> token(HttpServletRequest request, HttpServletResponse response){
         Message message = null;
-        String grantType = request.getParameter("grant_type");
 
         try {
+            String grantType = request.getParameter("grant_type");
+
             //  토큰 발급 요청
             if (grantType.equals("authorization_code")) {
                 //  토큰 발급 요청 전 파라미터로 넘겨받은 account 인증
@@ -51,7 +52,7 @@ public class UserTokenController {
                         .code(JwtMsgCode.BAD_REQUEST.getCode())
                         .build();
             }
-        } catch (NullPointerException | UnsupportedEncodingException e){
+        } catch (NullPointerException e){
             message = Message.builder()
                     .status(JwtMsgCode.BAD_REQUEST.getStatus())
                     .message(JwtMsgCode.BAD_REQUEST.getMsg())

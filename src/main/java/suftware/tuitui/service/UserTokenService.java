@@ -4,8 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +27,7 @@ import suftware.tuitui.sns.naver.NaverResponse;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.HashMap;
 
@@ -43,11 +42,11 @@ public class UserTokenService {
     private final NaverAuthService naverAuthService;
 
     //  파라미터로 넘겨받은 account와 소셜 로그인에서 받은 account 비교하여 인증
-    public boolean authenticate(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
+    public boolean authenticate(HttpServletRequest request, HttpServletResponse response) {
         try {
             String snsType = request.getParameter("sns_type");
-            String accessToken = URLDecoder.decode(request.getParameter("access_token"), "UTF-8");
-            String account = URLDecoder.decode(request.getParameter("account"), "UTF-8");
+            String accessToken = request.getParameter("access_token");
+            String account = request.getParameter("account");
             log.info("jwt token authenticate -> sns_type: {}, access_token: {}, account: {}", snsType, accessToken, account);
 
             if (snsType.equals("kakao")) {
@@ -75,8 +74,8 @@ public class UserTokenService {
     }
 
     //  토큰 발급 요청
-    public Message authorization(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
-        String account = URLDecoder.decode(request.getParameter("account"), "UTF-8");
+    public Message authorization(HttpServletRequest request, HttpServletResponse response) {
+        String account = request.getParameter("account");
 
         //  계정 이메일 주소가 없음
         if (account == null || account.isEmpty()){
