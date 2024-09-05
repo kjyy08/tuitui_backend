@@ -138,8 +138,8 @@ public class UserTokenService {
         String refreshToken = null;
 
         try {
-            refreshToken = URLDecoder.decode(request.getParameter("refresh_token"), "UTF-8");
-        } catch (NullPointerException | UnsupportedEncodingException e) {
+            refreshToken = request.getParameter("refresh_token");
+        } catch (NullPointerException e) {
             throw new JwtException(JwtMsgCode.EMPTY);
         }
 
