@@ -3,6 +3,9 @@ package suftware.tuitui.service;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +34,7 @@ import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserTokenService {
     private final UserTokenRepository userTokenRepository;
     private final UserRepository userRepository;
@@ -44,6 +48,7 @@ public class UserTokenService {
             String snsType = request.getParameter("sns_type");
             String accessToken = URLDecoder.decode(request.getParameter("access_token"), "UTF-8");
             String account = URLDecoder.decode(request.getParameter("account"), "UTF-8");
+            log.info("jwt token authenticate -> sns_type: {}, access_token: {}, account: {}", snsType, accessToken, account);
 
             if (snsType.equals("kakao")) {
                 ResponseEntity<KakaoResponse> kakaoResponse = kakaoAuthService.isSignedUp(accessToken);
@@ -65,7 +70,7 @@ public class UserTokenService {
         } catch (NullPointerException e){
             return false;
         }
-
+        log.info("jwt token authenticate success");
         return true;
     }
 

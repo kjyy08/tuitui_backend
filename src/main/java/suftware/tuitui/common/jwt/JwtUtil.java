@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import suftware.tuitui.common.enumType.Role;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -86,6 +87,11 @@ public class JwtUtil {
             case "refresh":
                 expiration = refreshTokenExpiresIn;
                 break;
+        }
+
+        //  관리자의 경우 엑세스, 리프레시 모두 만료 기한 1년으로 변경
+        if (role.equals(Role.ADMIN.getValue()) || role.equals(Role.MANAGER.getValue())){
+            expiration = refreshTokenExpiresIn * 12;
         }
 
         return Jwts.builder()

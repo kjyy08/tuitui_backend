@@ -31,6 +31,7 @@ public class User {
     @Column(name = "created_at")
     Timestamp createdAt;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role")
     Role role;
 
