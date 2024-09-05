@@ -94,15 +94,16 @@ public class ProfileService {
         User user = userRepository.findById(profileRequestDto.getUserId())
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
 
+        //  해당 유저의 프로필이 존재하는지 확인
+        if (profileRepository.existsByUser_UserId(profileRequestDto.getUserId())){
+            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST);
+        }
+
         //  전화번호 중복 가입 방지
         if (profileRepository.existsByPhone(profileRequestDto.getPhone())) {
             throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_PHONE);
         }
 
-        //  해당 유저의 프로필이 존재하는지 확인
-        if (profileRepository.existsByUser_UserId(profileRequestDto.getUserId())){
-            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST);
-        }
         //  닉네임 중복 확인
         else if (profileRepository.existsByNickname(profileRequestDto.getNickname())){
             throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_NICKNAME);
@@ -119,31 +120,42 @@ public class ProfileService {
         Profile profile = profileRepository.findByUser_UserId(profileRequestDto.getUserId())
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
 
+        //  DB와 값이 다르다면 업데이트 처리
         //  전화번호 수정
-        if (!(profileRequestDto.getPhone() == null)){
-            if (profileRepository.existsByPhone(profileRequestDto.getPhone())){
-                throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_PHONE);
-            }
+        if (!(profileRequestDto.getPhone() == null)) {
+            if (!profile.getPhone().equals(profileRequestDto.getPhone())) {
+                if (profileRepository.existsByPhone(profileRequestDto.getPhone())) {
+                    throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_PHONE);
+                }
 
-            profile.setPhone(profileRequestDto.getPhone());
+                profile.setPhone(profileRequestDto.getPhone());
+            }
         }
 
         //  닉네임 수정
-        if (!(profileRequestDto.getNickname() == null)){
-            if (profileRepository.existsByNickname(profileRequestDto.getNickname())){
-                throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_NICKNAME);
-            }
+        if (!(profileRequestDto.getNickname() == null)) {
+            if (!profile.getNickname().equals(profileRequestDto.getNickname())) {
+                if (profileRepository.existsByNickname(profileRequestDto.getNickname())) {
+                    throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_NICKNAME);
+                }
 
-            profile.setNickname(profileRequestDto.getNickname());
+                profile.setNickname(profileRequestDto.getNickname());
+            }
         }
 
         //  자기소개 수정
-        if (!(profileRequestDto.getDescribeSelf() == null))
-            profile.setDescribeSelf(profileRequestDto.getDescribeSelf());
+        if (!(profileRequestDto.getDescribeSelf() == null)) {
+            if (!profile.getDescribeSelf().equals(profileRequestDto.getDescribeSelf())) {
+                profile.setDescribeSelf(profileRequestDto.getDescribeSelf());
+            }
+        }
 
         //  성별 수정
-        if (!(profileRequestDto.getGender() == null))
-            profile.setGender(Gender.valueOf(profileRequestDto.getGender()));
+        if (!(profileRequestDto.getGender() == null)) {
+            if (!profile.getGender().toString().equals(profileRequestDto.getGender())) {
+                profile.setGender(Gender.valueOf(profileRequestDto.getGender()));
+            }
+        }
 
         return Optional.of(ProfileResponseDto.toDTO(profile));
     }
