@@ -144,6 +144,8 @@ public class UserTokenService {
             throw new JwtException(JwtMsgCode.EMPTY);
         }
 
+        log.info("jwt token refresh -> refreshToken: {}", refreshToken);
+
         //  refreshToken 토큰 검증
         JwtMsgCode errorCode = jwtUtil.validateToken(refreshToken);
 
@@ -181,6 +183,7 @@ public class UserTokenService {
         JwtResponseDto jwtResponseDto = JwtResponseDto.toDto("Bearer", newAccessToken, jwtUtil.getExpiresIn(newAccessToken),
                 newRefreshToken, jwtUtil.getExpiresIn(newRefreshToken));
 
+        log.info("jwt token refresh -> success");
         return Message.builder()
                 .status(JwtMsgCode.OK.getStatus())
                 .code(JwtMsgCode.OK.getCode())
