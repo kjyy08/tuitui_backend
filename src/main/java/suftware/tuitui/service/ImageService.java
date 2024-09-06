@@ -46,10 +46,11 @@ public class ImageService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    public Optional<Image> getImage(int id){
+    public Optional<Image> getImage(Integer id)
+    {
         return imageRepository.findById(id);
-    }
 
+    }
 
     public List<ImageResponseDto> getAllImage(){
         List<Image> imageList = imageRepository.findAll();
@@ -62,12 +63,14 @@ public class ImageService {
         return imageResponseDtoList;
     }
 
-
+    //  public Optional<ImageResponseDto> uploadImage(String path, ){
+    //
+    //  }
 
 
     //  uploadImages: S3에 이미지를 저장하고 반환된 URL을 DB에 저장
     //  Parameters: {path: S3 폴더 이름}, {ImageRequestDto: TimeCapsule_id}, {file: 이미지}
-    public Optional<ImageResponseDto> uploadImage(String path, Integer capsuleId,MultipartFile file) throws IOException {
+    public Optional<ImageResponseDto> uploadImage(String path, Integer capsuleId, MultipartFile file) throws IOException {
         logger.info("ImageService.uploadImages ---------- Starting the image upload process. Path: {}, TimeCapsule ID: {}", path, capsuleId);
         String url;     // 반환된 URL을 저장할 변수
 

@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import suftware.tuitui.domain.Image;
 
-import java.util.Base64;
-
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor

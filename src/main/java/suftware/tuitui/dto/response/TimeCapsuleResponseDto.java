@@ -3,10 +3,8 @@ package suftware.tuitui.dto.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import suftware.tuitui.domain.Hashtag;
-import suftware.tuitui.domain.Profile;
 import suftware.tuitui.domain.TimeCapsule;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 @Getter

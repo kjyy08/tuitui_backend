@@ -74,7 +74,7 @@ public class ImageController {
     //  이미지 삭제
     //  Parameter: {id: image index}
     @DeleteMapping("/{id}")
-    public ResponseEntity<Message> deleteImage(@PathVariable("id") int id){
+    public ResponseEntity<Message> deleteImage(@PathVariable("id") Integer id){
         imageService.deleteImage(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
