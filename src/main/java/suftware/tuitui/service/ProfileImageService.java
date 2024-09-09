@@ -41,20 +41,32 @@ public class ProfileImageService {
     }
 
     @Transactional
-    public Optional<ImageResponseDto> updateProfileImage(Integer id, String path, MultipartFile file){
+    public Optional<ImageResponseDto> updateProfileImage(Integer profileId, String path, MultipartFile file){
         try {
-            ProfileImage profileImage = profileImageRepository.findByProfileId(id)
-                    .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
+            Optional<ProfileImage> profileImage = profileImageRepository.findByProfileId(profileId);
 
-            String currentFileUrl = profileImage.getImgUrl();
+            //  설정된 프로필 이미지가 없는 경우
+            if (profileImage.isEmpty()){
+                Profile profile = profileRepository.findById(profileId)
+                        .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
+                String fileUrl = s3Service.upload(path, file);
+                ProfileImage profileImgEntity = profileImageRepository.save(ProfileImage.builder()
+                        .profile(profile)
+                        .imgUrl(fileUrl)
+                        .build());
+
+                return Optional.of(ImageResponseDto.toDto(profileImgEntity));
+            }
+
+            String currentFileUrl = profileImage.get().getImgUrl();
             String currentFileName = currentFileUrl.substring(currentFileUrl.lastIndexOf('/') + 1, currentFileUrl.lastIndexOf('.'));
 
             s3Service.delete(path, currentFileName);
 
             String fileUrl = s3Service.upload(path, file);
-            profileImage.setImgUrl(fileUrl);
+            profileImage.get().setImgUrl(fileUrl);
 
-            return Optional.of(ImageResponseDto.toDto(profileImage));
+            return Optional.of(ImageResponseDto.toDto(profileImage.get()));
         } catch (IOException e){
             throw new TuiTuiException(TuiTuiMsgCode.IMAGE_S3_UPLOAD_FAIL);
         }
