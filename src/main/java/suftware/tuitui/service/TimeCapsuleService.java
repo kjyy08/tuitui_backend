@@ -1,18 +1,19 @@
 package suftware.tuitui.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
-import suftware.tuitui.domain.Image;
 import suftware.tuitui.domain.Profile;
 import suftware.tuitui.domain.TimeCapsule;
+import suftware.tuitui.domain.TimeCapsuleImage;
 import suftware.tuitui.dto.request.TimeCapsuleRequestDto;
 import suftware.tuitui.dto.response.ImageResponseDto;
 import suftware.tuitui.dto.response.TimeCapsuleResponseDto;
-import suftware.tuitui.repository.ImageRepository;
 import suftware.tuitui.repository.ProfileRepository;
+import suftware.tuitui.repository.TimeCapsuleImageRepository;
 import suftware.tuitui.repository.TimeCapsuleRepository;
 
 import java.sql.Timestamp;
@@ -25,22 +26,21 @@ import org.slf4j.LoggerFactory;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TimeCapsuleService {
     private final TimeCapsuleRepository timeCapsuleRepository;
+    private final TimeCapsuleImageRepository timeCapsuleImageRepository;
     private final ProfileRepository profileRepository;
-    private final ImageRepository imageRepository;
-
-    private static final Logger logger = LoggerFactory.getLogger(ImageService.class);
 
     @Transactional(readOnly = true)
     private List<ImageResponseDto> getCapsuleImageList(Integer id){
-        List<Image> imageList = imageRepository.findByTimeCapsule_TimeCapsuleId(id);
+        List<TimeCapsuleImage> imageList = timeCapsuleImageRepository.findByCapsuleId(id);
 
         //  캡슐에 저장된 이미지가 1개 이상일 경우 이미지 포함 반환
         if (!imageList.isEmpty()) {
             List<ImageResponseDto> imageResponseDtoList = new ArrayList<>();
 
-            for (Image image : imageList) {
+            for (TimeCapsuleImage image : imageList) {
                 imageResponseDtoList.add(ImageResponseDto.toDto(image));
             }
 
@@ -144,34 +144,15 @@ public class TimeCapsuleService {
 
     //  캡슐 저장
     public Optional<TimeCapsuleResponseDto> save(TimeCapsuleRequestDto timeCapsuleRequestDto){
-        logger.debug("TimeCapsuleService.save ---------- Saving TimeCapsule with content: {}, location: {}, writeUserId: {}, remindDate: {}",
-                timeCapsuleRequestDto.getContent(),
-                timeCapsuleRequestDto.getLocation(),
-                timeCapsuleRequestDto.getWriteUser(),
-                timeCapsuleRequestDto.getRemindDate());
+        log.info("TimeCapsuleService.save() -> dto received, request dto: {}", timeCapsuleRequestDto);
 
-        Profile writeUser;
-        try {
-            writeUser = profileRepository.findByNickname(timeCapsuleRequestDto.getWriteUser())
+        Profile profile = profileRepository.findById(timeCapsuleRequestDto.getProfileId())
                     .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
-            logger.debug("TimeCapsuleService.save ---------- Found writeUser profile: {}", writeUser.getNickname());
-        }
-        catch (TuiTuiException e) {
-            logger.error("TimeCapsuleService.save ---------- Profile not found for nickname: {}", timeCapsuleRequestDto.getWriteUser(), e);
-            throw e;
-        }
 
-        TimeCapsule timeCapsule;
-        try {
-            timeCapsule = timeCapsuleRepository.save(TimeCapsuleRequestDto.toEntity(timeCapsuleRequestDto, writeUser));
-            logger.info("TimeCapsuleService.save ---------- TimeCapsule saved with ID: {}", timeCapsule.getTimeCapsuleId());
-        } catch (Exception e) {
-            logger.error("TimeCapsuleService.save ---------- Error saving TimeCapsule: {}", e.getMessage(), e);
-            throw new TuiTuiException(TuiTuiMsgCode.CAPSULE_CREATE_FAIL, e);  // 이건 한 번도 안 써봤는데 궁금해서 넣어봄
-        }
+        TimeCapsule timeCapsule = timeCapsuleRepository.save(TimeCapsuleRequestDto.toEntity(timeCapsuleRequestDto, profile));
 
         TimeCapsuleResponseDto responseDto = TimeCapsuleResponseDto.toDTO(timeCapsule);
-        logger.debug("TimeCapsuleService.save ---------- TimeCapsuleResponseDto created: {}", responseDto);
+        log.info("TimeCapsuleService.save() -> success, response data: {}", responseDto);
 
         return Optional.of(responseDto);
     }

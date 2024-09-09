@@ -43,14 +43,37 @@ public class ProfileRequestDto {
 
     byte[] profileImg;
 
-    public static Profile toEntity(ProfileRequestDto profileRequestDto, User user, String profileImgPath){
+    public static Profile toEntity(ProfileRequestDto profileRequestDto, User user){
+        Profile.ProfileBuilder builder = Profile.builder()
+                .user(user)
+                .name(profileRequestDto.getName())
+                .phone(profileRequestDto.getPhone())
+                .nickname(profileRequestDto.getNickname())
+                .describeSelf(profileRequestDto.getDescribeSelf());
+
+        // gender 값이 null이면 OTHER로 저장
+        if (profileRequestDto.getGender() == null) {
+            builder.gender(Gender.OTHER);
+        } else {
+            builder.gender(Gender.valueOf(profileRequestDto.getGender()));
+        }
+
+        // birth 값이 null이 아닌 경우에만 저장
+        if (profileRequestDto.getBirth() != null) {
+            builder.birth(profileRequestDto.getBirth());
+        }
+
+        return builder.build();
+    }
+
+    public static Profile toEntity(ProfileRequestDto profileRequestDto, User user, String profileImgUrl){
         Profile.ProfileBuilder builder = Profile.builder()
                 .user(user)
                 .name(profileRequestDto.getName())
                 .phone(profileRequestDto.getPhone())
                 .nickname(profileRequestDto.getNickname())
                 .describeSelf(profileRequestDto.getDescribeSelf())
-                .profileImgPath(profileImgPath);
+                .profileImgPath(profileImgUrl);
 
         // gender 값이 null이면 OTHER로 저장
         if (profileRequestDto.getGender() == null) {

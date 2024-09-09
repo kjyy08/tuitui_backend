@@ -20,20 +20,23 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", nullable = false, unique = true)
-    Integer userId;
+    private Integer userId;
 
     @Column(name = "account", length = 60, nullable = false, unique = true)
-    String account;
+    private String account;
 
     //  @Column(name = "password", nullable = false, length = 300)
     //  String password;
 
     @Column(name = "created_at")
-    Timestamp createdAt;
+    private Timestamp createdAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
-    Role role;
+    private Role role;
+
+    @Column(name = "sns_type")
+    private String snsType;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Profile profile;

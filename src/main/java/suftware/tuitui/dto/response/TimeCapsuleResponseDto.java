@@ -5,6 +5,7 @@ import lombok.*;
 import suftware.tuitui.domain.Hashtag;
 import suftware.tuitui.domain.TimeCapsule;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -32,6 +33,10 @@ public class TimeCapsuleResponseDto {
 
     List<Hashtag> tagList;
 
+    private BigDecimal latitude;
+
+    private BigDecimal longitude;
+
     public static TimeCapsuleResponseDto toDTO(TimeCapsule timeCapsule) {
         return TimeCapsuleResponseDto.builder()
                 .capsuleId(timeCapsule.getTimeCapsuleId())
@@ -41,6 +46,8 @@ public class TimeCapsuleResponseDto {
                 .content(timeCapsule.getContent())
                 .location(timeCapsule.getLocation())
                 .remindDate(timeCapsule.getRemindDate())
+                .latitude(timeCapsule.getLatitude())
+                .longitude(timeCapsule.getLongitude())
                 .build();
     }
 
@@ -53,6 +60,8 @@ public class TimeCapsuleResponseDto {
                 .content(timeCapsule.getContent())
                 .location(timeCapsule.getLocation())
                 .remindDate(timeCapsule.getRemindDate())
+                .latitude(timeCapsule.getLatitude())
+                .longitude(timeCapsule.getLongitude())
                 .imageList(imageList)
                 .build();
     }

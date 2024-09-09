@@ -5,13 +5,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import suftware.tuitui.common.enumType.S3ImagePath;
 import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.dto.request.TimeCapsuleRequestDto;
 import suftware.tuitui.dto.response.ImageResponseDto;
 import suftware.tuitui.dto.response.TimeCapsuleResponseDto;
-import suftware.tuitui.service.ImageService;
+import suftware.tuitui.service.TimeCapsuleImageService;
 import suftware.tuitui.service.TimeCapsuleService;
 
 import org.slf4j.Logger;
@@ -27,9 +28,7 @@ import java.util.Optional;
 @RequestMapping("api/")
 public class TimeCapsuleController {
     private final TimeCapsuleService timeCapsuleService;
-    private final ImageService imageService;
-
-    private static final Logger logger = LoggerFactory.getLogger(ImageController.class);
+    private final TimeCapsuleImageService timeCapsuleImageService;
 
     //  전체 캡슐 조회
     @GetMapping(value = "capsules")
@@ -80,45 +79,42 @@ public class TimeCapsuleController {
     }
 
     // 캡슐 저장 이미지 포함
-    // 이거 왜 어디갔어
     @PostMapping(value = "capsules/with-image", consumes = "multipart/form-data")
-    public ResponseEntity<Message> createCapsuleImage(@RequestPart(name = "request") TimeCapsuleRequestDto timeCapsuleRequestDto,
-                                                      @RequestPart(name = "file", required = false) List<MultipartFile> files) throws IOException{
+    public ResponseEntity<Message> createCapsuleWithImages(@RequestPart(name = "request") TimeCapsuleRequestDto timeCapsuleRequestDto,
+                                                           @RequestPart(name = "file", required = true) List<MultipartFile> files) throws IOException{
+        //  이미지가 포함된 경우에만 create 수행
+        if(files != null && !files.isEmpty()) {
+            // TimeCapsule 저장
+            TimeCapsuleResponseDto timeCapsuleResponseDto = timeCapsuleService.save(timeCapsuleRequestDto)
+                    .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.CAPSULE_CREATE_FAIL));
 
-        // TimeCapsule 저장
-        TimeCapsuleResponseDto timeCapsuleResponseDto = timeCapsuleService.save(timeCapsuleRequestDto)
-                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.CAPSULE_CREATE_FAIL));
+            // Image 저장
+            List<ImageResponseDto> imageResponseDtoList = new ArrayList<>();
 
-        // Image 저장
-        List<ImageResponseDto> imageResponseDtoList = new ArrayList<>();
-        if(files != null && !files.isEmpty()){
-            for(MultipartFile file: files){
-                imageResponseDtoList.add(imageService.uploadImage("image_image/", timeCapsuleResponseDto.getCapsuleId(), file)
-                        .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.IMAGE_CREATE_FAIL)));
+            for (MultipartFile file : files) {
+                imageResponseDtoList.add(timeCapsuleImageService.uploadCapsuleImage(timeCapsuleResponseDto.getCapsuleId(), S3ImagePath.CAPSULE.getPath(), file)
+                        .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.IMAGE_S3_UPLOAD_FAIL)));
             }
 
             timeCapsuleResponseDto.setImageList(imageResponseDtoList);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
-                    .status(HttpStatus.CREATED)
+            return ResponseEntity.status(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS.getHttpStatus()).body(Message.builder()
+                    .status(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS.getHttpStatus())
                     .message(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS.getMsg())
                     .data(timeCapsuleResponseDto)
                     .build());
-        }
-
-        else{
-            return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
-                    .status(HttpStatus.OK)
+        } else {
+            return ResponseEntity.status(TuiTuiMsgCode.CAPSULE_CREATE_FAIL.getHttpStatus()).body(Message.builder()
+                    .status(TuiTuiMsgCode.CAPSULE_CREATE_FAIL.getHttpStatus())
                     .message(TuiTuiMsgCode.CAPSULE_CREATE_FAIL.getMsg())
                     .code(TuiTuiMsgCode.CAPSULE_CREATE_FAIL.getCode())
                     .build());
         }
-
     }
-    
+
     //  캡슐 저장
     @PostMapping(value = "capsules/without-image")
-    public ResponseEntity<Message> createCapsuleJson(@RequestBody TimeCapsuleRequestDto timeCapsuleRequestDto) {
+    public ResponseEntity<Message> createCapsuleWithJson(@RequestBody TimeCapsuleRequestDto timeCapsuleRequestDto) {
         Optional<TimeCapsuleResponseDto> timeCapsuleResponseDto = timeCapsuleService.save(timeCapsuleRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
@@ -129,9 +125,10 @@ public class TimeCapsuleController {
     }
 
     //  캡슐 수정
-    @PutMapping(value = "capsules/{capsuleId}")
-    public ResponseEntity<Message> updateCapsule(@PathVariable(name = "capsuleId") Integer id, @RequestBody TimeCapsuleRequestDto timeCapsuleRequestDto) {
-        Optional<TimeCapsuleResponseDto> timeCapsuleResponseDto = timeCapsuleService.updateCapsule(id, timeCapsuleRequestDto);
+    @PutMapping(value = "capsules")
+    public ResponseEntity<Message> updateCapsule(@RequestBody TimeCapsuleRequestDto timeCapsuleRequestDto) {
+        Optional<TimeCapsuleResponseDto> timeCapsuleResponseDto = timeCapsuleService.updateCapsule(timeCapsuleRequestDto.getCapsuleId(),
+                timeCapsuleRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)

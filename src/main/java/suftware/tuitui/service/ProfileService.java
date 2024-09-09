@@ -27,11 +27,6 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final UserRepository userRepository;
 
-    @Value("${cloud.aws.cloud-front}")
-    private String hostUrl;
-    private final String directoryPath = "profile_image/";
-    private final String basicProfileImgPath = "basic_profilie_image.png";
-
     public Optional<ProfileResponseDto> getProfile(Integer id) {
         Profile profile = profileRepository.findById(id)
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
@@ -68,27 +63,7 @@ public class ProfileService {
         return profileResponseDtoList;
     }
 
-    //  파일 포함 프로필 저장
-    public Optional<ProfileResponseDto> saveProfile(ProfileRequestDto profileRequestDto, MultipartFile file) {
-        //  유저가 존재하는지 확인
-        User user = userRepository.findById(profileRequestDto.getUserId())
-                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
-
-        //  해당 유저의 프로필이 존재하는지 확인
-        if (profileRepository.existsByUser_UserId(profileRequestDto.getUserId())){
-            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST);
-        }
-        //  닉네임 중복 확인
-        else if (profileRepository.existsByNickname(profileRequestDto.getNickname())){
-            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_NICKNAME);
-        }
-
-        String filePath = hostUrl + directoryPath + file.getOriginalFilename();
-        Profile profile = profileRepository.save(ProfileRequestDto.toEntity(profileRequestDto, user, filePath));
-        return Optional.of(ProfileResponseDto.toDTO(profile));
-    }
-
-    //  파일 미포함 프로필 저장
+    //  프로필 저장
     public Optional<ProfileResponseDto> saveProfile(ProfileRequestDto profileRequestDto) {
         //  유저가 존재하는지 확인
         User user = userRepository.findById(profileRequestDto.getUserId())
@@ -105,12 +80,11 @@ public class ProfileService {
         }
 
         //  닉네임 중복 확인
-        else if (profileRepository.existsByNickname(profileRequestDto.getNickname())){
+        if (profileRepository.existsByNickname(profileRequestDto.getNickname())){
             throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_NICKNAME);
         }
 
-        String filePath = hostUrl + directoryPath + basicProfileImgPath;
-        Profile profile = profileRepository.save(ProfileRequestDto.toEntity(profileRequestDto, user, filePath));
+        Profile profile = profileRepository.save(ProfileRequestDto.toEntity(profileRequestDto, user));
         return Optional.of(ProfileResponseDto.toDTO(profile));
     }
 

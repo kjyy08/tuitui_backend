@@ -45,13 +45,15 @@ public class UserTokenService {
             String snsType = request.getParameter("sns_type");
             String accessToken = request.getParameter("access_token");
             String account = request.getParameter("account");
-            log.info("jwt token authenticate -> sns_type: {}, access_token: {}, account: {}", snsType, accessToken, account);
+            log.info("UserTokenService.authenticate() -> request.getParameter(), sns_type: {}, access_token: {}, account: {}",
+                    snsType, accessToken, account);
 
             if (snsType.equals("kakao")) {
                 ResponseEntity<KakaoResponse> kakaoResponse = kakaoAuthService.isSignedUp(accessToken);
 
                 //  파라미터로 넘겨받은 account와 카카오 서버에서 받은 account 비교
                 if (!account.equals(kakaoResponse.getBody().getKakaoAccount().getEmail())) {
+                    log.error("UserTokenService.authenticate() -> kakao authenticate fail, account: {}", account);
                     return false;
                 }
             } else if (snsType.equals("naver")) {
@@ -59,51 +61,64 @@ public class UserTokenService {
 
                 //  파라미터로 넘겨받은 account와 카카오 서버에서 받은 account 비교
                 if (!account.equals(naverResponse.getBody().getNaverAccount().getEmail())) {
+                    log.error("UserTokenService.authenticate() -> naver authenticate fail, account: {}", account);
                     return false;
                 }
             } else {
+                log.error("UserTokenService.authenticate() -> snsType: {} not found", snsType);
                 return false;
             }
         } catch (NullPointerException e){
+            log.error("UserTokenService.authenticate() -> request.getParameter() is null");
             return false;
         }
 
-        log.info("jwt token authenticate success");
+        log.info("UserTokenService.authenticate() -> success");
         return true;
     }
 
     //  토큰 발급 요청
     public Message authorization(HttpServletRequest request, HttpServletResponse response) {
-        String account = request.getParameter("account");
-        log.info("jwt token authorization -> account: {}", account);
+        String account;
+        String snsType;
 
-        //  계정 이메일 주소가 없음
-        if (account == null || account.isEmpty()){
+        try {
+            account = request.getParameter("account");
+            snsType = request.getParameter("sns_type");
+            log.info("UserTokenService.authorization() -> request.getParameter(), account: {}, snsType: {}", account, snsType);
+        } catch (NullPointerException e){
+            log.error("UserTokenService.authorization() -> request.getParameter() is null");
             throw new JwtException(JwtMsgCode.BAD_REQUEST);
         }
 
         User user;
+        boolean isSigned;
 
         //  계정이 이미 생성됐는지 확인
         if (userRepository.existsByAccount(account)){
-            //  이미 생성된 유저는 로그인 처리
-            user = userRepository.findByAccount(account)
-                    .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
+            //  이미 생성된 유저는 기존 유저 정보 반환
+            //  account, sns 일치 여부 확인 후 불일치하면 예외 발생
+            user = userRepository.findByAccountAndSnsType(account, snsType)
+                    .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_EXIST));
+            isSigned = true;
+            log.info("UserTokenService.authorization() -> account: {} is exists", account);
         } else {
             //  유저 정보가 없다면 회원가입 처리
             user = User.builder()
                     .account(account)
                     .createdAt(new Timestamp(System.currentTimeMillis()))
                     .role(Role.USER)
+                    .snsType(snsType)
                     .build();
 
             userRepository.save(user);
+            isSigned = false;
+            log.info("UserTokenService.authorization() -> create account: {}", account);
         }
-
-        UserResponseDto userResponseDto = UserResponseDto.toDTO(user);
 
         //  DB에 해당 계정이 토큰을 이미 발급받았는지 확인
         if (userTokenRepository.existsByAccount(account)) {
+            log.error("UserTokenService.authorization() -> account: {} already logged in", account);
             throw new JwtException(JwtMsgCode.BAD_REQUEST);
         }
 
@@ -119,18 +134,29 @@ public class UserTokenService {
         userTokenRepository.save(userToken);
         JwtResponseDto jwtResponseDto = JwtResponseDto.toDto("Bearer", access, jwtUtil.getExpiresIn(access), refresh, jwtUtil.getExpiresIn(refresh));
 
+        //  response body 응답 생성
+        Message message = new Message();
+        UserResponseDto userResponseDto = UserResponseDto.toDTO(user);
         HashMap<String, Object> responseData = new HashMap<>();
 
         responseData.put("user", userResponseDto);
         responseData.put("token", jwtResponseDto);
 
-        log.info("jwt token authorization success");
-        return Message.builder()
-                .status(JwtMsgCode.OK.getStatus())
-                .code(JwtMsgCode.OK.getCode())
-                .message(JwtMsgCode.OK.getMsg())
-                .data(responseData)
-                .build();
+        //  신규 유저면 http status 201, 기존 유저면 200 응답
+        if (!isSigned){
+            message.setStatus(TuiTuiMsgCode.USER_SIGNUP_SUCCESS.getHttpStatus());
+            message.setCode(JwtMsgCode.OK.getCode());
+            message.setMessage(JwtMsgCode.OK.getMsg());
+            message.setData(responseData);
+        } else {
+            message.setStatus(JwtMsgCode.OK.getStatus());
+            message.setCode(JwtMsgCode.OK.getCode());
+            message.setMessage(JwtMsgCode.OK.getMsg());
+            message.setData(responseData);
+        }
+
+        log.info("UserTokenService.authorization() -> success");
+        return message;
     }
 
     //  토큰 갱신 요청
@@ -144,7 +170,7 @@ public class UserTokenService {
             throw new JwtException(JwtMsgCode.EMPTY);
         }
 
-        log.info("jwt token refresh -> refreshToken: {}", refreshToken);
+        log.info("UserTokenService.getRefreshToken() -> request.getParameter(), refreshToken: {}", refreshToken);
 
         //  refreshToken 토큰 검증
         JwtMsgCode errorCode = jwtUtil.validateToken(refreshToken);
@@ -183,7 +209,7 @@ public class UserTokenService {
         JwtResponseDto jwtResponseDto = JwtResponseDto.toDto("Bearer", newAccessToken, jwtUtil.getExpiresIn(newAccessToken),
                 newRefreshToken, jwtUtil.getExpiresIn(newRefreshToken));
 
-        log.info("jwt token refresh -> success");
+        log.info("UserTokenService.getRefreshToken() -> success");
         return Message.builder()
                 .status(JwtMsgCode.OK.getStatus())
                 .code(JwtMsgCode.OK.getCode())

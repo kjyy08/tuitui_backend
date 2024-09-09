@@ -12,12 +12,15 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import suftware.tuitui.common.enumType.S3ImagePath;
 import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.common.valid.ProfileValidationGroups;
 import suftware.tuitui.dto.request.ProfileRequestDto;
+import suftware.tuitui.dto.response.ImageResponseDto;
 import suftware.tuitui.dto.response.ProfileResponseDto;
+import suftware.tuitui.service.ProfileImageService;
 import suftware.tuitui.service.ProfileService;
 
 import java.util.HashMap;
@@ -30,6 +33,7 @@ import java.util.Optional;
 @Slf4j
 public class ProfileController {
     private final ProfileService profileService;
+    private final ProfileImageService profileImageService;
 
     private HashMap<String, String> getValidatorResult(BindingResult bindingResult) {
         HashMap<String, String> validatorResult = new HashMap<>();
@@ -91,7 +95,7 @@ public class ProfileController {
 
     //  프로필 생성, 이미지 미포함
     @PostMapping(value = "profiles/without-image")
-    public ResponseEntity<Message> createProfileJson(@RequestBody @Validated({ProfileValidationGroups.modify.class, ProfileValidationGroups.request.class}) ProfileRequestDto profileRequestDto,
+    public ResponseEntity<Message> createProfileWithJson(@RequestBody @Validated({ProfileValidationGroups.modify.class, ProfileValidationGroups.request.class}) ProfileRequestDto profileRequestDto,
                                                      BindingResult bindingResult) {
         if (bindingResult.hasErrors()){
             throw new TuiTuiException(TuiTuiMsgCode.PROFILE_CREATE_FAIL, getValidatorResult(bindingResult));
@@ -108,19 +112,48 @@ public class ProfileController {
     }
 
     //  프로필 생성, 이미지 포함
-    @PostMapping(value = "profiles/with-image", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Message> createProfileMultipart(@RequestPart(name = "request") @Valid ProfileRequestDto profileRequestDto,
-                                                        @RequestPart(name = "file", required = false) MultipartFile file, BindingResult bindingResult) {
+    @PostMapping(value = "profiles/with-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Message> createProfileWithImage(@RequestPart(name = "request") @Valid ProfileRequestDto profileRequestDto,
+                                                          @RequestPart(name = "file", required = true) MultipartFile file, BindingResult bindingResult) {
         if (bindingResult.hasErrors()){
             throw new TuiTuiException(TuiTuiMsgCode.PROFILE_CREATE_FAIL, getValidatorResult(bindingResult));
         }
 
-        Optional<ProfileResponseDto> profileResponseDto = profileService.saveProfile(profileRequestDto, file);
+        //  파일이 존재하는 경우에만 동작
+        if(file != null && !file.isEmpty()) {
+            ProfileResponseDto profileResponseDto = profileService.saveProfile(profileRequestDto)
+                    .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_CREATE_FAIL));
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
-                .status(HttpStatus.CREATED)
-                .message(TuiTuiMsgCode.PROFILE_CREATE_SUCCESS.getMsg())
-                .data(profileResponseDto)
+            ImageResponseDto imageResponseDto = profileImageService.uploadProfileImage(profileResponseDto.getProfileId(), S3ImagePath.PROFILE.getPath(), file)
+                    .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.IMAGE_S3_UPLOAD_FAIL));
+
+            profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
+
+            return ResponseEntity.status(TuiTuiMsgCode.PROFILE_CREATE_SUCCESS.getHttpStatus()).body(Message.builder()
+                    .status(TuiTuiMsgCode.PROFILE_CREATE_SUCCESS.getHttpStatus())
+                    .message(TuiTuiMsgCode.PROFILE_CREATE_SUCCESS.getMsg())
+                    .data(profileResponseDto)
+                    .build());
+        } else {
+            return ResponseEntity.status(TuiTuiMsgCode.PROFILE_CREATE_FAIL.getHttpStatus()).body(Message.builder()
+                    .status(TuiTuiMsgCode.PROFILE_CREATE_FAIL.getHttpStatus())
+                    .code(TuiTuiMsgCode.PROFILE_CREATE_FAIL.getCode())
+                    .message(TuiTuiMsgCode.PROFILE_CREATE_FAIL.getMsg())
+                    .build());
+        }
+    }
+
+    //  프로필 이미지 수정
+    @PostMapping(value = "profiles/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Message> updateProfileImage(@RequestPart(name = "profileId") Integer profileId,
+                                                      @RequestPart(name = "file", required = true) MultipartFile file){
+        ImageResponseDto imageResponseDto = profileImageService.updateProfileImage(profileId, S3ImagePath.PROFILE.getPath(), file)
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_UPDATE_FAIL));
+
+        return ResponseEntity.status(TuiTuiMsgCode.PROFILE_UPDATE_SUCCESS.getHttpStatus()).body(Message.builder()
+                .status(TuiTuiMsgCode.PROFILE_UPDATE_SUCCESS.getHttpStatus())
+                .message(TuiTuiMsgCode.PROFILE_UPDATE_SUCCESS.getMsg())
+                .data(imageResponseDto)
                 .build());
     }
 

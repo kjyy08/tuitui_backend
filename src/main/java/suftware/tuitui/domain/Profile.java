@@ -46,8 +46,11 @@ public class Profile {
     @Column(name = "birth")
     LocalDate birth;
 
-    @Column(name = "profile_image", length = 2083)
+    @Column(name = "profile_image")
     String profileImgPath;
+
+    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ProfileImage profileImage;
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;

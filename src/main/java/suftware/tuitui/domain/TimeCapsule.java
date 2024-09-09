@@ -50,14 +50,14 @@ public class TimeCapsule {
     @Column(name = "longitude", precision = 11, scale = 8)
     BigDecimal longitude;
 
+    @OneToMany(mappedBy = "timeCapsule", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TimeCapsuleImage> timeCapsuleImages;
+
     @OneToOne(mappedBy = "timeCapsule", cascade = CascadeType.ALL, orphanRemoval = true)
     private TimeCapsuleVisit timeCapsuleVisit;
 
     @OneToMany(mappedBy = "timeCapsule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TimeCapsuleLike> timeCapsuleLikes;
-
-    @OneToMany(mappedBy = "timeCapsule", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Image> images;
 
     @OneToMany(mappedBy = "timeCapsule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
