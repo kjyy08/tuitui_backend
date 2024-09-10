@@ -191,6 +191,7 @@ public class ProfileController {
     //  프로필 삭제
     @DeleteMapping(value = "profiles/{profileId}")
     public ResponseEntity<Message> deleteProfile(@PathVariable(name = "profileId") Integer profileId){
+        profileImageService.deleteProfileImage(profileId, S3ImagePath.PROFILE.getPath());
         profileService.deleteProfile(profileId);
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()

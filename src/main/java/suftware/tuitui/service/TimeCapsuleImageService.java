@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import suftware.tuitui.common.enumType.S3ImagePath;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.domain.TimeCapsule;
@@ -13,6 +14,7 @@ import suftware.tuitui.repository.TimeCapsuleImageRepository;
 import suftware.tuitui.repository.TimeCapsuleRepository;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -36,6 +38,18 @@ public class TimeCapsuleImageService {
             return Optional.of(ImageResponseDto.toDto(timeCapsuleImage));
         } catch (IOException e){
             throw new TuiTuiException(TuiTuiMsgCode.IMAGE_S3_UPLOAD_FAIL);
+        }
+    }
+
+    public void deleteCapsuleImage(Integer id){
+        List<TimeCapsuleImage> timeCapsuleImages = timeCapsuleImageRepository.findByCapsuleId(id);
+
+        if (!timeCapsuleImages.isEmpty()){
+            for (TimeCapsuleImage timeCapsuleImage : timeCapsuleImages){
+                String fileName = timeCapsuleImage.getImgUrl().substring(timeCapsuleImage.getImgUrl().lastIndexOf('/') + 1);
+                s3Service.delete(S3ImagePath.CAPSULE.getPath(), fileName);
+                timeCapsuleImageRepository.delete(timeCapsuleImage);
+            }
         }
     }
 }

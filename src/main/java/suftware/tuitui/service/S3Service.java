@@ -63,6 +63,7 @@ public class S3Service {
 
         metadata.setContentLength(file.getSize());
         metadata.setContentType(file.getContentType());
+
         amazonS3.putObject(new PutObjectRequest(bucketName, filePath, file.getInputStream(), metadata));
 
         return amazonS3.getUrl(folderPath.substring(0, folderPath.length() - 1), fileName).toString().replace(bucketUrl, cloudFrontUrl);

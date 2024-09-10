@@ -75,7 +75,7 @@ public class ProfileImageService {
             }
 
             String currentFileUrl = profileImage.get().getImgUrl();
-            String currentFileName = currentFileUrl.substring(currentFileUrl.lastIndexOf('/') + 1, currentFileUrl.lastIndexOf('.'));
+            String currentFileName = currentFileUrl.substring(currentFileUrl.lastIndexOf('/') + 1);
 
             s3Service.delete(path, currentFileName);
 
@@ -93,10 +93,15 @@ public class ProfileImageService {
         ProfileImage profileImage = profileImageRepository.findByProfileId(profileId)
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
 
+        //  기본 프로필 사진일 경우에는 사진을 지우지 않고 값을 반환
+        if (profileImage.getImgUrl().equals(getBasicProfileUrl())){
+            return Optional.of(ImageResponseDto.toDto(profileImage));
+        }
+
         String currentFileUrl = profileImage.getImgUrl();
-        String currentFileName = currentFileUrl.substring(currentFileUrl.lastIndexOf('/') + 1, currentFileUrl.lastIndexOf('.'));
+        String currentFileName = currentFileUrl.substring(currentFileUrl.lastIndexOf('/') + 1);
         //  기본 프로필 이미지 url로 변경
-        profileImage.setImgUrl(currentFileUrl.substring(0, currentFileUrl.lastIndexOf('/')));
+        profileImage.setImgUrl(getBasicProfileUrl());
 
         //  s3에 업로드된 프로필 이미지 삭제
         s3Service.delete(path, currentFileName);

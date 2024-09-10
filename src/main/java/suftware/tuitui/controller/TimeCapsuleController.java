@@ -149,6 +149,7 @@ public class TimeCapsuleController {
     //  캡슐 삭제
     @DeleteMapping(value = "capsules/{capsuleId}")
     public ResponseEntity<Message> deleteCapsule(@PathVariable(name = "capsuleId") Integer id){
+        timeCapsuleImageService.deleteCapsuleImage(id);
         timeCapsuleService.deleteCapsule(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
