@@ -26,16 +26,17 @@ public class FollowController {
 
         //  팔로워 및 팔로잉 하는 유저가 없음
         if (followerList == null && followingList == null){
-            return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
-                    .status(HttpStatus.OK)
+            return ResponseEntity.status(TuiTuiMsgCode.FOLLOWS_NOT_FOUND.getHttpStatus()).body(Message.builder()
+                    .status(TuiTuiMsgCode.FOLLOWS_NOT_FOUND.getHttpStatus())
+                    .code(TuiTuiMsgCode.FOLLOWS_NOT_FOUND.getCode())
                     .message(TuiTuiMsgCode.FOLLOWS_NOT_FOUND.getMsg())
                     .build());
         }
         else {
             FollowResponseDto followResponseDtoList = FollowResponseDto.toDto(followerList, followingList);
 
-            return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
-                    .status(HttpStatus.OK)
+            return ResponseEntity.status(TuiTuiMsgCode.FOLLOWS_READ_SUCCESS.getHttpStatus()).body(Message.builder()
+                    .status(TuiTuiMsgCode.FOLLOWS_READ_SUCCESS.getHttpStatus())
                     .message(TuiTuiMsgCode.FOLLOWS_READ_SUCCESS.getMsg())
                     .data(followResponseDtoList)
                     .build());
@@ -46,8 +47,8 @@ public class FollowController {
     public ResponseEntity<Message> createFollow(@RequestBody FollowRequestDto followRequestDto){
         followService.saveFollow(followRequestDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
-                .status(HttpStatus.OK)
+        return ResponseEntity.status(TuiTuiMsgCode.FOLLOWS_READ_SUCCESS.getHttpStatus()).body(Message.builder()
+                .status(TuiTuiMsgCode.FOLLOWS_READ_SUCCESS.getHttpStatus())
                 .message(TuiTuiMsgCode.FOLLOWS_CREATE_SUCCESS.getMsg())
                 .build());
     }
@@ -56,8 +57,8 @@ public class FollowController {
     public ResponseEntity<Message> deleteFollow(@RequestBody FollowRequestDto followRequestDto){
         followService.deleteFollow(followRequestDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
-                .status(HttpStatus.OK)
+        return ResponseEntity.status(TuiTuiMsgCode.FOLLOWS_READ_SUCCESS.getHttpStatus()).body(Message.builder()
+                .status(TuiTuiMsgCode.FOLLOWS_READ_SUCCESS.getHttpStatus())
                 .message(TuiTuiMsgCode.FOLLOWS_DELETE_SUCCESS.getMsg())
                 .build());
     }

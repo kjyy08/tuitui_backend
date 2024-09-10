@@ -13,14 +13,14 @@ import java.util.List;
 @Repository
 public interface FollowRepository extends JpaRepository<Follow, Integer> {
     @Query("SELECT " +
-            "NEW suftware.tuitui.dto.response.FollowDto(p.profileId, p.nickname, p.name, p.profileImgPath) " +
+            "NEW suftware.tuitui.dto.response.FollowDto(p.profileId, p.nickname, p.name, p.profileImage.imgUrl) " +
             "FROM Follow f " +
             "LEFT JOIN Profile p ON p.profileId = f.following.profileId " +
             "WHERE f.follower.profileId = :followerId")
     List<FollowDto> findByFollower(@Param("followerId") Integer id);
 
     @Query("SELECT " +
-            "NEW suftware.tuitui.dto.response.FollowDto(p.profileId, p.nickname, p.name, profileImgPath) " +
+            "NEW suftware.tuitui.dto.response.FollowDto(p.profileId, p.nickname, p.name, p.profileImage.imgUrl) " +
             "FROM Follow f " +
             "LEFT JOIN Profile p ON p.profileId = f.follower.profileId " +
             "WHERE f.following.profileId = :followingId")

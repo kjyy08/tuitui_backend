@@ -10,6 +10,7 @@ server:
 spring:
   jwt:
     admin-key: ${ADMIN_SECRET_KEY}
+    manager-key: ${MANAGER_SECRET_KEY}
     secret-key: ${JWT_SECRET_KEY}
     access-expires-in: 3600000
     refresh-expires-in: 2592000000

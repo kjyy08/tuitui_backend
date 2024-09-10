@@ -105,7 +105,10 @@ public class ProfileController {
         ProfileResponseDto profileResponseDto = profileService.saveProfile(profileRequestDto)
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_CREATE_FAIL));
 
-        profileResponseDto.setProfileImgPath(profileImageService.getBasicProfileUrl());
+        ImageResponseDto imageResponseDto = profileImageService.createProfileBasicImage(profileResponseDto.getProfileId())
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_CREATE_FAIL));
+
+        profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
                 .status(HttpStatus.CREATED)

@@ -16,7 +16,9 @@ public class CommentResponseDto {
     Integer commentId;
     Integer parentCommentId;
     String comment;
+    Integer profileId;
     String nickname;
+    String profileImgPath;
     String updateAt;
     Boolean modified;
     List<Comment> childCommentList;
@@ -25,7 +27,9 @@ public class CommentResponseDto {
         CommentResponseDto.CommentResponseDtoBuilder builder = CommentResponseDto.builder()
                 .commentId(comment.getCommentId())
                 .comment(comment.getComment())
+                .profileId(comment.getProfile().getProfileId())
                 .nickname(comment.getProfile().getNickname())
+                .profileImgPath(comment.getProfile().getProfileImage().getImgUrl())
                 .updateAt(comment.getUpdateAt().toString())
                 .modified(comment.getModified());
 
@@ -40,7 +44,9 @@ public class CommentResponseDto {
         CommentResponseDto.CommentResponseDtoBuilder builder = CommentResponseDto.builder()
                 .commentId(comment.getCommentId())
                 .comment(comment.getComment())
+                .profileId(comment.getProfile().getProfileId())
                 .nickname(comment.getProfile().getNickname())
+                .profileImgPath(comment.getProfile().getProfileImage().getImgUrl())
                 .updateAt(comment.getUpdateAt().toString())
                 .modified(comment.getModified())
                 .childCommentList(childCommentList);

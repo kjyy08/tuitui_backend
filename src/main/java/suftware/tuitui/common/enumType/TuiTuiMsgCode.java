@@ -76,6 +76,7 @@ public enum TuiTuiMsgCode {
     COMMENT_LIKE_EXIST(HttpStatus.BAD_REQUEST, "COMMENT-008", "좋아요가 이미 존재함"),
 
     FOLLOWS_EXIST(HttpStatus.BAD_REQUEST, "FOLLOW-004", "이미 팔로우 중인 유저"),
+    FOLLOWS_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "FOLLOW-008", "자기 자신을 팔로우 할 수 없음"),
 
     IMAGE_CREATE_FAIL(HttpStatus.BAD_REQUEST, "IMAGE-003", "이미지 생성 실패"),
     IMAGE_S3_UPLOAD_FAIL(HttpStatus.BAD_REQUEST, "IMAGE-004", "S3 이미지 업로드 실패"),

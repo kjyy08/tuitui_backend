@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 //  new AntPathRequestMatcher("/api/login"),
                                 //  new AntPathRequestMatcher("/api/signup"),
+                                new AntPathRequestMatcher("/api/token/admin"),
                                 new AntPathRequestMatcher("/api/token")).permitAll()
                         .anyRequest().authenticated())
                 //  24.08.30 자체 회원가입을 소셜로그인으로 대체하며 미사용

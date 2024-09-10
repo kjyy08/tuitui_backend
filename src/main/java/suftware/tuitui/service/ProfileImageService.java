@@ -38,6 +38,7 @@ public class ProfileImageService {
         return Optional.of(ImageResponseDto.toDto(profileImage));
     }
 
+    //  프로필 사진 생성 및 업로드
     public Optional<ImageResponseDto> uploadProfileImage(Integer profileId, String path, MultipartFile file){
         try {
             Profile profile = profileRepository.findById(profileId)
@@ -54,6 +55,7 @@ public class ProfileImageService {
         }
     }
 
+    //  프로필 사진 업데이트
     @Transactional
     public Optional<ImageResponseDto> updateProfileImage(Integer profileId, String path, MultipartFile file){
         try {
@@ -98,6 +100,17 @@ public class ProfileImageService {
 
         //  s3에 업로드된 프로필 이미지 삭제
         s3Service.delete(path, currentFileName);
+        return Optional.of(ImageResponseDto.toDto(profileImage));
+    }
+
+    public Optional<ImageResponseDto> createProfileBasicImage(Integer profileId){
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
+        ProfileImage profileImage = profileImageRepository.save(ProfileImage.builder()
+                .profile(profile)
+                .imgUrl(getBasicProfileUrl())
+                .build());
+
         return Optional.of(ImageResponseDto.toDto(profileImage));
     }
 

@@ -10,8 +10,6 @@ import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.jwt.JwtMsgCode;
 import suftware.tuitui.service.UserTokenService;
 
-import java.io.UnsupportedEncodingException;
-
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/")
@@ -42,7 +40,7 @@ public class UserTokenController {
             }
             //  토큰 갱신 요청
             else if (grantType.equals("refresh")) {
-                message = userTokenService.getRefreshToken(request, response);
+                message = userTokenService.reissue(request, response);
             }
             //  잘못된 접근
             else {
@@ -59,6 +57,15 @@ public class UserTokenController {
                     .code(JwtMsgCode.BAD_REQUEST.getCode())
                     .build();
         }
+
+        return ResponseEntity.status(message.getStatus()).body(message);
+    }
+
+    //  admin, manager 계정 등록
+    @GetMapping(value = "token/admin")
+    public ResponseEntity<Message> updateRole(@RequestParam(value = "account", required = true) String account,
+                                              @RequestParam(value = "role_secret_key", required = true) String roleSecretKey){
+        Message message = userTokenService.generateAdminToken(account, roleSecretKey);
 
         return ResponseEntity.status(message.getStatus()).body(message);
     }

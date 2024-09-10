@@ -20,6 +20,8 @@ public class TimeCapsuleResponseDto {
 
     String nickname;
 
+    String profileImgPath;
+
     String content;
 
     String location;
@@ -41,6 +43,7 @@ public class TimeCapsuleResponseDto {
                 .capsuleId(timeCapsule.getTimeCapsuleId())
                 .profileId(timeCapsule.getProfile().getProfileId())
                 .nickname(timeCapsule.getProfile().getNickname())
+                .profileImgPath(timeCapsule.getProfile().getProfileImage().getImgUrl())
                 .writeAt(timeCapsule.getWriteAt().toString())
                 .updateAt(timeCapsule.getUpdateAt().toString())
                 .content(timeCapsule.getContent())
@@ -56,6 +59,7 @@ public class TimeCapsuleResponseDto {
                 .capsuleId(timeCapsule.getTimeCapsuleId())
                 .profileId(timeCapsule.getProfile().getProfileId())
                 .nickname(timeCapsule.getProfile().getNickname())
+                .profileImgPath(timeCapsule.getProfile().getProfileImage().getImgUrl())
                 .writeAt(timeCapsule.getWriteAt().toString())
                 .updateAt(timeCapsule.getUpdateAt().toString())
                 .content(timeCapsule.getContent())

@@ -51,6 +51,11 @@ public class FollowService {
 
     //  팔로우 저장
     public void saveFollow(FollowRequestDto followRequestDto){
+        //  자기 자신을 팔로윙 한 경우 예외
+        if (followRequestDto.getFollowerId().equals(followRequestDto.getFollowingId())){
+            throw new TuiTuiException(TuiTuiMsgCode.FOLLOWS_NOT_ALLOWED);
+        }
+
         if (!followRepository.existsByFollower_ProfileIdAndFollowing_ProfileId(followRequestDto.getFollowerId(),
                 followRequestDto.getFollowingId())) {
             Profile follower = profileRepository.findById(followRequestDto.getFollowerId())

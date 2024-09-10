@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +39,11 @@ public class UserTokenService {
     private final JwtUtil jwtUtil;
     private final KakaoAuthService kakaoAuthService;
     private final NaverAuthService naverAuthService;
+
+    @Value("${spring.jwt.admin-key}")
+    private String ADMIN_KEY;
+    @Value("${spring.jwt.secret-key}")
+    private String MANAGER_KEY;
 
     //  파라미터로 넘겨받은 account와 소셜 로그인에서 받은 account 비교하여 인증
     public boolean authenticate(HttpServletRequest request, HttpServletResponse response) {
@@ -108,7 +114,7 @@ public class UserTokenService {
                     .account(account)
                     .createdAt(new Timestamp(System.currentTimeMillis()))
                     .role(Role.USER)
-                    .snsType(snsType)
+                    .snsType(snsType.toLowerCase())
                     .build();
 
             userRepository.save(user);
@@ -161,7 +167,7 @@ public class UserTokenService {
 
     //  토큰 갱신 요청
     @Transactional
-    public Message getRefreshToken(HttpServletRequest request, HttpServletResponse response) {
+    public Message reissue(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken;
 
         try {
@@ -170,7 +176,7 @@ public class UserTokenService {
             throw new JwtException(JwtMsgCode.EMPTY);
         }
 
-        log.info("UserTokenService.getRefreshToken() -> request.getParameter(), refreshToken: {}", refreshToken);
+        log.info("UserTokenService.reissue() -> request.getParameter(), refreshToken: {}", refreshToken);
 
         //  refreshToken 토큰 검증
         JwtMsgCode errorCode = jwtUtil.validateToken(refreshToken);
@@ -209,7 +215,7 @@ public class UserTokenService {
         JwtResponseDto jwtResponseDto = JwtResponseDto.toDto("Bearer", newAccessToken, jwtUtil.getExpiresIn(newAccessToken),
                 newRefreshToken, jwtUtil.getExpiresIn(newRefreshToken));
 
-        log.info("UserTokenService.getRefreshToken() -> success");
+        log.info("UserTokenService.reissue() -> success");
         return Message.builder()
                 .status(JwtMsgCode.OK.getStatus())
                 .code(JwtMsgCode.OK.getCode())
@@ -217,4 +223,48 @@ public class UserTokenService {
                 .data(jwtResponseDto)
                 .build();
     }
+
+    public Message generateAdminToken(String account, String secretKey){
+        log.info("UserTokenService.generateAdminToken() -> account: {}, key: {}", account, secretKey);
+        User user = userRepository.findByAccount(account)
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
+
+        String newAccessToken = null;
+        String newRefreshToken = null;
+
+        if (secretKey.equals(ADMIN_KEY)){
+            //  엑세스 토큰 발급
+            newAccessToken = jwtUtil.createJwt("access", account, Role.ADMIN.getValue());
+            //  리프레시 토큰 발급
+            newRefreshToken = jwtUtil.createJwt("refresh", account, Role.ADMIN.getValue());
+        } else if (secretKey.equals(MANAGER_KEY)){
+            //  엑세스 토큰 발급
+            newAccessToken = jwtUtil.createJwt("access", account, Role.MANAGER.getValue());
+            //  리프레시 토큰 발급
+            newRefreshToken = jwtUtil.createJwt("refresh", account, Role.MANAGER.getValue());
+        } else {
+            log.info("UserTokenService.generateAdminToken() -> fail, invalid authorization request");
+            throw new JwtException(JwtMsgCode.BAD_REQUEST);
+        }
+
+        //  기존에 있던 리프레시 삭제 후 저장
+        userTokenRepository.deleteByAccount(account);
+        userTokenRepository.save(UserToken.builder()
+                .account(account)
+                .refresh(newRefreshToken)
+                .expiresIn(new Timestamp(System.currentTimeMillis() + (jwtUtil.getExpiresIn(newRefreshToken) * 1000)))
+                .build());
+
+        JwtResponseDto jwtResponseDto = JwtResponseDto.toDto("Bearer", newAccessToken, jwtUtil.getExpiresIn(newAccessToken),
+                newRefreshToken, jwtUtil.getExpiresIn(newRefreshToken));
+
+        log.info("UserTokenService.generateAdminToken() -> success");
+        return Message.builder()
+                .status(JwtMsgCode.OK.getStatus())
+                .code(JwtMsgCode.OK.getCode())
+                .message(JwtMsgCode.OK.getMsg())
+                .data(jwtResponseDto)
+                .build();
+    }
+    
 }
