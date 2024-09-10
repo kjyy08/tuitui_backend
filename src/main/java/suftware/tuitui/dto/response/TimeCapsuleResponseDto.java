@@ -2,7 +2,6 @@ package suftware.tuitui.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
-import suftware.tuitui.domain.Hashtag;
 import suftware.tuitui.domain.TimeCapsule;
 
 import java.math.BigDecimal;
@@ -17,7 +16,9 @@ import java.util.List;
 public class TimeCapsuleResponseDto {
     Integer capsuleId;
 
-    String writeUser;
+    Integer profileId;
+
+    String nickname;
 
     String content;
 
@@ -31,8 +32,6 @@ public class TimeCapsuleResponseDto {
 
     List<ImageResponseDto> imageList;
 
-    List<Hashtag> tagList;
-
     private BigDecimal latitude;
 
     private BigDecimal longitude;
@@ -40,7 +39,8 @@ public class TimeCapsuleResponseDto {
     public static TimeCapsuleResponseDto toDTO(TimeCapsule timeCapsule) {
         return TimeCapsuleResponseDto.builder()
                 .capsuleId(timeCapsule.getTimeCapsuleId())
-                .writeUser(timeCapsule.getProfile().getNickname())
+                .profileId(timeCapsule.getProfile().getProfileId())
+                .nickname(timeCapsule.getProfile().getNickname())
                 .writeAt(timeCapsule.getWriteAt().toString())
                 .updateAt(timeCapsule.getUpdateAt().toString())
                 .content(timeCapsule.getContent())
@@ -54,7 +54,8 @@ public class TimeCapsuleResponseDto {
     public static TimeCapsuleResponseDto toDTO(TimeCapsule timeCapsule, List<ImageResponseDto> imageList) {
         return TimeCapsuleResponseDto.builder()
                 .capsuleId(timeCapsule.getTimeCapsuleId())
-                .writeUser(timeCapsule.getProfile().getNickname())
+                .profileId(timeCapsule.getProfile().getProfileId())
+                .nickname(timeCapsule.getProfile().getNickname())
                 .writeAt(timeCapsule.getWriteAt().toString())
                 .updateAt(timeCapsule.getUpdateAt().toString())
                 .content(timeCapsule.getContent())

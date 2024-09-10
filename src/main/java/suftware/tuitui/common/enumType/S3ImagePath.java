@@ -12,7 +12,7 @@ public enum S3ImagePath {
 
     //  Profile
     PROFILE("image/profile/"),
-    PROFILE_THUMBNAIL("image/profile/thumbnail");
+    PROFILE_THUMBNAIL("image/profile/thumbnail/");
 
     private final String path;
 }

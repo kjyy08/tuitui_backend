@@ -11,6 +11,7 @@ import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.dto.request.TimeCapsuleRequestDto;
 import suftware.tuitui.dto.response.ImageResponseDto;
+import suftware.tuitui.dto.response.TimeCapsulePageResponse;
 import suftware.tuitui.dto.response.TimeCapsuleResponseDto;
 import suftware.tuitui.service.TimeCapsuleImageService;
 import suftware.tuitui.service.TimeCapsuleService;
@@ -32,13 +33,15 @@ public class TimeCapsuleController {
 
     //  전체 캡슐 조회
     @GetMapping(value = "capsules")
-    public ResponseEntity<Message> readCapsuleList() {
-        List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = timeCapsuleService.getCapsuleList();
+    public ResponseEntity<Message> readCapsuleList(@RequestParam(name = "pageNo", defaultValue = "0", required = false) Integer pageNo,
+                                                   @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+                                                   @RequestParam(name = "sortBy", defaultValue = "timeCapsuleId", required = false) String sortBy) {
+        Optional<TimeCapsulePageResponse> timeCapsulePageResponse = timeCapsuleService.getCapsuleList(pageNo, pageSize, sortBy);
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
                 .message(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getMsg())
-                .data(timeCapsuleResponseDtoList)
+                .data(timeCapsulePageResponse)
                 .build());
     }
 
@@ -56,25 +59,31 @@ public class TimeCapsuleController {
 
     //  프로필 id 기준 타임 캡슐 조회
     @GetMapping(value = "profiles/{profileId}/capsules")
-    public ResponseEntity<Message> readCapsuleByWriteUser(@PathVariable(name = "profileId") Integer writeUserId) {
-        List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = timeCapsuleService.getCapsuleByWriteUser(writeUserId);
+    public ResponseEntity<Message> readCapsuleByWriteUser(@PathVariable(name = "profileId") Integer writeUserId,
+                                                          @RequestParam(name = "pageNo", defaultValue = "0", required = false) Integer pageNo,
+                                                          @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+                                                          @RequestParam(name = "sortBy", defaultValue = "timeCapsuleId", required = false) String sortBy) {
+        Optional<TimeCapsulePageResponse> timeCapsulePageResponse = timeCapsuleService.getCapsuleByWriteUser(writeUserId, pageNo, pageSize, sortBy);
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
                 .message(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getMsg())
-                .data(timeCapsuleResponseDtoList)
+                .data(timeCapsulePageResponse)
                 .build());
     }
 
     //  닉네임 기준 타임 캡슐 조회
     @GetMapping(value = "profiles/nicknames/{nickname}/capsules")
-    public ResponseEntity<Message> readCapsuleByNickname(@PathVariable(name = "nickname") String nickname){
-        List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = timeCapsuleService.getCapsuleByNickname(nickname);
+    public ResponseEntity<Message> readCapsuleByNickname(@PathVariable(name = "nickname") String nickname,
+                                                         @RequestParam(name = "pageNo", defaultValue = "0", required = false) Integer pageNo,
+                                                         @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+                                                         @RequestParam(name = "sortBy", defaultValue = "timeCapsuleId", required = false) String sortBy){
+        Optional<TimeCapsulePageResponse> timeCapsulePageResponse = timeCapsuleService.getCapsuleByNickname(nickname, pageNo, pageSize, sortBy);
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
                 .message(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getMsg())
-                .data(timeCapsuleResponseDtoList)
+                .data(timeCapsulePageResponse)
                 .build());
     }
 

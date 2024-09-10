@@ -102,7 +102,10 @@ public class ProfileController {
         }
 
         //  프로필 생성
-        Optional<ProfileResponseDto> profileResponseDto = profileService.saveProfile(profileRequestDto);
+        ProfileResponseDto profileResponseDto = profileService.saveProfile(profileRequestDto)
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_CREATE_FAIL));
+
+        profileResponseDto.setProfileImgPath(profileImageService.getBasicProfileUrl());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
                 .status(HttpStatus.CREATED)
@@ -146,10 +149,18 @@ public class ProfileController {
     //  프로필 이미지 수정
     @PostMapping(value = "profiles/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Message> updateProfileImage(@RequestPart(name = "profileId") Integer profileId,
-                                                      @RequestPart(name = "file", required = true) MultipartFile file){
-        ImageResponseDto imageResponseDto = profileImageService.updateProfileImage(profileId, S3ImagePath.PROFILE.getPath(), file)
-                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_UPDATE_FAIL));
+                                                      @RequestPart(name = "file", required = false) MultipartFile file){
+        ImageResponseDto imageResponseDto;
 
+        //  파일이 비어있지 않으면 해당 이미지로 변경, 그렇지 않으면 기본 프로필 이미지로 변경
+        if(file != null && !file.isEmpty()) {
+            imageResponseDto = profileImageService.updateProfileImage(profileId, S3ImagePath.PROFILE.getPath(), file)
+                    .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_UPDATE_FAIL));
+        } else {
+            //  기본 프로필 이미지로 변경
+            imageResponseDto = profileImageService.deleteProfileImage(profileId, S3ImagePath.PROFILE.getPath())
+                    .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_UPDATE_FAIL));
+        }
         return ResponseEntity.status(TuiTuiMsgCode.PROFILE_UPDATE_SUCCESS.getHttpStatus()).body(Message.builder()
                 .status(TuiTuiMsgCode.PROFILE_UPDATE_SUCCESS.getHttpStatus())
                 .message(TuiTuiMsgCode.PROFILE_UPDATE_SUCCESS.getMsg())

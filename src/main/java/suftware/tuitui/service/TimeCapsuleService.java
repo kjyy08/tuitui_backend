@@ -2,6 +2,10 @@ package suftware.tuitui.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import suftware.tuitui.common.exception.TuiTuiException;
@@ -11,6 +15,7 @@ import suftware.tuitui.domain.TimeCapsule;
 import suftware.tuitui.domain.TimeCapsuleImage;
 import suftware.tuitui.dto.request.TimeCapsuleRequestDto;
 import suftware.tuitui.dto.response.ImageResponseDto;
+import suftware.tuitui.dto.response.TimeCapsulePageResponse;
 import suftware.tuitui.dto.response.TimeCapsuleResponseDto;
 import suftware.tuitui.repository.ProfileRepository;
 import suftware.tuitui.repository.TimeCapsuleImageRepository;
@@ -20,9 +25,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
 @RequiredArgsConstructor
@@ -53,8 +55,11 @@ public class TimeCapsuleService {
 
     //  전체 캡슐 조회
     @Transactional(readOnly = true)
-    public List<TimeCapsuleResponseDto> getCapsuleList() {
-        List<TimeCapsule> timeCapsuleList = timeCapsuleRepository.findAll();
+    public Optional<TimeCapsulePageResponse> getCapsuleList(Integer pageNo, Integer pageSize, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
+        Page<TimeCapsule> capsulePage = timeCapsuleRepository.findAll(pageable);
+
+        List<TimeCapsule> timeCapsuleList = capsulePage.getContent();
 
         if (timeCapsuleList.isEmpty()){
             throw new TuiTuiException(TuiTuiMsgCode.CAPSULE_NOT_FOUND);
@@ -73,7 +78,14 @@ public class TimeCapsuleService {
             }
         }
 
-        return timeCapsuleResponseDtoList;
+        return Optional.of(TimeCapsulePageResponse.builder()
+                .contents(timeCapsuleResponseDtoList)
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalElements(Long.valueOf(capsulePage.getTotalElements()).intValue())
+                .totalPages(capsulePage.getTotalPages())
+                .lastPage(capsulePage.isLast())
+                .build());
     }
 
     //  캡슐 id 기준 조회
@@ -92,10 +104,13 @@ public class TimeCapsuleService {
         }
     }
 
-    //  글쓴이 id 기준 조회
+    //  프로필 id 기준 조회
     @Transactional(readOnly = true)
-    public List<TimeCapsuleResponseDto> getCapsuleByWriteUser(Integer id) {
-        List<TimeCapsule> timeCapsuleList = timeCapsuleRepository.findByProfile_ProfileId(id);
+    public Optional<TimeCapsulePageResponse> getCapsuleByWriteUser(Integer profileId, Integer pageNo, Integer pageSize, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
+        Page<TimeCapsule> capsulePage = timeCapsuleRepository.findByProfile_ProfileId(profileId, pageable);
+
+        List<TimeCapsule> timeCapsuleList = capsulePage.getContent();
 
         if (timeCapsuleList.isEmpty()){
             throw new TuiTuiException(TuiTuiMsgCode.CAPSULE_NOT_FOUND);
@@ -114,13 +129,23 @@ public class TimeCapsuleService {
             }
         }
 
-        return timeCapsuleResponseDtoList;
+        return Optional.of(TimeCapsulePageResponse.builder()
+                .contents(timeCapsuleResponseDtoList)
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalElements(Long.valueOf(capsulePage.getTotalElements()).intValue())
+                .totalPages(capsulePage.getTotalPages())
+                .lastPage(capsulePage.isLast())
+                .build());
     }
 
     //  해당 닉네임의 캡슐 목록 조회
     @Transactional(readOnly = true)
-    public List<TimeCapsuleResponseDto> getCapsuleByNickname(String nickname) {
-        List<TimeCapsule> timeCapsuleList = timeCapsuleRepository.findByProfile_Nickname(nickname);
+    public Optional<TimeCapsulePageResponse> getCapsuleByNickname(String nickname, Integer pageNo, Integer pageSize, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
+        Page<TimeCapsule> capsulePage = timeCapsuleRepository.findByProfile_Nickname(nickname, pageable);
+
+        List<TimeCapsule> timeCapsuleList = capsulePage.getContent();
 
         if (timeCapsuleList.isEmpty()){
             throw new TuiTuiException(TuiTuiMsgCode.CAPSULE_NOT_FOUND);
@@ -139,7 +164,14 @@ public class TimeCapsuleService {
             }
         }
 
-        return timeCapsuleResponseDtoList;
+        return Optional.of(TimeCapsulePageResponse.builder()
+                .contents(timeCapsuleResponseDtoList)
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalElements(Long.valueOf(capsulePage.getTotalElements()).intValue())
+                .totalPages(capsulePage.getTotalPages())
+                .lastPage(capsulePage.isLast())
+                .build());
     }
 
     //  캡슐 저장

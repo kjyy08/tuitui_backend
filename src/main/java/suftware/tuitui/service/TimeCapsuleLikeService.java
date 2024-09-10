@@ -27,6 +27,7 @@ public class TimeCapsuleLikeService {
     private final ProfileRepository profileRepository;
 
     //  캡슐 좋아요를 누른 유저 목록 조회
+    @Transactional(readOnly = true)
     public List<ProfileResponseDto> getCapsuleLike(Integer id){
         List<TimeCapsuleLike> timeCapsuleLikeList = timeCapsuleLikeRepository.findByTimeCapsule_TimeCapsuleId(id);
         List<ProfileResponseDto> profileResponseDtoList = new ArrayList<>();
