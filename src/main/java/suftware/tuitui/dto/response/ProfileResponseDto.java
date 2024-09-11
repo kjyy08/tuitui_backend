@@ -33,22 +33,7 @@ public class ProfileResponseDto {
                 .gender(profile.getGender().toString())
                 .describeSelf(profile.getDescribeSelf())
                 .birth(profile.getBirth())
-                .profileImgPath(profile.getProfileImgPath());
-
-        return builder.build();
-    }
-
-    public static ProfileResponseDto toDTO(Profile profile, String profileImgPath){
-        ProfileResponseDtoBuilder builder = ProfileResponseDto.builder()
-                .profileId(profile.getProfileId())
-                .userId(profile.getUser().getUserId())
-                .name(profile.getName())
-                .phone(profile.getPhone())
-                .nickname(profile.getNickname())
-                .gender(profile.getGender().toString())
-                .describeSelf(profile.getDescribeSelf())
-                .birth(profile.getBirth())
-                .profileImgPath(profileImgPath);
+                .profileImgPath(profile.getProfileImage().getImgUrl());
 
         return builder.build();
     }

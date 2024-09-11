@@ -27,6 +27,7 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final UserRepository userRepository;
 
+
     public Optional<ProfileResponseDto> getProfile(Integer id) {
         Profile profile = profileRepository.findById(id)
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
