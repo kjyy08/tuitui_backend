@@ -107,6 +107,10 @@ public class TimeCapsuleService {
     //  프로필 id 기준 조회
     @Transactional(readOnly = true)
     public Optional<TimeCapsulePageResponse> getCapsuleByWriteUser(Integer profileId, Integer pageNo, Integer pageSize, String sortBy) {
+        if (!profileRepository.existsById(profileId)){
+            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND);
+        }
+
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
         Page<TimeCapsule> capsulePage = timeCapsuleRepository.findByProfile_ProfileId(profileId, pageable);
 
@@ -142,6 +146,10 @@ public class TimeCapsuleService {
     //  해당 닉네임의 캡슐 목록 조회
     @Transactional(readOnly = true)
     public Optional<TimeCapsulePageResponse> getCapsuleByNickname(String nickname, Integer pageNo, Integer pageSize, String sortBy) {
+        if (!profileRepository.existsByNickname(nickname)){
+            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND);
+        }
+
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
         Page<TimeCapsule> capsulePage = timeCapsuleRepository.findByProfile_Nickname(nickname, pageable);
 

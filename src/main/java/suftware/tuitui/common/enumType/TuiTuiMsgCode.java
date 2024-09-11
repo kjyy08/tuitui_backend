@@ -101,7 +101,10 @@ public enum TuiTuiMsgCode {
 
     FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "FILE-001", "파일을 찾을 수 없음"),
 
-    IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "IMAGE-005", "이미지를 찾을 수 없음");
+    IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "IMAGE-005", "이미지를 찾을 수 없음"),
+
+    //  500
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SERVER-001", "서버 내 스크립트 오류");
 
     private final HttpStatus httpStatus;
     private final String code;

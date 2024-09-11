@@ -157,29 +157,4 @@ public class TimeCapsuleController {
                 .message(TuiTuiMsgCode.CAPSULE_DELETE_SUCCESS.getMsg())
                 .build());
     }
-
-
-    //  임시 테스트용 api
-    //  추후 파라미터값으로 받은 값만큼 타임캡슐 반환하는 api 로 작성 예정
-    @GetMapping(value = "capsules/test")
-    public ResponseEntity<Message> capsuleTest(){
-        Message message = new Message();
-        List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = new ArrayList<>();
-
-        for (int i = 20; i <= 40; i++) {
-            Optional<TimeCapsuleResponseDto> timeCapsuleResponseDto = timeCapsuleService.getCapsule(i);
-            timeCapsuleResponseDto.ifPresent(timeCapsuleResponseDtoList::add);
-        }
-
-        if (timeCapsuleResponseDtoList.isEmpty()){
-            throw new TuiTuiException(TuiTuiMsgCode.CAPSULE_NOT_FOUND);
-        }
-        else {
-            return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
-                    .status(HttpStatus.OK)
-                    .message(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getMsg())
-                    .data(timeCapsuleResponseDtoList)
-                    .build());
-        }
-    }
 }
