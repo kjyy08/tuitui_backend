@@ -12,8 +12,8 @@ spring:
     admin-key: ${ADMIN_SECRET_KEY}
     manager-key: ${MANAGER_SECRET_KEY}
     secret-key: ${JWT_SECRET_KEY}
-    access-expires-in: 3600000
-    refresh-expires-in: 2592000000
+    access-expires-in: 3600000 # 1시간
+    refresh-expires-in: 2592000000 # 30일
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${SPRING_SQL_URL}

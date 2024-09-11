@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 @Component
+@Slf4j
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
@@ -23,6 +25,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info(request.getContentType());
         //  헤더에서 access키에 담긴 token을 꺼냄
         String accessToken = request.getHeader("Authorization");
         JwtMsgCode errorCode = null;
