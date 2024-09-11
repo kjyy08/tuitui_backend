@@ -10,6 +10,7 @@ import suftware.tuitui.common.enumType.Gender;
 import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.domain.Profile;
+import suftware.tuitui.domain.ProfileImage;
 import suftware.tuitui.domain.User;
 import suftware.tuitui.dto.request.ProfileRequestDto;
 import suftware.tuitui.dto.response.ProfileResponseDto;

@@ -17,6 +17,7 @@ import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.common.valid.ProfileValidationGroups;
+import suftware.tuitui.domain.ProfileImage;
 import suftware.tuitui.dto.request.ProfileRequestDto;
 import suftware.tuitui.dto.response.ImageResponseDto;
 import suftware.tuitui.dto.response.ProfileResponseDto;
@@ -50,6 +51,13 @@ public class ProfileController {
     public ResponseEntity<Message> readProfile() {
         List<ProfileResponseDto> profileResponseDtoList = profileService.getProfileList();
 
+        for (ProfileResponseDto profileResponseDto : profileResponseDtoList){
+            ImageResponseDto imageResponseDto = profileImageService.readProfileImage(profileResponseDto.getProfileId())
+                    .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.IMAGE_NOT_FOUND));
+
+            profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
                 .message(TuiTuiMsgCode.PROFILE_READ_SUCCESS.getMsg())
@@ -59,8 +67,13 @@ public class ProfileController {
 
     //  프로필 id 기준 조회
     @GetMapping(value = "profiles/{profileId}")
-    public ResponseEntity<Message> readProfileById(@PathVariable(name = "profileId") Integer profile_id){
-        Optional<ProfileResponseDto> profileResponseDto = profileService.getProfile(profile_id);
+    public ResponseEntity<Message> readProfileById(@PathVariable(name = "profileId") Integer profileId){
+        ProfileResponseDto profileResponseDto = profileService.getProfile(profileId)
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
+        ImageResponseDto imageResponseDto = profileImageService.readProfileImage(profileResponseDto.getProfileId())
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.IMAGE_NOT_FOUND));
+
+        profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
@@ -71,8 +84,13 @@ public class ProfileController {
 
     //  user id 기준 조회
     @GetMapping(value = "users/{userId}/profiles")
-    public ResponseEntity<Message> readProfileByUserId(@PathVariable(name = "userId") Integer profile_id) {
-        Optional<ProfileResponseDto> profileResponseDto = profileService.getProfileByUserId(profile_id);
+    public ResponseEntity<Message> readProfileByUserId(@PathVariable(name = "userId") Integer userId) {
+        ProfileResponseDto profileResponseDto = profileService.getProfileByUserId(userId)
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
+        ImageResponseDto imageResponseDto = profileImageService.readProfileImage(profileResponseDto.getProfileId())
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.IMAGE_NOT_FOUND));
+
+        profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
@@ -84,7 +102,12 @@ public class ProfileController {
     //  닉네임 기준 프로필 조회
     @GetMapping(value = "profiles/nicknames/{nickname}")
     public ResponseEntity<Message> readProfileByNickname(@PathVariable(name = "nickname") String nickname) {
-        Optional<ProfileResponseDto> profileResponseDto = profileService.getProfileByNickname(nickname);
+        ProfileResponseDto profileResponseDto = profileService.getProfileByNickname(nickname)
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
+        ImageResponseDto imageResponseDto = profileImageService.readProfileImage(profileResponseDto.getProfileId())
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.IMAGE_NOT_FOUND));
+
+        profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)

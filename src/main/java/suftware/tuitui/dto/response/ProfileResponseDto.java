@@ -32,8 +32,22 @@ public class ProfileResponseDto {
                 .nickname(profile.getNickname())
                 .gender(profile.getGender().toString())
                 .describeSelf(profile.getDescribeSelf())
+                .birth(profile.getBirth());
+
+        return builder.build();
+    }
+
+    public static ProfileResponseDto toDTO(Profile profile, String imgPath){
+        ProfileResponseDtoBuilder builder = ProfileResponseDto.builder()
+                .profileId(profile.getProfileId())
+                .userId(profile.getUser().getUserId())
+                .name(profile.getName())
+                .phone(profile.getPhone())
+                .nickname(profile.getNickname())
+                .gender(profile.getGender().toString())
+                .describeSelf(profile.getDescribeSelf())
                 .birth(profile.getBirth())
-                .profileImgPath(profile.getProfileImage().getImgUrl());
+                .profileImgPath(imgPath);
 
         return builder.build();
     }
