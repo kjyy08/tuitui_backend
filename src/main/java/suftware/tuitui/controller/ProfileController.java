@@ -171,7 +171,7 @@ public class ProfileController {
                 .build());
     }
 
-    //  프로필 수정, 이미지 미포함
+    //  프로필 정보 수정
     @PutMapping(value = "profiles")
     public ResponseEntity<Message> updateProfile(@Valid @RequestBody ProfileUpdateRequestDto profileUpdateRequestDto) throws MethodArgumentNotValidException{
         Optional<ProfileResponseDto> profileResponseDto = profileService.updateProfile(profileUpdateRequestDto);

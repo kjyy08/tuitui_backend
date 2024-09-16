@@ -28,6 +28,7 @@ public class CommentLikeService {
     private final CommentLikeRepository commentLikeRepository;
 
     // 좋아요 누른 유저 목록
+    @Transactional(readOnly = true)
     public List<CommentLikeResponseDto> getCommentLike(Integer commentId){
         List<CommentLike> commentLikes = commentLikeRepository.findByCommentId(commentId);
 

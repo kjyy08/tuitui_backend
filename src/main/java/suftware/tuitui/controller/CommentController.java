@@ -26,16 +26,6 @@ import java.util.Optional;
 public class CommentController {
     private final CommentService commentService;
 
-    private HashMap<String, String> getValidatorResult(BindingResult bindingResult) {
-        HashMap<String, String> validatorResult = new HashMap<>();
-
-        for (FieldError fieldError : bindingResult.getFieldErrors()) {
-            validatorResult.put(fieldError.getField(), fieldError.getDefaultMessage());
-        }
-
-        return validatorResult;
-    }
-
     //  캡슐 id에 해당하는 모든 댓글 조회
     @GetMapping(value = "capsules/{capsuleId}/comments")
     public ResponseEntity<Message> readCapsuleComment(@PathVariable(name = "capsuleId") Integer id) {
@@ -62,15 +52,11 @@ public class CommentController {
 
     //  댓글 저장
     @PostMapping(value = "capsules/comments")
-    public ResponseEntity<Message> createCapsuleComment(@Valid @RequestBody CommentRequestDto commentRequestDto, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()){
-            throw new TuiTuiException(TuiTuiMsgCode.COMMENT_CREATE_FAIL, getValidatorResult(bindingResult));
-        }
-
+    public ResponseEntity<Message> createCapsuleComment(@Valid @RequestBody CommentRequestDto commentRequestDto) {
         Optional<CommentResponseDto> commentResponseDto = commentService.saveCapsuleComment(commentRequestDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
-                .status(HttpStatus.OK)
+        return ResponseEntity.status(TuiTuiMsgCode.COMMENT_CREATE_SUCCESS.getHttpStatus()).body(Message.builder()
+                .status(TuiTuiMsgCode.COMMENT_CREATE_SUCCESS.getHttpStatus())
                 .message(TuiTuiMsgCode.COMMENT_CREATE_SUCCESS.getMsg())
                 .data(commentResponseDto)
                 .build());
@@ -78,11 +64,7 @@ public class CommentController {
 
     //  댓글 수정
     @PutMapping(value = "capsules/comments")
-    public ResponseEntity<Message> updateCapsuleComment(@Valid @RequestBody CommentRequestDto commentRequestDto, BindingResult bindingResult){
-        if (bindingResult.hasErrors()){
-            throw new TuiTuiException(TuiTuiMsgCode.COMMENT_UPDATE_FAIL, getValidatorResult(bindingResult));
-        }
-
+    public ResponseEntity<Message> updateCapsuleComment(@Valid @RequestBody CommentRequestDto commentRequestDto){
         Optional<CommentResponseDto> commentResponseDto = commentService.updateCapsuleComment(commentRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()

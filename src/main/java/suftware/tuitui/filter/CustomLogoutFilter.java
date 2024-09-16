@@ -70,11 +70,11 @@ public class CustomLogoutFilter extends GenericFilter {
 
         //  토큰이 access가 아니면 404 bad request 반환
         if (!tokenType.equals("access")) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setStatus(JwtMsgCode.INVALID.getStatus().value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(new ObjectMapper().writeValueAsString(Message.builder()
-                        .status(HttpStatus.BAD_REQUEST)
+                        .status(JwtMsgCode.INVALID.getStatus())
                         .code(JwtMsgCode.INVALID.getCode())
                         .message(TuiTuiMsgCode.USER_LOGOUT_FAIL.getMsg())
                         .build()));
@@ -85,11 +85,11 @@ public class CustomLogoutFilter extends GenericFilter {
 
         //DB에 저장되어 있는지 확인
         if (!userTokenRepository.existsByAccount(account)) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setStatus(JwtMsgCode.EXPIRED.getStatus().value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
             response.getWriter().print(new ObjectMapper().writeValueAsString(Message.builder()
-                        .status(HttpStatus.BAD_REQUEST)
+                        .status(JwtMsgCode.EXPIRED.getStatus())
                         .code(JwtMsgCode.EXPIRED.getCode())
                         .message(TuiTuiMsgCode.USER_LOGOUT_FAIL.getMsg())
                         .build()));
@@ -100,11 +100,11 @@ public class CustomLogoutFilter extends GenericFilter {
         //Refresh 토큰 DB에서 제거
         userTokenRepository.deleteByAccount(account);
 
-        response.setStatus(HttpStatus.OK.value());
+        response.setStatus(TuiTuiMsgCode.USER_LOGOUT_SUCCESS.getHttpStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
         response.getWriter().print(new ObjectMapper().writeValueAsString(Message.builder()
-                    .status(HttpStatus.OK)
+                    .status(TuiTuiMsgCode.USER_LOGOUT_SUCCESS.getHttpStatus())
                     .code(TuiTuiMsgCode.USER_LOGOUT_SUCCESS.getCode())
                     .message(TuiTuiMsgCode.USER_LOGOUT_SUCCESS.getMsg())
                     .build()));

@@ -14,7 +14,7 @@ import suftware.tuitui.domain.User;
 public class UserResponseDto {
     Integer userId;
     String account;
-    String role;
+    //  String role;
     String snsType;
     //  String password;
     //  String phone;
@@ -24,9 +24,9 @@ public class UserResponseDto {
     public static UserResponseDto toDTO(User user){
         return UserResponseDto.builder()
                 .userId(user.getUserId())
-                .role(user.getRole().getValue())
+                //  .role(user.getRole().getValue())
                 .snsType(user.getSnsType())
-                //  .account(user.getAccount())
+                .account(user.getAccount())
                 //  .password(user.getPassword())
                 //  .phone(user.getPhone())
                 //  .name(user.getName())
