@@ -86,8 +86,8 @@ public class CommentService {
 
     //  댓글 수정
     @Transactional
-    public Optional<CommentResponseDto> updateCapsuleComment(Integer id, CommentRequestDto commentRequestDto) {
-        Comment comment = commentRepository.findById(id)
+    public Optional<CommentResponseDto> updateCapsuleComment(CommentRequestDto commentRequestDto) {
+        Comment comment = commentRepository.findById(commentRequestDto.getCommentId())
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.COMMENT_NOT_FOUND));
 
         comment.setComment(commentRequestDto.getComment());
@@ -99,12 +99,11 @@ public class CommentService {
 
     //  댓글 삭제
     @Transactional
-    public void deleteCapsuleComment(Integer id){
+    public void deleteCapsuleComment(Integer id) {
         if (!commentRepository.existsById(id)) {
             throw new TuiTuiException(TuiTuiMsgCode.COMMENT_NOT_FOUND);
         }
-        else {
-            commentRepository.deleteById(id);
-        }
+
+        commentRepository.deleteById(id);
     }
 }

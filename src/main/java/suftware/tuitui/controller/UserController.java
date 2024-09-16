@@ -1,16 +1,13 @@
 package suftware.tuitui.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
-import suftware.tuitui.common.valid.UserValidationGroups;
-import suftware.tuitui.dto.request.UserRequestDto;
+import suftware.tuitui.dto.request.UserCreateRequestDto;
 import suftware.tuitui.dto.response.*;
 import suftware.tuitui.service.UserService;
 
@@ -21,16 +18,6 @@ import java.util.*;
 @RequestMapping("api/")
 public class UserController {
     private final UserService userService;
-
-    private HashMap<String, String> getValidatorResult(BindingResult bindingResult) {
-        HashMap<String, String> validatorResult = new HashMap<>();
-
-        for (FieldError fieldError : bindingResult.getFieldErrors()) {
-            validatorResult.put(fieldError.getField(), fieldError.getDefaultMessage());
-        }
-
-        return validatorResult;
-    }
 
     //  전체 유저 조회
     @GetMapping(value = "users")
@@ -93,9 +80,8 @@ public class UserController {
 
     //  유저 삭제
     @DeleteMapping(value = "users")
-    public ResponseEntity<Message> deleteUser(@RequestBody @Validated(UserValidationGroups.modify.class) UserRequestDto userRequestDto,
-                                              BindingResult bindingResult){
-        userService.deleteUser(userRequestDto);
+    public ResponseEntity<Message> deleteUser(@RequestBody @Valid UserCreateRequestDto userCreateRequestDto){
+        userService.deleteUser(userCreateRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)

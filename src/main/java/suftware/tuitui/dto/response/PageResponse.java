@@ -11,8 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TimeCapsulePageResponse {
-    private List<TimeCapsuleResponseDto> contents;
+public class PageResponse {
+    private List<?> contents;
     private Integer pageNo;
     private Integer pageSize;
     private Integer totalElements;

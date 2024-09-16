@@ -13,6 +13,8 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentRequestDto {
+    Integer commentId;
+
     Integer parentCommentId;
 
     @NotEmpty(message = "빈 댓글은 작성이 불가합니다.")

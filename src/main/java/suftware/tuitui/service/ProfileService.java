@@ -2,17 +2,15 @@ package suftware.tuitui.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import suftware.tuitui.common.enumType.Gender;
 import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.domain.Profile;
-import suftware.tuitui.domain.ProfileImage;
 import suftware.tuitui.domain.User;
-import suftware.tuitui.dto.request.ProfileRequestDto;
+import suftware.tuitui.dto.request.ProfileCreateRequestDto;
+import suftware.tuitui.dto.request.ProfileUpdateRequestDto;
 import suftware.tuitui.dto.response.ProfileResponseDto;
 import suftware.tuitui.repository.ProfileRepository;
 import suftware.tuitui.repository.UserRepository;
@@ -45,7 +43,7 @@ public class ProfileService {
 
     public Optional<ProfileResponseDto> getProfileByUserId(Integer id) {
         Profile profile = profileRepository.findByUser_UserId(id)
-                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
 
         return Optional.of(ProfileResponseDto.toDTO(profile));
     }
@@ -66,70 +64,70 @@ public class ProfileService {
     }
 
     //  프로필 저장
-    public Optional<ProfileResponseDto> saveProfile(ProfileRequestDto profileRequestDto) {
+    public Optional<ProfileResponseDto> saveProfile(ProfileCreateRequestDto profileCreateRequestDto) {
         //  유저가 존재하는지 확인
-        User user = userRepository.findById(profileRequestDto.getUserId())
+        User user = userRepository.findById(profileCreateRequestDto.getUserId())
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
 
         //  해당 유저의 프로필이 존재하는지 확인
-        if (profileRepository.existsByUser_UserId(profileRequestDto.getUserId())){
+        if (profileRepository.existsByUser_UserId(profileCreateRequestDto.getUserId())){
             throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST);
         }
 
         //  전화번호 중복 가입 방지
-        if (profileRepository.existsByPhone(profileRequestDto.getPhone())) {
+        if (profileRepository.existsByPhone(profileCreateRequestDto.getPhone())) {
             throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_PHONE);
         }
 
         //  닉네임 중복 확인
-        if (profileRepository.existsByNickname(profileRequestDto.getNickname())){
+        if (profileRepository.existsByNickname(profileCreateRequestDto.getNickname())){
             throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_NICKNAME);
         }
 
-        Profile profile = profileRepository.save(ProfileRequestDto.toEntity(profileRequestDto, user));
+        Profile profile = profileRepository.save(ProfileCreateRequestDto.toEntity(profileCreateRequestDto, user));
         return Optional.of(ProfileResponseDto.toDTO(profile));
     }
 
     //  프로필 업데이트
     @Transactional
-    public Optional<ProfileResponseDto> updateProfile(ProfileRequestDto profileRequestDto) {
-        Profile profile = profileRepository.findByUser_UserId(profileRequestDto.getUserId())
-                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
+    public Optional<ProfileResponseDto> updateProfile(ProfileUpdateRequestDto profileUpdateRequestDto) {
+        Profile profile = profileRepository.findById(profileUpdateRequestDto.getProfileId())
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
 
         //  DB와 값이 다르다면 업데이트 처리
         //  전화번호 수정
-        if (!(profileRequestDto.getPhone() == null)) {
-            if (!profile.getPhone().equals(profileRequestDto.getPhone())) {
-                if (profileRepository.existsByPhone(profileRequestDto.getPhone())) {
+        if (!(profileUpdateRequestDto.getPhone() == null)) {
+            if (!profile.getPhone().equals(profileUpdateRequestDto.getPhone())) {
+                if (profileRepository.existsByPhone(profileUpdateRequestDto.getPhone())) {
                     throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_PHONE);
                 }
 
-                profile.setPhone(profileRequestDto.getPhone());
+                profile.setPhone(profileUpdateRequestDto.getPhone());
             }
         }
 
         //  닉네임 수정
-        if (!(profileRequestDto.getNickname() == null)) {
-            if (!profile.getNickname().equals(profileRequestDto.getNickname())) {
-                if (profileRepository.existsByNickname(profileRequestDto.getNickname())) {
+        if (!(profileUpdateRequestDto.getNickname() == null)) {
+            if (!profile.getNickname().equals(profileUpdateRequestDto.getNickname())) {
+                if (profileRepository.existsByNickname(profileUpdateRequestDto.getNickname())) {
                     throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_NICKNAME);
                 }
 
-                profile.setNickname(profileRequestDto.getNickname());
+                profile.setNickname(profileUpdateRequestDto.getNickname());
             }
         }
 
         //  자기소개 수정
-        if (!(profileRequestDto.getDescribeSelf() == null)) {
-            if (!profile.getDescribeSelf().equals(profileRequestDto.getDescribeSelf())) {
-                profile.setDescribeSelf(profileRequestDto.getDescribeSelf());
+        if (!(profileUpdateRequestDto.getDescribeSelf() == null)) {
+            if (!profile.getDescribeSelf().equals(profileUpdateRequestDto.getDescribeSelf())) {
+                profile.setDescribeSelf(profileUpdateRequestDto.getDescribeSelf());
             }
         }
 
         //  성별 수정
-        if (!(profileRequestDto.getGender() == null)) {
-            if (!profile.getGender().toString().equals(profileRequestDto.getGender())) {
-                profile.setGender(Gender.valueOf(profileRequestDto.getGender()));
+        if (!(profileUpdateRequestDto.getGender() == null)) {
+            if (!profile.getGender().toString().equals(profileUpdateRequestDto.getGender())) {
+                profile.setGender(Gender.valueOf(profileUpdateRequestDto.getGender()));
             }
         }
 

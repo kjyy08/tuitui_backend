@@ -23,21 +23,13 @@ public class TimeCapsuleLikeController {
     //  해당하는 캡슐 좋아요를 누른 모든 유저 조회
     @GetMapping(value = "capsules/{capsuleId}/likes")
     public ResponseEntity<Message> readCapsuleLike(@PathVariable(name = "capsuleId") Integer capsule_id) {
-        List<ProfileResponseDto> profileResponseDtoList = timeCapsuleLikeService.getCapsuleLike(capsule_id);
+        List<TimeCapsuleLikeResponseDto> timeCapsuleLikeResponseDtoList = timeCapsuleLikeService.getCapsuleLike(capsule_id);
 
-        if (profileResponseDtoList.isEmpty()){
-            return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
-                    .status(HttpStatus.OK)
-                    .message(TuiTuiMsgCode.CAPSULE_LIKE_NOT_FOUND.getMsg())
-                    .build());
-        }
-        else {
-            return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
-                    .status(HttpStatus.OK)
-                    .message(TuiTuiMsgCode.CAPSULE_LIKE_READ_SUCCESS.getMsg())
-                    .data(profileResponseDtoList)
-                    .build());
-        }
+        return ResponseEntity.status(TuiTuiMsgCode.CAPSULE_LIKE_READ_SUCCESS.getHttpStatus()).body(Message.builder()
+                .status(TuiTuiMsgCode.CAPSULE_LIKE_READ_SUCCESS.getHttpStatus())
+                .message(TuiTuiMsgCode.CAPSULE_LIKE_READ_SUCCESS.getMsg())
+                .data(timeCapsuleLikeResponseDtoList)
+                .build());
     }
 
     //  캡슐 좋아요 저장

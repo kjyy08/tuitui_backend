@@ -46,8 +46,8 @@ public class Profile {
     @Column(name = "birth")
     LocalDate birth;
 
-    @Column(name = "profile_image")
-    String profileImgPath;
+    //@Column(name = "profile_image")
+    //String profileImgPath;
 
     @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     private ProfileImage profileImage;

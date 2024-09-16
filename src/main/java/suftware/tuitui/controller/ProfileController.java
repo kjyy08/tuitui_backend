@@ -7,24 +7,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import suftware.tuitui.common.enumType.S3ImagePath;
 import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
-import suftware.tuitui.common.valid.ProfileValidationGroups;
-import suftware.tuitui.domain.ProfileImage;
-import suftware.tuitui.dto.request.ProfileRequestDto;
+import suftware.tuitui.dto.request.ProfileCreateRequestDto;
+import suftware.tuitui.dto.request.ProfileUpdateRequestDto;
 import suftware.tuitui.dto.response.ImageResponseDto;
 import suftware.tuitui.dto.response.ProfileResponseDto;
 import suftware.tuitui.service.ProfileImageService;
 import suftware.tuitui.service.ProfileService;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,16 +31,6 @@ import java.util.Optional;
 public class ProfileController {
     private final ProfileService profileService;
     private final ProfileImageService profileImageService;
-
-    private HashMap<String, String> getValidatorResult(BindingResult bindingResult) {
-        HashMap<String, String> validatorResult = new HashMap<>();
-
-        for (FieldError fieldError : bindingResult.getFieldErrors()) {
-            validatorResult.put(fieldError.getField(), fieldError.getDefaultMessage());
-        }
-
-        return validatorResult;
-    }
 
     //  전체 프로필 조회
     @GetMapping(value = "profiles")
@@ -118,14 +104,9 @@ public class ProfileController {
 
     //  프로필 생성, 이미지 미포함
     @PostMapping(value = "profiles/without-image")
-    public ResponseEntity<Message> createProfileWithJson(@RequestBody @Validated({ProfileValidationGroups.modify.class, ProfileValidationGroups.request.class}) ProfileRequestDto profileRequestDto,
-                                                     BindingResult bindingResult) {
-        if (bindingResult.hasErrors()){
-            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_CREATE_FAIL, getValidatorResult(bindingResult));
-        }
-
+    public ResponseEntity<Message> createProfileWithJson(@Valid @RequestBody ProfileCreateRequestDto profileCreateRequestDto) throws MethodArgumentNotValidException {
         //  프로필 생성
-        ProfileResponseDto profileResponseDto = profileService.saveProfile(profileRequestDto)
+        ProfileResponseDto profileResponseDto = profileService.saveProfile(profileCreateRequestDto)
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_CREATE_FAIL));
 
         ImageResponseDto imageResponseDto = profileImageService.createProfileBasicImage(profileResponseDto.getProfileId())
@@ -142,15 +123,11 @@ public class ProfileController {
 
     //  프로필 생성, 이미지 포함
     @PostMapping(value = "profiles/with-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Message> createProfileWithImage(@RequestPart(name = "request") @Valid ProfileRequestDto profileRequestDto,
-                                                          @RequestPart(name = "file", required = true) MultipartFile file, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()){
-            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_CREATE_FAIL, getValidatorResult(bindingResult));
-        }
-
+    public ResponseEntity<Message> createProfileWithImage(@Valid @RequestPart(name = "request") ProfileCreateRequestDto profileCreateRequestDto,
+                                                          @RequestPart(name = "file", required = true) MultipartFile file) throws MethodArgumentNotValidException {
         //  파일이 존재하는 경우에만 동작
         if(file != null && !file.isEmpty()) {
-            ProfileResponseDto profileResponseDto = profileService.saveProfile(profileRequestDto)
+            ProfileResponseDto profileResponseDto = profileService.saveProfile(profileCreateRequestDto)
                     .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_CREATE_FAIL));
 
             ImageResponseDto imageResponseDto = profileImageService.uploadProfileImage(profileResponseDto.getProfileId(), S3ImagePath.PROFILE.getPath(), file)
@@ -196,13 +173,8 @@ public class ProfileController {
 
     //  프로필 수정, 이미지 미포함
     @PutMapping(value = "profiles")
-    public ResponseEntity<Message> updateProfile(@RequestBody @Validated(ProfileValidationGroups.request.class) ProfileRequestDto profileRequestDto,
-                                                 BindingResult bindingResult) {
-        if (bindingResult.hasErrors()){
-            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_VALID, getValidatorResult(bindingResult));
-        }
-
-        Optional<ProfileResponseDto> profileResponseDto = profileService.updateProfile(profileRequestDto);
+    public ResponseEntity<Message> updateProfile(@Valid @RequestBody ProfileUpdateRequestDto profileUpdateRequestDto) throws MethodArgumentNotValidException{
+        Optional<ProfileResponseDto> profileResponseDto = profileService.updateProfile(profileUpdateRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)

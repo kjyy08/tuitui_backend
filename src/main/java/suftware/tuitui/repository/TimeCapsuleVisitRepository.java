@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface TimeCapsuleVisitRepository extends JpaRepository<TimeCapsuleVisit, Long> {
     Optional<TimeCapsuleVisit> findByTimeCapsule_TimeCapsuleId(Integer id);
+    boolean existsByTimeCapsule_TimeCapsuleId(Integer id);
 }

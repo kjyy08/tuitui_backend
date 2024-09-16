@@ -47,8 +47,8 @@ public class FollowController {
     public ResponseEntity<Message> createFollow(@RequestBody FollowRequestDto followRequestDto){
         followService.saveFollow(followRequestDto);
 
-        return ResponseEntity.status(TuiTuiMsgCode.FOLLOWS_READ_SUCCESS.getHttpStatus()).body(Message.builder()
-                .status(TuiTuiMsgCode.FOLLOWS_READ_SUCCESS.getHttpStatus())
+        return ResponseEntity.status(TuiTuiMsgCode.FOLLOWS_CREATE_SUCCESS.getHttpStatus()).body(Message.builder()
+                .status(TuiTuiMsgCode.FOLLOWS_CREATE_SUCCESS.getHttpStatus())
                 .message(TuiTuiMsgCode.FOLLOWS_CREATE_SUCCESS.getMsg())
                 .build());
     }
@@ -57,8 +57,8 @@ public class FollowController {
     public ResponseEntity<Message> deleteFollow(@RequestBody FollowRequestDto followRequestDto){
         followService.deleteFollow(followRequestDto);
 
-        return ResponseEntity.status(TuiTuiMsgCode.FOLLOWS_READ_SUCCESS.getHttpStatus()).body(Message.builder()
-                .status(TuiTuiMsgCode.FOLLOWS_READ_SUCCESS.getHttpStatus())
+        return ResponseEntity.status(TuiTuiMsgCode.FOLLOWS_DELETE_SUCCESS.getHttpStatus()).body(Message.builder()
+                .status(TuiTuiMsgCode.FOLLOWS_DELETE_SUCCESS.getHttpStatus())
                 .message(TuiTuiMsgCode.FOLLOWS_DELETE_SUCCESS.getMsg())
                 .build());
     }

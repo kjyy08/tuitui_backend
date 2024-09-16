@@ -12,14 +12,18 @@ import suftware.tuitui.domain.TimeCapsuleLike;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TimeCapsuleLikeResponseDto {
     Integer capsuleLikeId;
-    Integer profileId;
     Integer timeCapsuleId;
+    Integer profileId;
+    String nickname;
+    String profileImgPath;
 
     public static TimeCapsuleLikeResponseDto toDto(TimeCapsuleLike timeCapsuleLike){
         return TimeCapsuleLikeResponseDto.builder()
                 .capsuleLikeId(timeCapsuleLike.getCapsuleLikeId())
-                .profileId(timeCapsuleLike.getProfile().getProfileId())
                 .timeCapsuleId(timeCapsuleLike.getTimeCapsule().getTimeCapsuleId())
+                .profileId(timeCapsuleLike.getProfile().getProfileId())
+                .nickname(timeCapsuleLike.getProfile().getNickname())
+                .profileImgPath(timeCapsuleLike.getProfile().getProfileImage().getImgUrl())
                 .build();
     }
 }

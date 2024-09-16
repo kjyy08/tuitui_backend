@@ -28,15 +28,20 @@ public class TimeCapsuleLikeService {
 
     //  캡슐 좋아요를 누른 유저 목록 조회
     @Transactional(readOnly = true)
-    public List<ProfileResponseDto> getCapsuleLike(Integer id){
+    public List<TimeCapsuleLikeResponseDto> getCapsuleLike(Integer id){
         List<TimeCapsuleLike> timeCapsuleLikeList = timeCapsuleLikeRepository.findByTimeCapsule_TimeCapsuleId(id);
-        List<ProfileResponseDto> profileResponseDtoList = new ArrayList<>();
 
-        for(TimeCapsuleLike capsuleLike : timeCapsuleLikeList){
-            profileResponseDtoList.add(ProfileResponseDto.toDTO(capsuleLike.getProfile()));
+        if (timeCapsuleLikeList.isEmpty()){
+            throw new TuiTuiException(TuiTuiMsgCode.CAPSULE_LIKE_NOT_FOUND);
         }
 
-        return profileResponseDtoList;
+        List<TimeCapsuleLikeResponseDto> timeCapsuleLikeResponseDtoList = new ArrayList<>();
+
+        for (TimeCapsuleLike timeCapsuleLike : timeCapsuleLikeList){
+            timeCapsuleLikeResponseDtoList.add(TimeCapsuleLikeResponseDto.toDto(timeCapsuleLike));
+        }
+
+        return timeCapsuleLikeResponseDtoList;
     }
 
     //  캡슐 좋아요 저장

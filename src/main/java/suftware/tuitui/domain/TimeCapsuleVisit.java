@@ -13,6 +13,7 @@ import lombok.*;
 @Table(name = "visit_counter")
 public class TimeCapsuleVisit {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "visit_counter_id", nullable = false, unique = true)
     Integer visitCountId;
 

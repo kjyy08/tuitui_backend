@@ -68,7 +68,7 @@ public class CustomLogoutFilter extends GenericFilter {
         // 토큰이 access인지 확인 (발급시 페이로드에 명시)
         String tokenType = jwtUtil.getTokenType(access);
 
-        //  쿠키에 담긴 값이 access가 아니면 잘못된 요청
+        //  토큰이 access가 아니면 404 bad request 반환
         if (!tokenType.equals("access")) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);

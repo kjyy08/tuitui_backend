@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import suftware.tuitui.common.http.Message;
+import suftware.tuitui.common.jwt.JwtException;
 import suftware.tuitui.common.jwt.JwtMsgCode;
 import suftware.tuitui.service.UserTokenService;
 
@@ -31,11 +32,7 @@ public class UserTokenController {
                 if (userTokenService.authenticate(request, response)) {
                     message = userTokenService.authorization(request, response);
                 } else {
-                    message = Message.builder()
-                            .status(JwtMsgCode.BAD_REQUEST.getStatus())
-                            .message(JwtMsgCode.BAD_REQUEST.getMsg())
-                            .code(JwtMsgCode.BAD_REQUEST.getCode())
-                            .build();
+                    throw new JwtException(JwtMsgCode.BAD_REQUEST);
                 }
             }
             //  토큰 갱신 요청
@@ -44,18 +41,10 @@ public class UserTokenController {
             }
             //  잘못된 접근
             else {
-                message = Message.builder()
-                        .status(JwtMsgCode.BAD_REQUEST.getStatus())
-                        .message(JwtMsgCode.BAD_REQUEST.getMsg())
-                        .code(JwtMsgCode.BAD_REQUEST.getCode())
-                        .build();
+                throw new JwtException(JwtMsgCode.BAD_REQUEST);
             }
         } catch (NullPointerException e){
-            message = Message.builder()
-                    .status(JwtMsgCode.BAD_REQUEST.getStatus())
-                    .message(JwtMsgCode.BAD_REQUEST.getMsg())
-                    .code(JwtMsgCode.BAD_REQUEST.getCode())
-                    .build();
+            throw new JwtException(JwtMsgCode.BAD_REQUEST);
         }
 
         return ResponseEntity.status(message.getStatus()).body(message);

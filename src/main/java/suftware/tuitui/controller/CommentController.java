@@ -1,10 +1,14 @@
 package suftware.tuitui.controller;
 
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.dto.request.CommentRequestDto;
@@ -12,6 +16,7 @@ import suftware.tuitui.dto.response.CommentResponseDto;
 import suftware.tuitui.service.CommentService;
 
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +25,16 @@ import java.util.Optional;
 @RequestMapping("api/")
 public class CommentController {
     private final CommentService commentService;
+
+    private HashMap<String, String> getValidatorResult(BindingResult bindingResult) {
+        HashMap<String, String> validatorResult = new HashMap<>();
+
+        for (FieldError fieldError : bindingResult.getFieldErrors()) {
+            validatorResult.put(fieldError.getField(), fieldError.getDefaultMessage());
+        }
+
+        return validatorResult;
+    }
 
     //  캡슐 id에 해당하는 모든 댓글 조회
     @GetMapping(value = "capsules/{capsuleId}/comments")
@@ -47,7 +62,11 @@ public class CommentController {
 
     //  댓글 저장
     @PostMapping(value = "capsules/comments")
-    public ResponseEntity<Message> createCapsuleComment(@RequestBody CommentRequestDto commentRequestDto) {
+    public ResponseEntity<Message> createCapsuleComment(@Valid @RequestBody CommentRequestDto commentRequestDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()){
+            throw new TuiTuiException(TuiTuiMsgCode.COMMENT_CREATE_FAIL, getValidatorResult(bindingResult));
+        }
+
         Optional<CommentResponseDto> commentResponseDto = commentService.saveCapsuleComment(commentRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
@@ -58,9 +77,13 @@ public class CommentController {
     }
 
     //  댓글 수정
-    @PutMapping(value = "capsules/comments/{commentId}")
-    public ResponseEntity<Message> updateCapsuleComment(@PathVariable(name = "commentId") Integer commentId, @RequestBody CommentRequestDto commentRequestDto){
-        Optional<CommentResponseDto> commentResponseDto = commentService.updateCapsuleComment(commentId, commentRequestDto);
+    @PutMapping(value = "capsules/comments")
+    public ResponseEntity<Message> updateCapsuleComment(@Valid @RequestBody CommentRequestDto commentRequestDto, BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            throw new TuiTuiException(TuiTuiMsgCode.COMMENT_UPDATE_FAIL, getValidatorResult(bindingResult));
+        }
+
+        Optional<CommentResponseDto> commentResponseDto = commentService.updateCapsuleComment(commentRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)

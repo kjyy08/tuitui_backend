@@ -1,14 +1,12 @@
 package suftware.tuitui.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
-import suftware.tuitui.common.jwt.JwtUtil;
 import suftware.tuitui.domain.User;
-import suftware.tuitui.dto.request.UserRequestDto;
+import suftware.tuitui.dto.request.UserCreateRequestDto;
 import suftware.tuitui.dto.response.UserResponseDto;
 import suftware.tuitui.repository.UserRepository;
 
@@ -20,8 +18,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
 
     public Optional<UserResponseDto> getUser(Integer id) {
         User user = userRepository.findById(id)
@@ -95,8 +91,8 @@ public class UserService {
 //    }
 
     @Transactional
-    public void deleteUser(UserRequestDto userRequestDto) {
-        User user = userRepository.findByUserIdAndAccount(userRequestDto.getUserId(), userRequestDto.getAccount())
+    public void deleteUser(UserCreateRequestDto userCreateRequestDto) {
+        User user = userRepository.findByUserIdAndAccount(userCreateRequestDto.getUserId(), userCreateRequestDto.getAccount())
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
 
             //  24.08.30 회원가입을 소셜 로그인으로 대체하며 비밀번호 미사용

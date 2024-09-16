@@ -15,7 +15,7 @@ import suftware.tuitui.domain.TimeCapsule;
 import suftware.tuitui.domain.TimeCapsuleImage;
 import suftware.tuitui.dto.request.TimeCapsuleRequestDto;
 import suftware.tuitui.dto.response.ImageResponseDto;
-import suftware.tuitui.dto.response.TimeCapsulePageResponse;
+import suftware.tuitui.dto.response.PageResponse;
 import suftware.tuitui.dto.response.TimeCapsuleResponseDto;
 import suftware.tuitui.repository.ProfileRepository;
 import suftware.tuitui.repository.TimeCapsuleImageRepository;
@@ -55,7 +55,7 @@ public class TimeCapsuleService {
 
     //  전체 캡슐 조회
     @Transactional(readOnly = true)
-    public Optional<TimeCapsulePageResponse> getCapsuleList(Integer pageNo, Integer pageSize, String sortBy) {
+    public Optional<PageResponse> getCapsuleList(Integer pageNo, Integer pageSize, String sortBy) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
         Page<TimeCapsule> capsulePage = timeCapsuleRepository.findAll(pageable);
 
@@ -78,7 +78,7 @@ public class TimeCapsuleService {
             }
         }
 
-        return Optional.of(TimeCapsulePageResponse.builder()
+        return Optional.of(PageResponse.builder()
                 .contents(timeCapsuleResponseDtoList)
                 .pageNo(pageNo)
                 .pageSize(pageSize)
@@ -106,7 +106,7 @@ public class TimeCapsuleService {
 
     //  프로필 id 기준 조회
     @Transactional(readOnly = true)
-    public Optional<TimeCapsulePageResponse> getCapsuleByWriteUser(Integer profileId, Integer pageNo, Integer pageSize, String sortBy) {
+    public Optional<PageResponse> getCapsuleByWriteUser(Integer profileId, Integer pageNo, Integer pageSize, String sortBy) {
         if (!profileRepository.existsById(profileId)){
             throw new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND);
         }
@@ -133,7 +133,7 @@ public class TimeCapsuleService {
             }
         }
 
-        return Optional.of(TimeCapsulePageResponse.builder()
+        return Optional.of(PageResponse.builder()
                 .contents(timeCapsuleResponseDtoList)
                 .pageNo(pageNo)
                 .pageSize(pageSize)
@@ -145,7 +145,7 @@ public class TimeCapsuleService {
 
     //  해당 닉네임의 캡슐 목록 조회
     @Transactional(readOnly = true)
-    public Optional<TimeCapsulePageResponse> getCapsuleByNickname(String nickname, Integer pageNo, Integer pageSize, String sortBy) {
+    public Optional<PageResponse> getCapsuleByNickname(String nickname, Integer pageNo, Integer pageSize, String sortBy) {
         if (!profileRepository.existsByNickname(nickname)){
             throw new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND);
         }
@@ -172,7 +172,7 @@ public class TimeCapsuleService {
             }
         }
 
-        return Optional.of(TimeCapsulePageResponse.builder()
+        return Optional.of(PageResponse.builder()
                 .contents(timeCapsuleResponseDtoList)
                 .pageNo(pageNo)
                 .pageSize(pageSize)

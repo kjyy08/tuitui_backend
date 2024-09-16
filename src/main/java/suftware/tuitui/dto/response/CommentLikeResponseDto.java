@@ -12,14 +12,18 @@ import suftware.tuitui.domain.CommentLike;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentLikeResponseDto {
     Integer commentLikeId;
-    Integer profileId;
     Integer commentId;
+    Integer profileId;
+    String nickname;
+    String profileImgPath;
 
     public static CommentLikeResponseDto toDto(CommentLike commentLike){
         return CommentLikeResponseDto.builder()
                 .commentLikeId(commentLike.getCommentLikeId())
                 .commentId(commentLike.getComment().getCommentId())
                 .profileId(commentLike.getProfile().getProfileId())
+                .nickname(commentLike.getProfile().getNickname())
+                .profileImgPath(commentLike.getProfile().getProfileImage().getImgUrl())
                 .build();
     }
 }

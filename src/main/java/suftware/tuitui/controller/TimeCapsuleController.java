@@ -11,13 +11,10 @@ import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.dto.request.TimeCapsuleRequestDto;
 import suftware.tuitui.dto.response.ImageResponseDto;
-import suftware.tuitui.dto.response.TimeCapsulePageResponse;
+import suftware.tuitui.dto.response.PageResponse;
 import suftware.tuitui.dto.response.TimeCapsuleResponseDto;
 import suftware.tuitui.service.TimeCapsuleImageService;
 import suftware.tuitui.service.TimeCapsuleService;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,7 +33,7 @@ public class TimeCapsuleController {
     public ResponseEntity<Message> readCapsuleList(@RequestParam(name = "pageNo", defaultValue = "0", required = false) Integer pageNo,
                                                    @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
                                                    @RequestParam(name = "sortBy", defaultValue = "timeCapsuleId", required = false) String sortBy) {
-        Optional<TimeCapsulePageResponse> timeCapsulePageResponse = timeCapsuleService.getCapsuleList(pageNo, pageSize, sortBy);
+        Optional<PageResponse> timeCapsulePageResponse = timeCapsuleService.getCapsuleList(pageNo, pageSize, sortBy);
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
@@ -63,7 +60,7 @@ public class TimeCapsuleController {
                                                           @RequestParam(name = "pageNo", defaultValue = "0", required = false) Integer pageNo,
                                                           @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
                                                           @RequestParam(name = "sortBy", defaultValue = "timeCapsuleId", required = false) String sortBy) {
-        Optional<TimeCapsulePageResponse> timeCapsulePageResponse = timeCapsuleService.getCapsuleByWriteUser(writeUserId, pageNo, pageSize, sortBy);
+        Optional<PageResponse> timeCapsulePageResponse = timeCapsuleService.getCapsuleByWriteUser(writeUserId, pageNo, pageSize, sortBy);
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
@@ -78,7 +75,7 @@ public class TimeCapsuleController {
                                                          @RequestParam(name = "pageNo", defaultValue = "0", required = false) Integer pageNo,
                                                          @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
                                                          @RequestParam(name = "sortBy", defaultValue = "timeCapsuleId", required = false) String sortBy){
-        Optional<TimeCapsulePageResponse> timeCapsulePageResponse = timeCapsuleService.getCapsuleByNickname(nickname, pageNo, pageSize, sortBy);
+        Optional<PageResponse> timeCapsulePageResponse = timeCapsuleService.getCapsuleByNickname(nickname, pageNo, pageSize, sortBy);
 
         return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
                 .status(HttpStatus.OK)
