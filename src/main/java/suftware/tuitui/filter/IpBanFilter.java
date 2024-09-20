@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
-@Component
 public class IpBanFilter extends OncePerRequestFilter {
     private final IpBlackListRepository ipBlackListRepository;
     private final static String[] IP_HEADERS = {
