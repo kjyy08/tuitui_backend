@@ -47,45 +47,47 @@ public class IpBanFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String requestUri = request.getRequestURI();
         String clientIp = getClientIp(request);
-        log.info("IpBanFilter.getClientIp() -> requestURI: {}, clientIp: {}", requestUri, clientIp);
+        log.info("IpBanFilter.getClientIp() -> requestURI: \"{}\", clientIp: {}", requestUri, clientIp);
 
         boolean isMatched = mappedUris.stream().anyMatch(mappedUri -> antPathMatcher.match(mappedUri, requestUri));
 
         //  접근이 매핑된 URI가 아니면 차단
-        if (!isMatched){
-            if (clientIp.equals("127.0.0.1")){
+        if (!isMatched) {
+            if (clientIp.equals("127.0.0.1")) {
                 filterChain.doFilter(request, response);
                 return;
+            } else {
+                banIp(clientIp);
             }
 
-            //  db에 저장된 밴 리스트에 있는지 확인
-            if (ipBlackListRepository.existsByIpAddress(clientIp)) {
-                Message message = Message.builder()
-                        .status(TuiTuiMsgCode.IP_BANNED.getHttpStatus())
-                        .code(TuiTuiMsgCode.IP_BANNED.getCode())
-                        .message(TuiTuiMsgCode.IP_BANNED.getMsg())
-                        .build();
+            Message message = Message.builder()
+                    .status(TuiTuiMsgCode.IP_BANNED.getHttpStatus())
+                    .code(TuiTuiMsgCode.IP_BANNED.getCode())
+                    .message(TuiTuiMsgCode.IP_BANNED.getMsg())
+                    .build();
 
-                response.setStatus(message.getStatus().value());
-                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                response.setCharacterEncoding("UTF-8");
-                response.getWriter().print(new ObjectMapper().writeValueAsString(message));
-                log.info("IpBanFilter.doFilterInternal() -> clientIp: {} is banned", clientIp);
-                return;
-            }
+            response.setStatus(message.getStatus().value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().print(new ObjectMapper().writeValueAsString(message));
+            log.info("IpBanFilter.doFilterInternal() -> clientIp: {} is banned", clientIp);
+            return;
         }
 
         filterChain.doFilter(request, response);
     }
 
     //  db에 차단할 ip 저장
-    private void banIp(String ip){
-        log.info("IpBanFilter.banIp() -> request from ip: {} has been blocked", ip);
-        ipBlackListRepository.save(IpBlackList.builder()
-                .ipAddress(ip)
-                .bannedAt(new Timestamp(System.currentTimeMillis()))
-                .isBanned(true)
-                .build());
+    private void banIp(String ip) {
+        //  이미 밴된 유저인지 확인, 없으면 생성
+        if (!ipBlackListRepository.existsByIpAddress(ip)) {
+            log.info("IpBanFilter.banIp() -> request from ip: {} has been blocked", ip);
+            ipBlackListRepository.save(IpBlackList.builder()
+                    .ipAddress(ip)
+                    .bannedAt(new Timestamp(System.currentTimeMillis()))
+                    .isBanned(true)
+                    .build());
+        }
     }
 
     //  request로부터 ip 추출
