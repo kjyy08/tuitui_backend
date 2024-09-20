@@ -49,9 +49,16 @@ public class IpBanFilter extends OncePerRequestFilter {
         String clientIp = getClientIp(request);
         log.info("IpBanFilter.getClientIp() -> requestURI: \"{}\", clientIp: {}", requestUri, clientIp);
 
-        boolean isMatched = mappedUris.stream().anyMatch(mappedUri -> antPathMatcher.match(mappedUri, requestUri));
+        boolean isBanned = false;
+
+        //  ip 밴인 유저인 경우 차단
+        if (ipBlackListRepository.existsByIpAddress(clientIp)){
+            isBanned = true;
+        }
 
         //  접근이 매핑된 URI가 아니면 차단
+        boolean isMatched = mappedUris.stream().anyMatch(mappedUri -> antPathMatcher.match(mappedUri, requestUri));
+
         if (!isMatched) {
             if (clientIp.equals("127.0.0.1")) {
                 filterChain.doFilter(request, response);
@@ -60,6 +67,10 @@ public class IpBanFilter extends OncePerRequestFilter {
                 banIp(clientIp);
             }
 
+            isBanned = true;
+        }
+
+        if (isBanned){
             Message message = Message.builder()
                     .status(TuiTuiMsgCode.IP_BANNED.getHttpStatus())
                     .code(TuiTuiMsgCode.IP_BANNED.getCode())
@@ -79,14 +90,16 @@ public class IpBanFilter extends OncePerRequestFilter {
 
     //  db에 차단할 ip 저장
     private void banIp(String ip) {
-        //  이미 밴된 유저인지 확인, 없으면 생성
-        if (!ipBlackListRepository.existsByIpAddress(ip)) {
+        try {
             log.info("IpBanFilter.banIp() -> request from ip: {} has been blocked", ip);
             ipBlackListRepository.save(IpBlackList.builder()
                     .ipAddress(ip)
                     .bannedAt(new Timestamp(System.currentTimeMillis()))
                     .isBanned(true)
                     .build());
+
+        } catch (Exception e){
+            log.info("IpBanFilter.banIp() -> clientIp: {} is already blocked", ip);
         }
     }
 
