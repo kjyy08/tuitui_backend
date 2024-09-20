@@ -2,8 +2,10 @@ package suftware.tuitui.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.multipart.MultipartFile;
 import suftware.tuitui.common.enumType.S3ImagePath;
 import suftware.tuitui.common.exception.TuiTuiException;
@@ -15,6 +17,8 @@ import suftware.tuitui.dto.response.PageResponse;
 import suftware.tuitui.dto.response.TimeCapsuleResponseDto;
 import suftware.tuitui.service.TimeCapsuleImageService;
 import suftware.tuitui.service.TimeCapsuleService;
+import suftware.tuitui.sns.naver.NaverException;
+import suftware.tuitui.sns.naver.NaverResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;

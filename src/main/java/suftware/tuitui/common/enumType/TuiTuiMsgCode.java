@@ -87,6 +87,9 @@ public enum TuiTuiMsgCode {
 
     SNS_AUTH_BAD_REQUEST(HttpStatus.BAD_REQUEST, "SNS-001", "소셜 로그인 정보 불일치"),
 
+    //  403 Forbidden responses
+    IP_BANNED(HttpStatus.FORBIDDEN, "SERVER-002", "비정상적인 접근"),
+
     // 404 Not Found responses
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER-015", "유저를 찾을 수 없음"),
 

@@ -3,8 +3,6 @@ package suftware.tuitui.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -12,22 +10,26 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import suftware.tuitui.common.jwt.JwtAuthFilter;
 import suftware.tuitui.common.jwt.JwtFilter;
 import suftware.tuitui.common.jwt.JwtUtil;
 import suftware.tuitui.filter.CustomLoginFilter;
 import suftware.tuitui.filter.CustomLogoutFilter;
+import suftware.tuitui.filter.IpBanFilter;
+import suftware.tuitui.repository.IpBlackListRepository;
 import suftware.tuitui.repository.UserRepository;
 import suftware.tuitui.repository.UserTokenRepository;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final AuthenticationConfiguration authenticationConfiguration;
+    private final RequestMappingHandlerMapping requestMappingHandlerMapping;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final UserTokenRepository userTokenRepository;
+    private final IpBlackListRepository ipBlackListRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
@@ -47,6 +49,7 @@ public class SecurityConfig {
                 //.addFilterAt(new CustomLoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, userTokenRepository), UsernamePasswordAuthenticationFilter.class)
 
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, userTokenRepository), LogoutFilter.class)
+                .addFilterBefore(new IpBanFilter(ipBlackListRepository, requestMappingHandlerMapping), CustomLogoutFilter.class)
                 .addFilterBefore(new JwtFilter(jwtUtil, userRepository), CustomLoginFilter.class)
                 .addFilterBefore(new JwtAuthFilter(jwtUtil), JwtFilter.class)
 
@@ -54,10 +57,5 @@ public class SecurityConfig {
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
-    }
-
-    @Bean
-    public static AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception{
-        return configuration.getAuthenticationManager();
     }
 }

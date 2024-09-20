@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.jwt.JwtMsgCode;
@@ -15,6 +15,7 @@ import suftware.tuitui.repository.UserTokenRepository;
 import java.io.IOException;
 
 
+@Component
 public class CustomLogoutFilter extends GenericFilter {
     private final JwtUtil jwtUtil;
     private final UserTokenRepository userTokenRepository;
