@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
@@ -16,6 +17,7 @@ import suftware.tuitui.domain.IpBlackList;
 import suftware.tuitui.repository.IpBlackListRepository;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,6 +30,7 @@ public class IpBanFilter extends OncePerRequestFilter {
             "HTTP_X_FORWARDED_FOR", "X-Real-IP", "X-RealIP", "REMOTE_ADDR"
     };
     private final Set<String> mappedUris = new HashSet<>();
+    private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     public IpBanFilter(IpBlackListRepository ipBlackListRepository, RequestMappingHandlerMapping requestMappingHandlerMapping) {
         this.ipBlackListRepository = ipBlackListRepository;
@@ -46,27 +49,30 @@ public class IpBanFilter extends OncePerRequestFilter {
         String clientIp = getClientIp(request);
         log.info("IpBanFilter.getClientIp() -> requestURI: {}, clientIp: {}", requestUri, clientIp);
 
+        boolean isMatched = mappedUris.stream().anyMatch(mappedUri -> antPathMatcher.match(mappedUri, requestUri));
+
         //  접근이 매핑된 URI가 아니면 차단
-        if (!mappedUris.contains(requestUri)){
-            if (!clientIp.equals("127.0.0.1")){
-                banIp(clientIp);
+        if (!isMatched){
+            if (clientIp.equals("127.0.0.1")){
+                filterChain.doFilter(request, response);
+                return;
             }
-        }
 
-        //  db에 저장된 밴 리스트에 있는지 확인
-        if (ipBlackListRepository.existsByIpAddress(clientIp)) {
-            Message message = Message.builder()
-                    .status(TuiTuiMsgCode.IP_BANNED.getHttpStatus())
-                    .code(TuiTuiMsgCode.IP_BANNED.getCode())
-                    .message(TuiTuiMsgCode.IP_BANNED.getMsg())
-                    .build();
+            //  db에 저장된 밴 리스트에 있는지 확인
+            if (ipBlackListRepository.existsByIpAddress(clientIp)) {
+                Message message = Message.builder()
+                        .status(TuiTuiMsgCode.IP_BANNED.getHttpStatus())
+                        .code(TuiTuiMsgCode.IP_BANNED.getCode())
+                        .message(TuiTuiMsgCode.IP_BANNED.getMsg())
+                        .build();
 
-            response.setStatus(message.getStatus().value());
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().print(new ObjectMapper().writeValueAsString(message));
-            log.info("IpBanFilter.doFilterInternal() -> clientIp: {} is banned", clientIp);
-            return;
+                response.setStatus(message.getStatus().value());
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().print(new ObjectMapper().writeValueAsString(message));
+                log.info("IpBanFilter.doFilterInternal() -> clientIp: {} is banned", clientIp);
+                return;
+            }
         }
 
         filterChain.doFilter(request, response);
@@ -77,6 +83,8 @@ public class IpBanFilter extends OncePerRequestFilter {
         log.info("IpBanFilter.banIp() -> request from ip: {} has been blocked", ip);
         ipBlackListRepository.save(IpBlackList.builder()
                 .ipAddress(ip)
+                .bannedAt(new Timestamp(System.currentTimeMillis()))
+                .isBanned(true)
                 .build());
     }
 
