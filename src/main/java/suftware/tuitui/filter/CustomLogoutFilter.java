@@ -33,7 +33,7 @@ public class CustomLogoutFilter extends GenericFilter {
 
     private void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException{
         //  로그아웃 uri가 아니면 다음 필터로 넘김
-        if (!(request.getRequestURI().matches("^\\/api/logout$")) || !(request.getMethod().equals("POST"))) {
+        if (!(request.getRequestURI().matches("^/api/logout$")) || !(request.getMethod().equals("POST"))) {
             filterChain.doFilter(request, response);
             return;
         }
