@@ -32,7 +32,6 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //  헤더에서 access키에 담긴 token을 꺼냄
         String accessToken = request.getHeader("Authorization").split(" ")[1];
-        log.info("jwtfilter");
 
         //  토큰의 타입을 가져옴
         String tokenType = jwtUtil.getTokenType(accessToken);
