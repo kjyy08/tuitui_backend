@@ -19,9 +19,9 @@ public interface TimeCapsuleRepository extends JpaRepository<TimeCapsule, Intege
             "(6371 * ACOS(COS(RADIANS(:latitude)) * COS(RADIANS(ti.latitude)) " +
             "* COS(RADIANS(ti.longitude) - RADIANS(:longitude)) " +
             "+ SIN(RADIANS(:latitude)) * SIN(RADIANS(ti.latitude)))) AS distance " +
-            "FROM TimeCapsule ti " +
+            "FROM timecapsule ti " +
             "HAVING distance < :radius",
-            countQuery = "SELECT COUNT(*) FROM TimeCapsule ti " +
+            countQuery = "SELECT COUNT(*) FROM timecapsule ti " +
                     "WHERE (6371 * ACOS(COS(RADIANS(:latitude)) * COS(RADIANS(ti.latitude)) " +
                     "* COS(RADIANS(ti.longitude) - RADIANS(:longitude)) " +
                     "+ SIN(RADIANS(:latitude)) * SIN(RADIANS(ti.latitude)))) < :radius",
