@@ -2,6 +2,7 @@ package suftware.tuitui.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
+import suftware.tuitui.common.time.DateTimeUtil;
 import suftware.tuitui.domain.Comment;
 import suftware.tuitui.domain.Profile;
 import suftware.tuitui.domain.TimeCapsule;
@@ -30,7 +31,7 @@ public class CommentRequestDto {
                 .comment(commentRequestDto.getComment())
                 .profile(profile)
                 .timeCapsule(timeCapsule)
-                .updateAt(new Timestamp(System.currentTimeMillis()))
+                .updateAt(DateTimeUtil.getSeoulTimestamp())
                 .modified(Boolean.FALSE)
                 .build();
     }
@@ -42,7 +43,7 @@ public class CommentRequestDto {
                 .comment(commentRequestDto.getComment())
                 .profile(profile)
                 .timeCapsule(timeCapsule)
-                .updateAt(new Timestamp(System.currentTimeMillis()))
+                .updateAt(DateTimeUtil.getSeoulTimestamp())
                 .modified(Boolean.FALSE)
                 .build();
     }

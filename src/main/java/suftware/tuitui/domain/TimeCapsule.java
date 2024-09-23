@@ -42,7 +42,7 @@ public class TimeCapsule {
     String location;
     
     @Column(name = "remind_date", nullable = false)
-    Integer remindDate;
+    Timestamp remindDate;
 
     @Column(name = "latitude", precision = 10, scale = 8)
     BigDecimal latitude;

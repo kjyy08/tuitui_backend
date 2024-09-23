@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -13,12 +14,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.common.http.Message;
+import suftware.tuitui.common.time.DateTimeUtil;
 import suftware.tuitui.domain.IpBlackList;
 import suftware.tuitui.repository.IpBlackListRepository;
 
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -50,15 +53,20 @@ public class IpBanFilter extends OncePerRequestFilter {
 
         boolean isBanned = false;
 
+        Optional<IpBlackList> ipBlackList = ipBlackListRepository.findByIpAddress(clientIp);
+
         //  ip 밴인 유저인 경우 차단
-        if (ipBlackListRepository.existsByIpAddress(clientIp)){
-            isBanned = true;
+        if (ipBlackList.isPresent()) {
+            if (ipBlackList.get().getIsBanned()) {
+                isBanned = true;
+            }
         }
 
         //  접근이 매핑된 URI가 아니면 차단
         boolean isMatched = mappedUris.stream().anyMatch(mappedUri -> antPathMatcher.match(mappedUri, requestUri));
 
-        if (!isMatched) {
+        //  제 3자가 매핑된 URI가 아닌 곳에 접근한 경우
+        if (!isMatched && !isBanned) {
             if (clientIp.equals("127.0.0.1")) {
                 filterChain.doFilter(request, response);
                 return;
@@ -69,17 +77,8 @@ public class IpBanFilter extends OncePerRequestFilter {
             isBanned = true;
         }
 
-        if (isBanned){
-            Message message = Message.builder()
-                    .status(TuiTuiMsgCode.IP_BANNED.getHttpStatus())
-                    .code(TuiTuiMsgCode.IP_BANNED.getCode())
-                    .message(TuiTuiMsgCode.IP_BANNED.getMsg())
-                    .build();
-
-            response.setStatus(message.getStatus().value());
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().print(new ObjectMapper().writeValueAsString(message));
+        if (isBanned) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
             log.info("IpBanFilter.doFilterInternal() -> clientIp: {} is banned", clientIp);
             return;
         }
@@ -89,21 +88,26 @@ public class IpBanFilter extends OncePerRequestFilter {
 
     //  db에 차단할 ip 저장
     private void banIp(String ip) {
+        //  이미 저장된 경우는 return 처리
+        if (ipBlackListRepository.existsByIpAddress(ip)) {
+            return;
+        }
+
         try {
             log.info("IpBanFilter.banIp() -> request from ip: {} has been blocked", ip);
             ipBlackListRepository.save(IpBlackList.builder()
                     .ipAddress(ip)
-                    .bannedAt(new Timestamp(System.currentTimeMillis()))
+                    .bannedAt(DateTimeUtil.getSeoulTimestamp())
                     .isBanned(true)
                     .build());
 
-        } catch (Exception e){
+        } catch (Exception e) {
             log.info("IpBanFilter.banIp() -> clientIp: {} is already blocked", ip);
         }
     }
 
     //  request로부터 ip 추출
-    private String getClientIp(HttpServletRequest request){
+    private String getClientIp(HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");
 
         for (String header : IP_HEADERS) {
@@ -118,7 +122,7 @@ public class IpBanFilter extends OncePerRequestFilter {
         }
 
         //  로컬 호스트 ip 반환
-        if(ip.equals("0:0:0:0:0:0:0:1")){
+        if (ip.equals("0:0:0:0:0:0:0:1")) {
             ip = "127.0.0.1";
         }
 

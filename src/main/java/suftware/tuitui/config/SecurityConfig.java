@@ -22,7 +22,7 @@ import suftware.tuitui.repository.UserRepository;
 import suftware.tuitui.repository.UserTokenRepository;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity(debug = false)
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final RequestMappingHandlerMapping requestMappingHandlerMapping;

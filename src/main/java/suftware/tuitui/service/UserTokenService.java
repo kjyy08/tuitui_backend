@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import suftware.tuitui.common.enumType.Role;
+import suftware.tuitui.common.time.DateTimeUtil;
 import suftware.tuitui.sns.kakao.KakaoAuthService;
 import suftware.tuitui.sns.kakao.KakaoResponse;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
@@ -112,7 +113,7 @@ public class UserTokenService {
             //  유저 정보가 없다면 회원가입 처리
             user = User.builder()
                     .account(account)
-                    .createdAt(new Timestamp(System.currentTimeMillis()))
+                    .createdAt(DateTimeUtil.getSeoulTimestamp())
                     .role(Role.USER)
                     .snsType(snsType.toLowerCase())
                     .build();
@@ -134,7 +135,7 @@ public class UserTokenService {
         UserToken userToken = UserToken.builder()
                 .account(account)
                 .refresh(refresh)
-                .expiresIn(new Timestamp(System.currentTimeMillis() + (jwtUtil.getExpiresIn(refresh) * 1000)))
+                .expiresIn(new Timestamp(DateTimeUtil.getSeoulTimestamp().getTime() + (jwtUtil.getExpiresIn(refresh) * 1000)))
                 .build();
 
         userTokenRepository.save(userToken);
@@ -209,7 +210,7 @@ public class UserTokenService {
         userTokenRepository.save(UserToken.builder()
                 .account(account)
                 .refresh(newRefreshToken)
-                .expiresIn(new Timestamp(System.currentTimeMillis() + (jwtUtil.getExpiresIn(newRefreshToken) * 1000)))
+                .expiresIn(new Timestamp(DateTimeUtil.getSeoulTimestamp().getTime() + (jwtUtil.getExpiresIn(newRefreshToken) * 1000)))
                 .build());
 
         JwtResponseDto jwtResponseDto = JwtResponseDto.toDto("Bearer", newAccessToken, jwtUtil.getExpiresIn(newAccessToken),
@@ -252,7 +253,7 @@ public class UserTokenService {
         userTokenRepository.save(UserToken.builder()
                 .account(account)
                 .refresh(newRefreshToken)
-                .expiresIn(new Timestamp(System.currentTimeMillis() + (jwtUtil.getExpiresIn(newRefreshToken) * 1000)))
+                .expiresIn(new Timestamp(DateTimeUtil.getSeoulTimestamp().getTime() + (jwtUtil.getExpiresIn(newRefreshToken) * 1000)))
                 .build());
 
         JwtResponseDto jwtResponseDto = JwtResponseDto.toDto("Bearer", newAccessToken, jwtUtil.getExpiresIn(newAccessToken),

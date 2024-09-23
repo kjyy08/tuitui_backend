@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
+import suftware.tuitui.common.time.DateTimeUtil;
 import suftware.tuitui.domain.Comment;
 import suftware.tuitui.domain.Profile;
 import suftware.tuitui.domain.TimeCapsule;
@@ -91,7 +92,7 @@ public class CommentService {
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.COMMENT_NOT_FOUND));
 
         comment.setComment(commentRequestDto.getComment());
-        comment.setUpdateAt(new Timestamp(System.currentTimeMillis()));
+        comment.setUpdateAt(DateTimeUtil.getSeoulTimestamp());
         comment.setModified(Boolean.TRUE);
 
         return Optional.of(CommentResponseDto.toDTO(comment));

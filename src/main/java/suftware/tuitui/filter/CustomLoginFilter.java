@@ -21,6 +21,7 @@ import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.jwt.JwtResponseDto;
 import suftware.tuitui.common.jwt.JwtUtil;
+import suftware.tuitui.common.time.DateTimeUtil;
 import suftware.tuitui.domain.UserToken;
 import suftware.tuitui.dto.response.CustomUserDetails;
 import suftware.tuitui.repository.UserTokenRepository;
@@ -103,7 +104,7 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
         UserToken userToken = UserToken.builder()
                 .account(account)
                 .refresh(refresh)
-                .expiresIn(new Timestamp(System.currentTimeMillis() + jwtUtil.getRefreshTokenExpiresIn()))
+                .expiresIn(new Timestamp(DateTimeUtil.getSeoulTimestamp().getTime() + jwtUtil.getRefreshTokenExpiresIn()))
                 .build();
 
         if (userTokenRepository.existsByAccount(account)){

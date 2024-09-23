@@ -2,11 +2,13 @@ package suftware.tuitui.dto.request;
 
 import jakarta.persistence.Column;
 import lombok.*;
+import suftware.tuitui.common.time.DateTimeUtil;
 import suftware.tuitui.domain.Profile;
 import suftware.tuitui.domain.TimeCapsule;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -28,18 +30,18 @@ public class TimeCapsuleRequestDto {
                 .profile(profile)
                 .content(timeCapsuleRequestDto.getContent())
                 .location(timeCapsuleRequestDto.getLocation())
-                .remindDate(timeCapsuleRequestDto.getRemindDate())
+                .remindDate(Timestamp.valueOf(LocalDateTime.now().plusDays(timeCapsuleRequestDto.getRemindDate())))
                 .latitude(timeCapsuleRequestDto.getLatitude())
                 .longitude(timeCapsuleRequestDto.getLongitude());
 
         if (timeCapsuleRequestDto.getWriteAt() == null){
-            builder.writeAt(new Timestamp(System.currentTimeMillis()));
+            builder.writeAt(DateTimeUtil.getSeoulTimestamp());
         } else {
             builder.writeAt(timeCapsuleRequestDto.getWriteAt());
         }
 
         if (timeCapsuleRequestDto.getUpdateAt() == null){
-            builder.updateAt(new Timestamp(System.currentTimeMillis()));
+            builder.updateAt(DateTimeUtil.getSeoulTimestamp());
         } else {
             builder.updateAt(timeCapsuleRequestDto.getUpdateAt());
         }

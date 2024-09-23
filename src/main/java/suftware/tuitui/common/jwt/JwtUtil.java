@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import suftware.tuitui.common.enumType.Role;
+import suftware.tuitui.common.time.DateTimeUtil;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -45,7 +46,7 @@ public class JwtUtil {
     public Long getExpiresIn(String token){
         long expiresIn = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().getTime();
 
-        expiresIn = expiresIn - System.currentTimeMillis();
+        expiresIn = expiresIn - DateTimeUtil.getSeoulTimestamp().getTime();
 
         return expiresIn / 1000;
     }
@@ -101,9 +102,9 @@ public class JwtUtil {
                 .claim("account", account)
                 .claim("role", role)
                 //  토큰의 발행 시간
-                .issuedAt(new Date(System.currentTimeMillis()))
+                .issuedAt(new Date(DateTimeUtil.getSeoulTimestamp().getTime()))
                 //  토큰의 소멸 시간
-                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .expiration(new Date(DateTimeUtil.getSeoulTimestamp().getTime() + expiration))
                 //  jwt 시그니처에 secretKey 설정
                 .signWith(secretKey)
                 .compact();

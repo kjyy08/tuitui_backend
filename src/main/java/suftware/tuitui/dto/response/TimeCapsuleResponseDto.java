@@ -26,11 +26,11 @@ public class TimeCapsuleResponseDto {
 
     String location;
 
-    Integer remindDate;
-
     String writeAt;
 
     String updateAt;
+
+    String remindAt;
 
     List<ImageResponseDto> imageList;
 
@@ -48,7 +48,7 @@ public class TimeCapsuleResponseDto {
                 .updateAt(timeCapsule.getUpdateAt().toString())
                 .content(timeCapsule.getContent())
                 .location(timeCapsule.getLocation())
-                .remindDate(timeCapsule.getRemindDate())
+                .remindAt(timeCapsule.getRemindDate().toString())
                 .latitude(timeCapsule.getLatitude())
                 .longitude(timeCapsule.getLongitude())
                 .build();
@@ -64,7 +64,7 @@ public class TimeCapsuleResponseDto {
                 .updateAt(timeCapsule.getUpdateAt().toString())
                 .content(timeCapsule.getContent())
                 .location(timeCapsule.getLocation())
-                .remindDate(timeCapsule.getRemindDate())
+                .remindAt(timeCapsule.getRemindDate().toString())
                 .latitude(timeCapsule.getLatitude())
                 .longitude(timeCapsule.getLongitude())
                 .imageList(imageList)

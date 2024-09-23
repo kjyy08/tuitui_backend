@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import suftware.tuitui.common.enumType.Role;
+import suftware.tuitui.common.time.DateTimeUtil;
 import suftware.tuitui.domain.User;
 
 import java.sql.Timestamp;
@@ -33,7 +34,7 @@ public class UserCreateRequestDto {
                 //  .password(userRequestDto.getPassword())
                 //  .phone(userRequestDto.getPhone())
                 //  .name(userRequestDto.getName())
-                .createdAt(new Timestamp(System.currentTimeMillis()))
+                .createdAt(DateTimeUtil.getSeoulTimestamp())
                 .role(Role.USER)
                 .build();
     }
@@ -44,7 +45,7 @@ public class UserCreateRequestDto {
                 //  .password(userRequestDto.getPassword())
                 //  .phone(userRequestDto.getPhone())
                 //  .name(userRequestDto.getName())
-                .createdAt(new Timestamp(System.currentTimeMillis()))
+                .createdAt(DateTimeUtil.getSeoulTimestamp())
                 .role(Role.valueOf(role))
                 .build();
     }
