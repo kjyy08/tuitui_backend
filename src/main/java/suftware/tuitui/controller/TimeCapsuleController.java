@@ -89,7 +89,7 @@ public class TimeCapsuleController {
     @GetMapping(value = "capsules/nearby")
     public ResponseEntity<Message> readCapsuleByPosition(@RequestParam(name = "latitude") BigDecimal latitude,
                                                          @RequestParam(name = "longitude") BigDecimal longitude,
-                                                         @RequestParam(name = "radius", defaultValue = "2") Double radius,
+                                                         @RequestParam(name = "radius", defaultValue = "2", required = false) Double radius,
                                                          @RequestParam(name = "pageNo", defaultValue = "0", required = false) Integer pageNo,
                                                          @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
                                                          @RequestParam(name = "sortBy", defaultValue = "writeAt", required = false) String sortBy){

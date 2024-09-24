@@ -43,6 +43,7 @@ public class IpBanFilter extends OncePerRequestFilter {
                         .forEach(pattern -> mappedUris.add(pattern.toString()));
             }
         });
+        mappedUris.add("/api/logout");
     }
 
     @Override
