@@ -33,8 +33,8 @@ public class AdminCapsuleController {
 
     @DeleteMapping("capsules/{capsuleId}")
     public ResponseEntity<Void> deleteCapsule(@PathVariable(name = "capsuleId") Integer id){
-        timeCapsuleService.deleteCapsule(id);
         timeCapsuleImageService.deleteCapsuleImage(id);
+        timeCapsuleService.deleteCapsule(id);
 
         return ResponseEntity.ok().build();
     }
