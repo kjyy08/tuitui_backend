@@ -1,0 +1,40 @@
+<!-- fragments/sidebar.html -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!-- src/main/resources/templates/fragments/sidebar.html -->
+<div th:fragment="sidebar">
+    <div class="sidebar">
+        <div class="logo">
+            TuiTui
+            <span>Admin</span>
+        </div>
+        <ul class="menu">
+            <li>
+                <a href="/admin/home"
+                   th:classappend="${requestURI == '/admin/home' or requestURI.startsWith('/admin/home/')} ? 'active'">
+                    <span class="icon">🏠</span> Home
+                </a>
+            </li>
+            <li>
+                <a href="/admin/users"
+                   th:classappend="${requestURI == '/admin/users' or requestURI.startsWith('/admin/users/')} ? 'active'">
+                    <span class="icon">👤</span> Users
+                </a>
+            </li>
+            <li>
+                <a href="/admin/profiles"
+                   th:classappend="${requestURI == '/admin/profiles' or requestURI.startsWith('/admin/profiles/')} ? 'active'">
+                    <span class="icon">💳</span> Profiles
+                </a>
+            </li>
+            <li>
+                <a href="/admin/capsules"
+                   th:classappend="${requestURI == '/admin/capsules' or requestURI.startsWith('/admin/capsules/')} ? 'active'">
+                    <span class="icon">🌐</span> Capsules
+                </a>
+            </li>
+        </ul>
+        <a href="/admin/logout" class="logout">
+            <span class="icon">↩️</span> Sign out
+        </a>
+    </div>
+</div>

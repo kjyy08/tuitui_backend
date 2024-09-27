@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TuiTui Admin</title>
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="logo">
+        TuiTui
+        <span>Admin</span>
+    </div>
+    <ul class="menu">
+        <li><a href="/admin/home" th:class="${requestURI == '/admin/home'} ? 'active' : ''"><span class="icon">🏠</span> Home</a></li>
+        <li><a href="/admin/users" th:class="${requestURI == '/admin/users'} ? 'active' : ''"><span class="icon">👤</span> Users</a></li>
+        <li><a href="/admin/profiles" th:class="${requestURI == '/admin/profiles'} ? 'active' : ''"><span class="icon">💳</span> Profiles</a></li>
+        <li><a href="/admin/capsules" th:class="${requestURI == '/admin/capsules'} ? 'active' : ''"><span class="icon">🌐</span> Capsules</a></li>
+    </ul>
+    <a href="/admin/logout" class="logout"><span class="icon">↩️</span> Sign out</a>
+</div>
+
+<!-- Main content -->
+<div class="main-content">
+    <h1>Welcome to TuiTui Admin!</h1>
+</div>
+
+</body>
+</html>

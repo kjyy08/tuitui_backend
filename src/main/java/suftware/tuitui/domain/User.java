@@ -3,6 +3,7 @@ package suftware.tuitui.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
+import suftware.tuitui.common.enumType.AccountState;
 import suftware.tuitui.common.enumType.Role;
 
 import java.sql.Timestamp;
@@ -25,11 +26,16 @@ public class User {
     @Column(name = "account", length = 60, nullable = false, unique = true)
     private String account;
 
-    //  @Column(name = "password", nullable = false, length = 300)
-    //  String password;
+    @Column(name = "password", length = 300)
+    private String password;
 
     @Column(name = "created_at")
     private Timestamp createdAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "account_state")
+    private AccountState accountState;
+
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")

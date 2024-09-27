@@ -13,4 +13,8 @@ public interface ProfileImageRepository extends JpaRepository<ProfileImage, Inte
             "WHERE pi.profile.profileId = :profileId")
     Optional<ProfileImage> findByProfileId(@Param("profileId") Integer id);
 
+    @Query("SELECT pi " +
+            "FROM ProfileImage pi " +
+            "WHERE pi.profile.user.userId = :userId")
+    Optional<ProfileImage> findByUserId(@Param("userId") Integer id);
 }

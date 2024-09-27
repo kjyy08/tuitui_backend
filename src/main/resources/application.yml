@@ -12,7 +12,7 @@ spring:
     admin-key: ${ADMIN_SECRET_KEY}
     manager-key: ${MANAGER_SECRET_KEY}
     secret-key: ${JWT_SECRET_KEY}
-    access-expires-in: 3600000 # 1시간
+    access-expires-in: 21600000 # 6시간
     refresh-expires-in: 2592000000 # 30일
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -33,7 +33,7 @@ spring:
       file-size-threshold: 0B # 파일을 디스크에 저장하지 않고 메모리에 저장하는 최소 크기 (default: 0B)
       location: ${MULTIPART_TEMP_ROOT} # 업로드된 파일이 임시로 저장되는 디스크 위치 (default: WAS가 결정), 서버에 업로드 된 위치 변경 필요
       max-file-size: 10MB # 한개 파일의 최대 사이즈 (default: 1MB)
-      max-request-size: 10MB # 한개 요청의 최대 사이즈 (default: 10MB)
+      max-request-size: 30MB # 한개 요청의 최대 사이즈 (default: 10MB)
 
 cloud:
   aws:

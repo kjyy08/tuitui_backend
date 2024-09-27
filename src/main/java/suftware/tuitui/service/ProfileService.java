@@ -2,6 +2,10 @@ package suftware.tuitui.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import suftware.tuitui.common.enumType.Gender;
@@ -11,13 +15,16 @@ import suftware.tuitui.domain.Profile;
 import suftware.tuitui.domain.User;
 import suftware.tuitui.dto.request.ProfileCreateRequestDto;
 import suftware.tuitui.dto.request.ProfileUpdateRequestDto;
+import suftware.tuitui.dto.response.PageResponse;
 import suftware.tuitui.dto.response.ProfileResponseDto;
+import suftware.tuitui.dto.response.UserResponseDto;
 import suftware.tuitui.repository.ProfileRepository;
 import suftware.tuitui.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,6 +68,25 @@ public class ProfileService {
         }
 
         return profileResponseDtoList;
+    }
+
+    public Optional<PageResponse> getProfileList(Integer pageNo, Integer pageSize, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
+        Page<Profile> profilePage = profileRepository.findAll(pageable);
+
+        List<ProfileResponseDto> profileResponseDtoList = profilePage.getContent().stream()
+                .map(ProfileResponseDto::toDTO)
+                .collect(Collectors.toList());
+
+        // PageResponse 반환
+        return Optional.of(PageResponse.builder()
+                .contents(profileResponseDtoList)
+                .pageNo(profilePage.getNumber())
+                .pageSize(profilePage.getSize())
+                .totalElements((int) profilePage.getTotalElements())
+                .totalPages(profilePage.getTotalPages())
+                .lastPage(profilePage.isLast())
+                .build());
     }
 
     //  프로필 저장

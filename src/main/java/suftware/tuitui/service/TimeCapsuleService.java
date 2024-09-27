@@ -64,9 +64,9 @@ public class TimeCapsuleService {
 
         List<TimeCapsule> timeCapsuleList = capsulePage.getContent();
 
-        if (timeCapsuleList.isEmpty()){
-            throw new TuiTuiException(TuiTuiMsgCode.CAPSULE_NOT_FOUND);
-        }
+        //if (timeCapsuleList.isEmpty()){
+        //    throw new TuiTuiException(TuiTuiMsgCode.CAPSULE_NOT_FOUND);
+        //}
 
         List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = new ArrayList<>();
 

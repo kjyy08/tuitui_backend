@@ -13,4 +13,10 @@ public interface TimeCapsuleImageRepository extends JpaRepository<TimeCapsuleIma
             "WHERE tci.timeCapsule.timeCapsuleId = :capsuleId")
     List<TimeCapsuleImage> findByCapsuleId(@Param("capsuleId") Integer id);
 
+    @Query("SELECT tci " +
+            "FROM TimeCapsuleImage tci " +
+            "WHERE tci.timeCapsule.profile.user.userId = :userId")
+    List<TimeCapsuleImage> findByUserId(@Param("userId") Integer id);
+
+
 }

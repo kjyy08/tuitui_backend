@@ -3,6 +3,7 @@ package suftware.tuitui.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import suftware.tuitui.common.enumType.S3ImagePath;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
@@ -41,8 +42,22 @@ public class TimeCapsuleImageService {
         }
     }
 
+    @Transactional
     public void deleteCapsuleImage(Integer id){
         List<TimeCapsuleImage> timeCapsuleImages = timeCapsuleImageRepository.findByCapsuleId(id);
+
+        if (!timeCapsuleImages.isEmpty()){
+            for (TimeCapsuleImage timeCapsuleImage : timeCapsuleImages){
+                String fileName = timeCapsuleImage.getImgUrl().substring(timeCapsuleImage.getImgUrl().lastIndexOf('/') + 1);
+                s3Service.delete(S3ImagePath.CAPSULE.getPath(), fileName);
+                timeCapsuleImageRepository.delete(timeCapsuleImage);
+            }
+        }
+    }
+
+    @Transactional
+    public void deleteCapsuleImageS3(Integer id){
+        List<TimeCapsuleImage> timeCapsuleImages = timeCapsuleImageRepository.findByUserId(id);
 
         if (!timeCapsuleImages.isEmpty()){
             for (TimeCapsuleImage timeCapsuleImage : timeCapsuleImages){

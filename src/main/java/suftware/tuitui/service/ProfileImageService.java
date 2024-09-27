@@ -108,6 +108,28 @@ public class ProfileImageService {
         return Optional.of(ImageResponseDto.toDto(profileImage));
     }
 
+    //  유저를 삭제하는 경우에 사용
+    @Transactional
+    public Optional<ImageResponseDto> deleteProfileImageS3(Integer userId){
+        ProfileImage profileImage = profileImageRepository.findByUserId(userId)
+                .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
+
+        //  기본 프로필 사진일 경우에는 사진을 지우지 않고 값을 반환
+        if (profileImage.getImgUrl().equals(getBasicProfileUrl())){
+            return Optional.of(ImageResponseDto.toDto(profileImage));
+        }
+
+        String currentFileUrl = profileImage.getImgUrl();
+        String currentFileName = currentFileUrl.substring(currentFileUrl.lastIndexOf('/') + 1);
+        //  기본 프로필 이미지 url로 변경
+        profileImage.setImgUrl(getBasicProfileUrl());
+
+        //  s3에 업로드된 프로필 이미지 삭제
+        s3Service.delete(S3ImagePath.PROFILE.getPath(), currentFileName);
+        return Optional.of(ImageResponseDto.toDto(profileImage));
+    }
+
+    //  기본 프로필 이미지 생성
     public Optional<ImageResponseDto> createProfileBasicImage(Integer profileId){
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));

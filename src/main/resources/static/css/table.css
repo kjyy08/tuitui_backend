@@ -1,0 +1,204 @@
+/* Reset margin and font settings */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    min-height: 100vh;
+    background-color: #f9f9f9;
+}
+
+/* Sidebar styles */
+.sidebar {
+    width: 250px;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    top: 0;
+    left: 0;
+}
+
+.sidebar .logo {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 40px;
+}
+
+.sidebar .logo span {
+    display: block;
+    font-size: 14px;
+    font-weight: normal;
+    color: #666;
+}
+
+.sidebar .menu {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+}
+
+.sidebar .menu li {
+    margin-bottom: 20px;
+}
+
+.sidebar .menu li a {
+    text-decoration: none;
+    color: #333;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+.sidebar .menu li a.active {
+    background-color: #0062cc;
+    color: #fff;
+    font-weight: bold;
+}
+
+.sidebar .menu li a:hover {
+    background-color: #0062cc;
+    color: #fff;
+}
+
+.sidebar .menu li a .icon {
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+.sidebar .logout {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+    margin-top: auto;
+    position: absolute;
+    bottom: 60px;
+    left: 20px;
+    width: calc(100% - 40px);
+}
+
+.sidebar .logout:hover {
+    background-color: #e0e0e0;
+}
+
+.sidebar .logout .icon {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+/* Main content styles */
+.main-content {
+    margin-left: 295px; /* 사이드바의 너비에 맞게 조정 */
+    padding: 20px;
+    width: calc(100% - 295px); /* 사이드바를 제외한 나머지 화면 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: calc(100vh - 40px);
+    box-sizing: border-box;
+    position: fixed; /* 페이지네이션 위치 조정을 위해 추가 */
+}
+
+/* 테이블 디자인 */
+table {
+    width: 100%; /* 화면의 너비를 100% 차지 */
+    max-width: 1200px;
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 50px; /* 페이지네이션과의 간격 추가 */
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    word-break: keep-all; /* 텍스트 줄바꿈 방지 */
+    white-space: nowrap; /* 텍스트가 줄바꿈되지 않도록 */
+}
+
+/* 첫 번째 컬럼의 고정 크기 */
+th:first-child,
+td:first-child {
+    width: 5%; /* Index 컬럼 */
+}
+
+/* 마지막 컬럼의 고정 크기 */
+th:last-child,
+td:last-child {
+    width: 10%; /* Action 컬럼 */
+}
+
+
+th {
+    background-color: #0062cc;
+    color: #fff;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:nth-child(odd) {
+    background-color: #e0e0e0;
+}
+
+/* 삭제 버튼 디자인 */
+.delete-btn {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 5px 8px; /* 버튼 크기 조정 */
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+/* 페이지네이션 디자인 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 5px; /* 버튼 사이 간격 조정 */
+    padding: 10px 0;
+    position: fixed;
+    bottom: 20px;
+    left: 295px; /* 사이드바의 너비만큼 왼쪽 간격 추가 */
+    width: calc(100% - 295px); /* 사이드바를 제외한 전체 화면의 너비 */
+    background-color: #f9f9f9;
+}
+
+.pagination a {
+    padding: 6px 10px; /* 버튼 크기를 작게 조정 */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #333;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination a.active {
+    background-color: #0062cc;
+    color: #fff;
+}
+
+.pagination a:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
