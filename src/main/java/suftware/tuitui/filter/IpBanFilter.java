@@ -1,25 +1,19 @@
 package suftware.tuitui.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import suftware.tuitui.common.enumType.TuiTuiMsgCode;
-import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.time.DateTimeUtil;
 import suftware.tuitui.domain.IpBlackList;
 import suftware.tuitui.repository.IpBlackListRepository;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -44,6 +38,7 @@ public class IpBanFilter extends OncePerRequestFilter {
             }
         });
         mappedUris.add("/api/logout");
+        mappedUris.add("/admin/**");
     }
 
     @Override

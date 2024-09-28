@@ -25,44 +25,34 @@
 
     <!-- Main content -->
     <div class="main-content">
-        <h1>Profile Table</h1>
+        <h1>IP Black List</h1>
 
         <!-- 성공 메시지 표시 -->
         <div id="success-message" style="display: none; color: green; margin-bottom: 20px;">
-            프로필이 성공적으로 삭제되었습니다.
+            아이피 밴이 해제되었습니다.
         </div>
 
-        <!-- 프로필 테이블 -->
+        <!-- 캡슐 테이블 -->
         <table>
             <thead>
             <tr>
                 <th>Index</th>
-                <th>Profile ID</th>
-                <th>User Id</th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Nickname</th>
-                <th>Description</th>
-                <th>Gender</th>
-                <th>Birth</th>
+                <th>IP ID</th>
+                <th>Address</th>
+                <th>Banned</th>
                 <th>Action</th>
             </tr>
             </thead>
             <tbody>
-            <!-- 프로필 정보 -->
-            <tr th:each="profile, status : ${profilePage.contents}">
-                <td th:text="${profilePage.pageNo * profilePage.pageSize + status.index + 1}"></td>
-                <td th:text="${profile.profileId}"></td>
-                <td th:text="${profile.userId}"></td>
-                <td th:text="${profile.name}"></td>
-                <td th:text="${profile.phone}"></td>
-                <td th:text="${profile.nickname}"></td>
-                <td th:text="${profile.describeSelf}"></td>
-                <td th:text="${profile.gender}"></td>
-                <td th:text="${profile.birth}"></td>
+            <!-- 캡슐 정보 -->
+            <tr th:each="blacklist, status : ${blackListPage.contents}">
+                <td th:text="${blackListPage.pageNo * blackListPage.pageSize + status.index + 1}"></td>
+                <td th:text="${blacklist.ipId}"></td>
+                <td th:text="${blacklist.address}"></td>
+                <td th:text="${blacklist.banned}"></td>
                 <td>
                     <!-- 삭제 버튼 -->
-                    <form th:action="@{/admin/profiles/{id}(id=${profile.profileId})}" method="delete" class="delete-form">
+                    <form th:action="@{/admin/blacklists/{id}(id=${blacklist.ipId})}" method="post" class="delete-form">
                         <input type="hidden" name="_method" value="delete"/> <!-- DELETE 메서드 지원 -->
                         <button type="submit" class="delete-btn">Delete</button>
                     </form>
@@ -75,24 +65,24 @@
     <!-- 페이지네이션 컨트롤 -->
     <div class="pagination">
         <!-- 이전 페이지 링크 -->
-        <a th:href="@{/admin/profiles(pageNo=${profilePage.pageNo - 1}, pageSize=${profilePage.pageSize})}"
-           th:if="${profilePage.pageNo > 0}">&laquo; Previous</a>
+        <a th:href="@{/admin/blacklists(pageNo=${blackListPage.pageNo - 1}, pageSize=${blackListPage.pageSize})}"
+           th:if="${blackListPage.pageNo > 0}">&laquo; Previous</a>
 
         <!-- 페이지 번호 링크 -->
-        <span th:if="${profilePage.contents.size() > 0}" th:each="i : ${#numbers.sequence(0, profilePage.totalPages - 1)}">
-        <a th:href="@{/admin/profiles(pageNo=${i}, pageSize=${profilePage.pageSize})}"
-           th:text="${i + 1}"
-           th:class="${profilePage.pageNo == i} ? 'active'"></a>
-    </span>
+        <span th:if="${blackListPage.contents.size() > 0}" th:each="i : ${#numbers.sequence(0, blackListPage.totalPages - 1)}">
+            <a th:href="@{/admin/blacklists(pageNo=${i}, pageSize=${blackListPage.pageSize})}"
+               th:text="${i + 1}"
+               th:class="${blackListPage.pageNo == i} ? 'active'"></a>
+        </span>
 
         <!-- 테이블이 빈 경우, 1페이지 링크만 보여줌 -->
-        <span th:if="${profilePage.contents.size() == 0}">
-        <a href="#" class="active">1</a>
-    </span>
+        <span th:if="${blackListPage.contents.size() == 0}">
+            <a href="#" class="active">1</a>
+        </span>
 
         <!-- 다음 페이지 링크 -->
-        <a th:href="@{/admin/profiles(pageNo=${profilePage.pageNo + 1}, pageSize=${profilePage.pageSize})}"
-           th:if="${profilePage.contents.size() > 0 and !profilePage.lastPage}">Next &raquo;</a>
+        <a th:href="@{/admin/blacklists(pageNo=${blackListPage.pageNo + 1}, pageSize=${blackListPage.pageSize})}"
+           th:if="${blackListPage.contents.size() > 0 and !blackListPage.lastPage}">Next &raquo;</a>
     </div>
 </div>
 
@@ -101,19 +91,19 @@
     $('.delete-form').on('submit', function (e) {
         e.preventDefault(); // Prevent default form submission
 
-        if (confirm('프로필을 삭제하시겠습니까?')) {
+        if (confirm('Ip 밴을 해제하시겠습니까?')) {
             // Submit the form using AJAX to avoid page reload
             $.ajax({
                 url: $(this).attr('action'),
-                type: 'DELETE', // Use DELETE method
+                type: 'DELETE', // Use POST method for form submission
                 data: $(this).serialize(),
                 success: function () {
                     // Show alert message
-                    alert('프로필이 성공적으로 삭제되었습니다.');
+                    alert('정상적으로 Ip 밴이 해제됐습니다.');
                     window.location.reload();
                 },
                 error: function (xhr) {
-                    alert('프로필 삭제 실패');
+                    alert('Ip 밴 해제 실패');
                 }
             });
         }

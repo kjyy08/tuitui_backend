@@ -1,40 +1,22 @@
 <!-- fragments/sidebar.html -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<!-- src/main/resources/templates/fragments/sidebar.html -->
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
 <div th:fragment="sidebar">
+    <!-- Sidebar -->
     <div class="sidebar">
         <div class="logo">
             TuiTui
             <span>Admin</span>
         </div>
         <ul class="menu">
-            <li>
-                <a href="/admin/home"
-                   th:classappend="${requestURI == '/admin/home' or requestURI.startsWith('/admin/home/')} ? 'active'">
-                    <span class="icon">🏠</span> Home
-                </a>
-            </li>
-            <li>
-                <a href="/admin/users"
-                   th:classappend="${requestURI == '/admin/users' or requestURI.startsWith('/admin/users/')} ? 'active'">
-                    <span class="icon">👤</span> Users
-                </a>
-            </li>
-            <li>
-                <a href="/admin/profiles"
-                   th:classappend="${requestURI == '/admin/profiles' or requestURI.startsWith('/admin/profiles/')} ? 'active'">
-                    <span class="icon">💳</span> Profiles
-                </a>
-            </li>
-            <li>
-                <a href="/admin/capsules"
-                   th:classappend="${requestURI == '/admin/capsules' or requestURI.startsWith('/admin/capsules/')} ? 'active'">
-                    <span class="icon">🌐</span> Capsules
-                </a>
-            </li>
+            <li><a href="/admin/home" th:class="${requestURI == '/admin/home'} ? 'active' : ''"><span class="material-icons">home</span> Main</a></li>
+            <li><a href="/admin/users" th:class="${requestURI == '/admin/users'} ? 'active' : ''"><span class="material-icons">person</span> Users</a></li>
+            <li><a href="/admin/profiles" th:class="${requestURI == '/admin/profiles'} ? 'active' : ''"><span class="material-icons">account_circle</span> Profiles</a></li>
+            <li><a href="/admin/capsules" th:class="${requestURI == '/admin/capsules'} ? 'active' : ''"><span class="material-icons">edit</span> Capsules</a></li>
+            <li><a href="/admin/blacklists" th:class="${requestURI == '/admin/blacklists'} ? 'active' : ''"><span class="material-icons">block</span> BlackList</a></li>
         </ul>
-        <a href="/admin/logout" class="logout">
-            <span class="icon">↩️</span> Sign out
-        </a>
+        <a href="/admin/logout" class="logout"><span class="material-icons">exit_to_app</span> Sign out</a>
     </div>
 </div>

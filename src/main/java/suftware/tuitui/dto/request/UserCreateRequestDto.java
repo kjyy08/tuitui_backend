@@ -3,6 +3,7 @@ package suftware.tuitui.dto.request;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
+import suftware.tuitui.common.enumType.AccountState;
 import suftware.tuitui.common.enumType.Role;
 import suftware.tuitui.common.time.DateTimeUtil;
 import suftware.tuitui.domain.User;
@@ -35,6 +36,7 @@ public class UserCreateRequestDto {
                 //  .phone(userRequestDto.getPhone())
                 //  .name(userRequestDto.getName())
                 .createdAt(DateTimeUtil.getSeoulTimestamp())
+                .accountState(AccountState.ACTIVE)
                 .role(Role.USER)
                 .build();
     }
@@ -46,6 +48,7 @@ public class UserCreateRequestDto {
                 //  .phone(userRequestDto.getPhone())
                 //  .name(userRequestDto.getName())
                 .createdAt(DateTimeUtil.getSeoulTimestamp())
+                .accountState(AccountState.ACTIVE)
                 .role(Role.valueOf(role))
                 .build();
     }

@@ -13,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import suftware.tuitui.common.enumType.Role;
 import suftware.tuitui.common.jwt.JwtAuthFilter;
@@ -26,7 +27,7 @@ import suftware.tuitui.repository.UserRepository;
 import suftware.tuitui.repository.UserTokenRepository;
 
 @Configuration
-@EnableWebSecurity(debug = false)
+@EnableWebSecurity(debug = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final RequestMappingHandlerMapping requestMappingHandlerMapping;
@@ -35,6 +36,7 @@ public class SecurityConfig {
     private final UserTokenRepository userTokenRepository;
     private final IpBlackListRepository ipBlackListRepository;
 
+    //  관리자 페이지 필터 체인
     @Bean
     @Order(1)
     public SecurityFilterChain adminFilterChain(HttpSecurity http) throws Exception {
@@ -54,9 +56,11 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/admin/home", true)
                 )
                 .logout(LogoutConfigurer::permitAll)
+                //.addFilterBefore(new IpBanFilter(ipBlackListRepository, requestMappingHandlerMapping), LogoutFilter.class)
                 .build();
     }
 
+    //  api 필터 체인
     @Bean
     @Order(2)
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception{
