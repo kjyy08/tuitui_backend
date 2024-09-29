@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configurers.LogoutConf
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -41,8 +42,8 @@ public class SecurityConfig {
     @Order(1)
     public SecurityFilterChain adminFilterChain(HttpSecurity http) throws Exception {
         return http
+                .csrf((csrfConfigurer) -> csrfConfigurer.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .securityMatcher("/admin/**", "/css/**", "/favicon.ico")
-                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers(
                                 new AntPathRequestMatcher("/admin/**")).hasAuthority(Role.ADMIN.getValue())
@@ -55,7 +56,10 @@ public class SecurityConfig {
                         .permitAll()
                         .defaultSuccessUrl("/admin/home", true)
                 )
-                .logout(LogoutConfigurer::permitAll)
+                .logout((logout) -> logout
+                        .logoutUrl("/admin/logout")
+                        .logoutSuccessUrl("/admin/login")
+                        .permitAll())
                 //.addFilterBefore(new IpBanFilter(ipBlackListRepository, requestMappingHandlerMapping), LogoutFilter.class)
                 .build();
     }

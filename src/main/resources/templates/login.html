@@ -18,6 +18,8 @@
     </div>
 
     <form id="loginForm" action="/admin/login" method="POST">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <!-- 폼 필드 -->
         <div class="form-group">
             <label for="username">Username</label>
             <input type="text" id="username" name="username" placeholder="Enter your id">
@@ -28,7 +30,6 @@
         </div>
         <button type="submit" class="login-btn">Login</button>
     </form>
-
 </div>
 
 </body>

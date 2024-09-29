@@ -16,7 +16,7 @@ body {
     display: flex;
     flex-direction: column;
     position: fixed;
-    height: 100vh;
+    height: 95vh;
     top: 0;
     left: 0;
 }
@@ -72,6 +72,44 @@ body {
     font-size: 20px;
 }
 
+/* 로그아웃 폼 스타일 조정 */
+.logout-form {
+    margin-top: auto;
+}
+
+/* 로그아웃 버튼 스타일 */
+.logout-btn {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    width: 100%;
+    background: none;
+    border: none;
+    color: #333;
+    padding: 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    cursor: pointer;
+    outline: none;
+    font-size: 16px; /* 다른 메뉴와 동일한 크기로 조정 */
+    font-family: inherit; /* 폰트 동일하게 유지 */
+}
+
+/* 로그아웃 버튼 hover 스타일 */
+.logout-btn:hover {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+
+/* 아이콘 간격 조절 */
+.logout-btn .material-icons {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+/* Sidebar styles */
 .sidebar .logout {
     display: flex;
     align-items: center;
@@ -82,19 +120,11 @@ body {
     transition: background-color 0.3s;
     margin-top: auto;
     position: absolute;
-    bottom: 60px;
+    bottom: 20px; /* 기존 값에서 올려줌 */
     left: 20px;
     width: calc(100% - 40px);
 }
 
-.sidebar .logout:hover {
-    background-color: #e0e0e0;
-}
-
-.sidebar .logout .icon {
-    margin-right: 10px;
-    font-size: 18px;
-}
 
 /* Main content styles */
 .main-content {
@@ -138,7 +168,6 @@ th:last-child,
 td:last-child {
     width: 10%; /* Action 컬럼 */
 }
-
 
 th {
     background-color: #0062cc;

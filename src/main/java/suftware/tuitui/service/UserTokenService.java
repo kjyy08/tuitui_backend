@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import suftware.tuitui.common.enumType.AccountState;
 import suftware.tuitui.common.enumType.Role;
 import suftware.tuitui.common.time.DateTimeUtil;
 import suftware.tuitui.sns.kakao.KakaoAuthService;
@@ -114,6 +115,7 @@ public class UserTokenService {
             user = User.builder()
                     .account(account)
                     .createdAt(DateTimeUtil.getSeoulTimestamp())
+                    .accountState(AccountState.ACTIVE)
                     .role(Role.USER)
                     .snsType(snsType.toLowerCase())
                     .build();

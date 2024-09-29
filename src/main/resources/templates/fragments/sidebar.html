@@ -1,22 +1,32 @@
-<!-- fragments/sidebar.html -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="/css/table.css">
 </head>
 <div th:fragment="sidebar">
-    <!-- Sidebar -->
     <div class="sidebar">
         <div class="logo">
             TuiTui
             <span>Admin</span>
         </div>
         <ul class="menu">
-            <li><a href="/admin/home" th:class="${requestURI == '/admin/home'} ? 'active' : ''"><span class="material-icons">home</span> Main</a></li>
-            <li><a href="/admin/users" th:class="${requestURI == '/admin/users'} ? 'active' : ''"><span class="material-icons">person</span> Users</a></li>
-            <li><a href="/admin/profiles" th:class="${requestURI == '/admin/profiles'} ? 'active' : ''"><span class="material-icons">account_circle</span> Profiles</a></li>
-            <li><a href="/admin/capsules" th:class="${requestURI == '/admin/capsules'} ? 'active' : ''"><span class="material-icons">edit</span> Capsules</a></li>
-            <li><a href="/admin/blacklists" th:class="${requestURI == '/admin/blacklists'} ? 'active' : ''"><span class="material-icons">block</span> BlackList</a></li>
+            <li><a href="/admin/home" th:class="${requestURI == '/admin/home'} ? 'active' : ''">
+                <span class="material-icons">home</span> Main</a></li>
+            <li><a href="/admin/users" th:class="${requestURI == '/admin/users'} ? 'active' : ''">
+                <span class="material-icons">person</span> Users</a></li>
+            <li><a href="/admin/profiles" th:class="${requestURI == '/admin/profiles'} ? 'active' : ''">
+                <span class="material-icons">account_circle</span> Profiles</a></li>
+            <li><a href="/admin/capsules" th:class="${requestURI == '/admin/capsules'} ? 'active' : ''">
+                <span class="material-icons">edit</span> Capsules</a></li>
+            <li><a href="/admin/blacklists" th:class="${requestURI == '/admin/blacklists'} ? 'active' : ''">
+                <span class="material-icons">block</span> BlackList</a></li>
         </ul>
-        <a href="/admin/logout" class="logout"><span class="material-icons">exit_to_app</span> Sign out</a>
+        <!-- 로그아웃 버튼을 다른 메뉴처럼 스타일 적용 -->
+        <form id="logoutForm" action="/admin/logout" method="POST" class="logout-form">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit" class="logout-btn">
+                <span class="material-icons">exit_to_app</span> Logout
+            </button>
+        </form>
     </div>
 </div>
