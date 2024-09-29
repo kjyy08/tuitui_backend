@@ -8,7 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import suftware.tuitui.dto.response.PageResponse;
+import suftware.tuitui.repository.ProfileRepository;
 import suftware.tuitui.service.ProfileImageService;
+import suftware.tuitui.service.ProfileService;
 import suftware.tuitui.service.TimeCapsuleImageService;
 import suftware.tuitui.service.UserService;
 
@@ -20,6 +22,7 @@ import java.util.Optional;
 public class AdminUserController {
     private final UserService userService;
     private final ProfileImageService profileImageService;
+    private final ProfileRepository profileRepository;
     private final TimeCapsuleImageService timeCapsuleImageService;
 
     // Users page
@@ -36,8 +39,10 @@ public class AdminUserController {
 
     @DeleteMapping("users/{userId}")
     public ResponseEntity<Void> deleteProfile(@PathVariable(name = "userId") Integer id) {
-        profileImageService.deleteProfileImageS3(id);
-        timeCapsuleImageService.deleteCapsuleImageS3(id);
+        if (profileRepository.existsByUser_UserId(id)) {
+            profileImageService.deleteProfileImageS3(id);
+            timeCapsuleImageService.deleteCapsuleImageS3(id);
+        }
         userService.deleteUser(id);
 
         return ResponseEntity.ok().build();
