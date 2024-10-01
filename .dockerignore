@@ -1,0 +1,12 @@
+# .dockerignore
+
+# .dockerignore
+
+# dev.yml 및 properties 파일 제외
+**/application-dev.yml
+**/application.properties
+
+
+# git 관련 파일 무시
+.git/
+.gitignore
