@@ -36,7 +36,6 @@ application-dev.yml
 
 ### Docker ###
 Dockerfile
-.dockerignore
 .env
 
 ### NetBeans ###
