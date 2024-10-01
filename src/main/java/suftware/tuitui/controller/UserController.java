@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import suftware.tuitui.common.http.Message;
+import suftware.tuitui.common.http.HttpResponseDto;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.dto.request.UserCreateRequestDto;
 import suftware.tuitui.dto.response.*;
@@ -21,10 +21,10 @@ public class UserController {
 
     //  전체 유저 조회
     @GetMapping(value = "users")
-    public ResponseEntity<Message> readUserList() {
+    public ResponseEntity<HttpResponseDto> readUserList() {
         List<UserResponseDto> userResponseDtoList = userService.getUserList();
 
-        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
                 .status(HttpStatus.OK)
                 .message(TuiTuiMsgCode.USER_READ_SUCCESS.getMsg())
                 .data(userResponseDtoList)
@@ -33,10 +33,10 @@ public class UserController {
 
     //  유저 id 기준 조회
     @GetMapping(value = "users/{userId}")
-    public ResponseEntity<Message> readUser(@PathVariable(name = "userId") Integer user_id) {
+    public ResponseEntity<HttpResponseDto> readUser(@PathVariable(name = "userId") Integer user_id) {
         Optional<UserResponseDto> userResponseDto = userService.getUser(user_id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
                 .status(HttpStatus.OK)
                 .message(TuiTuiMsgCode.USER_READ_SUCCESS.getMsg())
                 .data(userResponseDto)
@@ -80,10 +80,10 @@ public class UserController {
 
     //  유저 삭제
     @DeleteMapping(value = "users")
-    public ResponseEntity<Message> deleteUser(@RequestBody @Valid UserCreateRequestDto userCreateRequestDto){
+    public ResponseEntity<HttpResponseDto> deleteUser(@RequestBody @Valid UserCreateRequestDto userCreateRequestDto){
         userService.deleteUser(userCreateRequestDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
                 .status(HttpStatus.OK)
                 .message(TuiTuiMsgCode.USER_DELETE_SUCCESS.getMsg())
                 .build());

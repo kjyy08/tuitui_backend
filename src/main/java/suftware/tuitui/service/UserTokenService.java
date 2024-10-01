@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import suftware.tuitui.common.enumType.AccountState;
 import suftware.tuitui.common.enumType.Role;
+import suftware.tuitui.common.http.HttpResponseDto;
 import suftware.tuitui.common.time.DateTimeUtil;
 import suftware.tuitui.sns.kakao.KakaoAuthService;
 import suftware.tuitui.sns.kakao.KakaoResponse;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.common.exception.TuiTuiException;
-import suftware.tuitui.common.http.Message;
 import suftware.tuitui.common.jwt.JwtException;
 import suftware.tuitui.common.jwt.JwtMsgCode;
 import suftware.tuitui.common.jwt.JwtResponseDto;
@@ -86,7 +86,7 @@ public class UserTokenService {
     }
 
     //  토큰 발급 요청
-    public Message authorization(HttpServletRequest request, HttpServletResponse response) {
+    public HttpResponseDto authorization(HttpServletRequest request, HttpServletResponse response) {
         String account;
         String snsType;
 
@@ -144,7 +144,7 @@ public class UserTokenService {
         JwtResponseDto jwtResponseDto = JwtResponseDto.toDto("Bearer", access, jwtUtil.getExpiresIn(access), refresh, jwtUtil.getExpiresIn(refresh));
 
         //  response body 응답 생성
-        Message message = new Message();
+        HttpResponseDto httpResponseDto = new HttpResponseDto();
         UserResponseDto userResponseDto = UserResponseDto.toDTO(user);
         HashMap<String, Object> responseData = new HashMap<>();
 
@@ -153,24 +153,24 @@ public class UserTokenService {
 
         //  신규 유저면 http status 201, 기존 유저면 200 응답
         if (!isSigned){
-            message.setStatus(TuiTuiMsgCode.USER_SIGNUP_SUCCESS.getHttpStatus());
-            message.setCode(JwtMsgCode.OK.getCode());
-            message.setMessage(JwtMsgCode.OK.getMsg());
-            message.setData(responseData);
+            httpResponseDto.setStatus(TuiTuiMsgCode.USER_SIGNUP_SUCCESS.getHttpStatus());
+            httpResponseDto.setCode(JwtMsgCode.OK.getCode());
+            httpResponseDto.setMessage(JwtMsgCode.OK.getMsg());
+            httpResponseDto.setData(responseData);
         } else {
-            message.setStatus(JwtMsgCode.OK.getStatus());
-            message.setCode(JwtMsgCode.OK.getCode());
-            message.setMessage(JwtMsgCode.OK.getMsg());
-            message.setData(responseData);
+            httpResponseDto.setStatus(JwtMsgCode.OK.getStatus());
+            httpResponseDto.setCode(JwtMsgCode.OK.getCode());
+            httpResponseDto.setMessage(JwtMsgCode.OK.getMsg());
+            httpResponseDto.setData(responseData);
         }
 
         log.info("UserTokenService.authorization() -> success");
-        return message;
+        return httpResponseDto;
     }
 
     //  토큰 갱신 요청
     @Transactional
-    public Message reissue(HttpServletRequest request, HttpServletResponse response) {
+    public HttpResponseDto reissue(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken;
 
         try {
@@ -219,7 +219,7 @@ public class UserTokenService {
                 newRefreshToken, jwtUtil.getExpiresIn(newRefreshToken));
 
         log.info("UserTokenService.reissue() -> success");
-        return Message.builder()
+        return HttpResponseDto.builder()
                 .status(JwtMsgCode.OK.getStatus())
                 .code(JwtMsgCode.OK.getCode())
                 .message(JwtMsgCode.OK.getMsg())
@@ -227,7 +227,7 @@ public class UserTokenService {
                 .build();
     }
 
-    public Message generateAdminToken(String account, String secretKey){
+    public HttpResponseDto generateAdminToken(String account, String secretKey){
         log.info("UserTokenService.generateAdminToken() -> account: {}, key: {}", account, secretKey);
         User user = userRepository.findByAccount(account)
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
@@ -262,7 +262,7 @@ public class UserTokenService {
                 newRefreshToken, jwtUtil.getExpiresIn(newRefreshToken));
 
         log.info("UserTokenService.generateAdminToken() -> success");
-        return Message.builder()
+        return HttpResponseDto.builder()
                 .status(JwtMsgCode.OK.getStatus())
                 .code(JwtMsgCode.OK.getCode())
                 .message(JwtMsgCode.OK.getMsg())

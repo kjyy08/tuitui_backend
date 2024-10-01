@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
-import suftware.tuitui.common.http.Message;
+import suftware.tuitui.common.http.HttpResponseDto;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -39,7 +39,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         if (!errorCode.equals(JwtMsgCode.OK)){
-            Message message = Message.builder()
+            HttpResponseDto httpResponseDto = HttpResponseDto.builder()
                     .status(errorCode.getStatus())
                     .code(errorCode.getCode())
                     .message(errorCode.getMsg())
@@ -48,7 +48,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             response.setStatus(errorCode.getStatus().value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().print(new ObjectMapper().writeValueAsString(message));
+            response.getWriter().print(new ObjectMapper().writeValueAsString(httpResponseDto));
             return;
         }
 

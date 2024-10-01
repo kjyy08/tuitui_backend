@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import suftware.tuitui.common.enumType.S3ImagePath;
 import suftware.tuitui.common.exception.TuiTuiException;
-import suftware.tuitui.common.http.Message;
+import suftware.tuitui.common.http.HttpResponseDto;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.dto.request.TimeCapsuleRequestDto;
 import suftware.tuitui.dto.response.ImageResponseDto;
@@ -31,12 +31,12 @@ public class TimeCapsuleController {
 
     //  전체 캡슐 조회
     @GetMapping(value = "capsules")
-    public ResponseEntity<Message> readCapsuleList(@RequestParam(name = "pageNo", defaultValue = "0", required = false) Integer pageNo,
-                                                   @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-                                                   @RequestParam(name = "sortBy", defaultValue = "writeAt", required = false) String sortBy) {
+    public ResponseEntity<HttpResponseDto> readCapsuleList(@RequestParam(name = "pageNo", defaultValue = "0", required = false) Integer pageNo,
+                                                           @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+                                                           @RequestParam(name = "sortBy", defaultValue = "writeAt", required = false) String sortBy) {
         Optional<PageResponse> timeCapsulePageResponse = timeCapsuleService.getCapsuleList(pageNo, pageSize, sortBy);
 
-        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
                 .status(HttpStatus.OK)
                 .message(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getMsg())
                 .data(timeCapsulePageResponse)
@@ -45,10 +45,10 @@ public class TimeCapsuleController {
 
     //  캡슐 id 기준 타임 캡슐 조회
     @GetMapping(value = "capsules/{capsuleId}")
-    public ResponseEntity<Message> readCapsule(@PathVariable(name = "capsuleId") Integer timeCapsuleId) {
+    public ResponseEntity<HttpResponseDto> readCapsule(@PathVariable(name = "capsuleId") Integer timeCapsuleId) {
         Optional<TimeCapsuleResponseDto> timeCapsuleResponseDto = timeCapsuleService.getCapsule(timeCapsuleId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
                 .status(HttpStatus.OK)
                 .message(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getMsg())
                 .data(timeCapsuleResponseDto)
@@ -57,13 +57,13 @@ public class TimeCapsuleController {
 
     //  프로필 id 기준 타임 캡슐 조회
     @GetMapping(value = "profiles/{profileId}/capsules")
-    public ResponseEntity<Message> readCapsuleByWriteUser(@PathVariable(name = "profileId") Integer writeUserId,
-                                                          @RequestParam(name = "pageNo", defaultValue = "0", required = false) Integer pageNo,
-                                                          @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-                                                          @RequestParam(name = "sortBy", defaultValue = "writeAt", required = false) String sortBy) {
+    public ResponseEntity<HttpResponseDto> readCapsuleByWriteUser(@PathVariable(name = "profileId") Integer writeUserId,
+                                                                  @RequestParam(name = "pageNo", defaultValue = "0", required = false) Integer pageNo,
+                                                                  @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+                                                                  @RequestParam(name = "sortBy", defaultValue = "writeAt", required = false) String sortBy) {
         Optional<PageResponse> timeCapsulePageResponse = timeCapsuleService.getCapsuleByWriteUser(writeUserId, pageNo, pageSize, sortBy);
 
-        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
                 .status(HttpStatus.OK)
                 .message(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getMsg())
                 .data(timeCapsulePageResponse)
@@ -72,13 +72,13 @@ public class TimeCapsuleController {
 
     //  닉네임 기준 타임 캡슐 조회
     @GetMapping(value = "profiles/nicknames/{nickname}/capsules")
-    public ResponseEntity<Message> readCapsuleByNickname(@PathVariable(name = "nickname") String nickname,
-                                                         @RequestParam(name = "pageNo", defaultValue = "0", required = false) Integer pageNo,
-                                                         @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-                                                         @RequestParam(name = "sortBy", defaultValue = "writeAt", required = false) String sortBy){
+    public ResponseEntity<HttpResponseDto> readCapsuleByNickname(@PathVariable(name = "nickname") String nickname,
+                                                                 @RequestParam(name = "pageNo", defaultValue = "0", required = false) Integer pageNo,
+                                                                 @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+                                                                 @RequestParam(name = "sortBy", defaultValue = "writeAt", required = false) String sortBy){
         Optional<PageResponse> timeCapsulePageResponse = timeCapsuleService.getCapsuleByNickname(nickname, pageNo, pageSize, sortBy);
 
-        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
                 .status(HttpStatus.OK)
                 .message(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getMsg())
                 .data(timeCapsulePageResponse)
@@ -87,15 +87,15 @@ public class TimeCapsuleController {
 
     //  구면 코사인 법칙 이용 현재 좌표를 받아 거리이내의 캡슐 조회
     @GetMapping(value = "capsules/nearby")
-    public ResponseEntity<Message> readCapsuleByPosition(@RequestParam(name = "latitude") BigDecimal latitude,
-                                                         @RequestParam(name = "longitude") BigDecimal longitude,
-                                                         @RequestParam(name = "radius", defaultValue = "2", required = false) Double radius,
-                                                         @RequestParam(name = "pageNo", defaultValue = "0", required = false) Integer pageNo,
-                                                         @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-                                                         @RequestParam(name = "sortBy", defaultValue = "writeAt", required = false) String sortBy){
+    public ResponseEntity<HttpResponseDto> readCapsuleByPosition(@RequestParam(name = "latitude") BigDecimal latitude,
+                                                                 @RequestParam(name = "longitude") BigDecimal longitude,
+                                                                 @RequestParam(name = "radius", defaultValue = "2", required = false) Double radius,
+                                                                 @RequestParam(name = "pageNo", defaultValue = "0", required = false) Integer pageNo,
+                                                                 @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+                                                                 @RequestParam(name = "sortBy", defaultValue = "writeAt", required = false) String sortBy){
         Optional<PageResponse> timeCapsulePageResponse = timeCapsuleService.getCapsuleByPosition(latitude, longitude, radius, pageNo, pageSize, sortBy);
 
-        return ResponseEntity.status(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getHttpStatus()).body(Message.builder()
+        return ResponseEntity.status(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getHttpStatus()).body(HttpResponseDto.builder()
                 .status(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getHttpStatus())
                 .message(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getMsg())
                 .data(timeCapsulePageResponse)
@@ -104,8 +104,8 @@ public class TimeCapsuleController {
 
     // 캡슐 저장 이미지 포함
     @PostMapping(value = "capsules/with-image", consumes = "multipart/form-data")
-    public ResponseEntity<Message> createCapsuleWithImages(@RequestPart(name = "request") TimeCapsuleRequestDto timeCapsuleRequestDto,
-                                                           @RequestPart(name = "file") List<MultipartFile> files) throws IOException{
+    public ResponseEntity<HttpResponseDto> createCapsuleWithImages(@RequestPart(name = "request") TimeCapsuleRequestDto timeCapsuleRequestDto,
+                                                                   @RequestPart(name = "file") List<MultipartFile> files) throws IOException{
         //  이미지가 포함된 경우에만 create 수행
         if(files != null && !files.isEmpty()) {
             // TimeCapsule 저장
@@ -122,13 +122,13 @@ public class TimeCapsuleController {
 
             timeCapsuleResponseDto.setImageList(imageResponseDtoList);
 
-            return ResponseEntity.status(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS.getHttpStatus()).body(Message.builder()
+            return ResponseEntity.status(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS.getHttpStatus()).body(HttpResponseDto.builder()
                     .status(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS.getHttpStatus())
                     .message(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS.getMsg())
                     .data(timeCapsuleResponseDto)
                     .build());
         } else {
-            return ResponseEntity.status(TuiTuiMsgCode.CAPSULE_CREATE_FAIL.getHttpStatus()).body(Message.builder()
+            return ResponseEntity.status(TuiTuiMsgCode.CAPSULE_CREATE_FAIL.getHttpStatus()).body(HttpResponseDto.builder()
                     .status(TuiTuiMsgCode.CAPSULE_CREATE_FAIL.getHttpStatus())
                     .message(TuiTuiMsgCode.CAPSULE_CREATE_FAIL.getMsg())
                     .code(TuiTuiMsgCode.CAPSULE_CREATE_FAIL.getCode())
@@ -138,10 +138,10 @@ public class TimeCapsuleController {
 
     //  캡슐 저장
     @PostMapping(value = "capsules/without-image")
-    public ResponseEntity<Message> createCapsuleWithJson(@RequestBody TimeCapsuleRequestDto timeCapsuleRequestDto) {
+    public ResponseEntity<HttpResponseDto> createCapsuleWithJson(@RequestBody TimeCapsuleRequestDto timeCapsuleRequestDto) {
         Optional<TimeCapsuleResponseDto> timeCapsuleResponseDto = timeCapsuleService.save(timeCapsuleRequestDto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(Message.builder()
+        return ResponseEntity.status(HttpStatus.CREATED).body(HttpResponseDto.builder()
                 .status(HttpStatus.CREATED)
                 .message(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS.getMsg())
                 .data(timeCapsuleResponseDto)
@@ -150,11 +150,11 @@ public class TimeCapsuleController {
 
     //  캡슐 수정
     @PutMapping(value = "capsules")
-    public ResponseEntity<Message> updateCapsule(@RequestBody TimeCapsuleRequestDto timeCapsuleRequestDto) {
+    public ResponseEntity<HttpResponseDto> updateCapsule(@RequestBody TimeCapsuleRequestDto timeCapsuleRequestDto) {
         Optional<TimeCapsuleResponseDto> timeCapsuleResponseDto = timeCapsuleService.updateCapsule(timeCapsuleRequestDto.getCapsuleId(),
                 timeCapsuleRequestDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
                 .status(HttpStatus.OK)
                 .message(TuiTuiMsgCode.CAPSULE_UPDATE_SUCCESS.getMsg())
                 .data(timeCapsuleResponseDto)
@@ -163,11 +163,11 @@ public class TimeCapsuleController {
 
     //  캡슐 삭제
     @DeleteMapping(value = "capsules/{capsuleId}")
-    public ResponseEntity<Message> deleteCapsule(@PathVariable(name = "capsuleId") Integer id){
+    public ResponseEntity<HttpResponseDto> deleteCapsule(@PathVariable(name = "capsuleId") Integer id){
         timeCapsuleImageService.deleteCapsuleImage(id);
         timeCapsuleService.deleteCapsule(id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
                 .status(HttpStatus.OK)
                 .message(TuiTuiMsgCode.CAPSULE_DELETE_SUCCESS.getMsg())
                 .build());

@@ -14,7 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import suftware.tuitui.common.enumType.Role;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
-import suftware.tuitui.common.http.Message;
+import suftware.tuitui.common.http.HttpResponseDto;
 import suftware.tuitui.domain.User;
 import suftware.tuitui.dto.response.CustomUserDetails;
 import suftware.tuitui.repository.UserRepository;
@@ -38,7 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         //  access 토큰이 아니면 검증 실패
         if (!tokenType.equals("access")){
-            Message message = Message.builder()
+            HttpResponseDto httpResponseDto = HttpResponseDto.builder()
                     .status(JwtMsgCode.INVALID.getStatus())
                     .code(JwtMsgCode.INVALID.getCode())
                     .message(JwtMsgCode.INVALID.getMsg())
@@ -46,7 +46,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().print(new ObjectMapper().writeValueAsString(message));
+            response.getWriter().print(new ObjectMapper().writeValueAsString(httpResponseDto));
             return;
         }
 
@@ -55,7 +55,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         //  유저가 존재하지 않음
         if (!userRepository.existsByAccount(account)){
-            Message message = Message.builder()
+            HttpResponseDto httpResponseDto = HttpResponseDto.builder()
                     .status(TuiTuiMsgCode.USER_NOT_FOUND.getHttpStatus())
                     .code(TuiTuiMsgCode.USER_NOT_FOUND.getCode())
                     .message(TuiTuiMsgCode.USER_NOT_FOUND.getMsg())
@@ -63,7 +63,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().print(new ObjectMapper().writeValueAsString(message));
+            response.getWriter().print(new ObjectMapper().writeValueAsString(httpResponseDto));
             return;
         }
 

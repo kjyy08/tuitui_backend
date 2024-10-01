@@ -38,7 +38,7 @@ public class TimeCapsule {
     @Column(name = "update_at", insertable = false, updatable = false)
     Timestamp updateAt;
     
-    @Column(name = "location", nullable = false, length = 45)
+    @Column(name = "location", nullable = false)
     String location;
     
     @Column(name = "remind_date", nullable = false)

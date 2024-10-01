@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
-import suftware.tuitui.common.http.Message;
+import suftware.tuitui.common.http.HttpResponseDto;
 import suftware.tuitui.common.jwt.JwtMsgCode;
 import suftware.tuitui.common.jwt.JwtUtil;
 import suftware.tuitui.repository.UserTokenRepository;
@@ -58,7 +58,7 @@ public class CustomLogoutFilter extends GenericFilter {
             response.setStatus(errorCode.getStatus().value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().print(new ObjectMapper().writeValueAsString(Message.builder()
+            response.getWriter().print(new ObjectMapper().writeValueAsString(HttpResponseDto.builder()
                     .status(errorCode.getStatus())
                     .code(errorCode.getCode())
                     .message(TuiTuiMsgCode.USER_LOGOUT_FAIL.getMsg())
@@ -74,7 +74,7 @@ public class CustomLogoutFilter extends GenericFilter {
             response.setStatus(JwtMsgCode.INVALID.getStatus().value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().print(new ObjectMapper().writeValueAsString(Message.builder()
+            response.getWriter().print(new ObjectMapper().writeValueAsString(HttpResponseDto.builder()
                         .status(JwtMsgCode.INVALID.getStatus())
                         .code(JwtMsgCode.INVALID.getCode())
                         .message(TuiTuiMsgCode.USER_LOGOUT_FAIL.getMsg())
@@ -89,7 +89,7 @@ public class CustomLogoutFilter extends GenericFilter {
             response.setStatus(JwtMsgCode.EXPIRED.getStatus().value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().print(new ObjectMapper().writeValueAsString(Message.builder()
+            response.getWriter().print(new ObjectMapper().writeValueAsString(HttpResponseDto.builder()
                         .status(JwtMsgCode.EXPIRED.getStatus())
                         .code(JwtMsgCode.EXPIRED.getCode())
                         .message(TuiTuiMsgCode.USER_LOGOUT_FAIL.getMsg())
@@ -104,7 +104,7 @@ public class CustomLogoutFilter extends GenericFilter {
         response.setStatus(TuiTuiMsgCode.USER_LOGOUT_SUCCESS.getHttpStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().print(new ObjectMapper().writeValueAsString(Message.builder()
+        response.getWriter().print(new ObjectMapper().writeValueAsString(HttpResponseDto.builder()
                     .status(TuiTuiMsgCode.USER_LOGOUT_SUCCESS.getHttpStatus())
                     .code(TuiTuiMsgCode.USER_LOGOUT_SUCCESS.getCode())
                     .message(TuiTuiMsgCode.USER_LOGOUT_SUCCESS.getMsg())

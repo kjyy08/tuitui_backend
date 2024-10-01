@@ -12,20 +12,20 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Message {
+public class HttpResponseDto {
     private HttpStatus status;
     private String message;
     private String code;
     private Object data;
 
-    public Message(){
+    public HttpResponseDto(){
         this.status = null;
         this.message = null;
         this.code = null;
         this.data = null;
     }
 
-    public Message(HttpStatus status, String message){
+    public HttpResponseDto(HttpStatus status, String message){
         this.status = status;
         this.message = message;
     }
