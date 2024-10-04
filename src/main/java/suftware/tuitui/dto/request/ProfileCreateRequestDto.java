@@ -23,7 +23,7 @@ public class ProfileCreateRequestDto {
     @NotEmpty(message = "이름은 필수 입력 값입니다.")
     String name;
 
-    @NotEmpty(message = "전화번호는 필수 입력 값입니다.")
+    //  @NotEmpty(message = "전화번호는 필수 입력 값입니다.")
     String phone;
 
     @Pattern(regexp = "^[a-zA-Z0-9_.]{2,15}$", message = "닉네임은 영어, 숫자, '_', '.' 조합으로 2자 이상 15자 이하로 입력해주세요.")

@@ -30,7 +30,8 @@ public class Profile {
     @Column(name = "name", nullable = false, length = 16)
     String name;
 
-    @Column(name = "phone", nullable = false, unique = true, length = 25)
+    //  사업자가 아니면 번호를 안주는 드러운 나라 api 하나 쓰기도 쉽지않네.
+    @Column(name = "phone", unique = true, length = 25)
     String phone;
 
     @Column(name = "nickname", nullable = false, length = 45, unique = true)

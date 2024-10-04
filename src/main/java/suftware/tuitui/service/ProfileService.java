@@ -101,9 +101,9 @@ public class ProfileService {
         }
 
         //  전화번호 중복 가입 방지
-        if (profileRepository.existsByPhone(profileCreateRequestDto.getPhone())) {
-            throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_PHONE);
-        }
+        //  if (profileRepository.existsByPhone(profileCreateRequestDto.getPhone())) {
+        //      throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_PHONE);
+        //  }
 
         //  닉네임 중복 확인
         if (profileRepository.existsByNickname(profileCreateRequestDto.getNickname())){
