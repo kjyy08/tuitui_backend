@@ -6,8 +6,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import suftware.tuitui.admin.dto.response.IpBlackListResponseDto;
+import suftware.tuitui.common.enumType.TuiTuiMsgCode;
+import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.domain.IpBlackList;
 import suftware.tuitui.dto.response.PageResponse;
 import suftware.tuitui.repository.IpBlackListRepository;
@@ -39,5 +42,13 @@ public class IpBlackListService {
                 .totalPages(ipBlackListPage.getTotalPages())
                 .lastPage(ipBlackListPage.isLast())
                 .build());
+    }
+
+    public void deleteIp(Integer id){
+        if (!ipBlackListRepository.existsById(id)){
+            throw new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND);
+        }
+
+        ipBlackListRepository.deleteById(id);
     }
 }

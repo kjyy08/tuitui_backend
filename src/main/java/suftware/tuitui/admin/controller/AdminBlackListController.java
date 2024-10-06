@@ -2,11 +2,10 @@ package suftware.tuitui.admin.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import suftware.tuitui.admin.service.IpBlackListService;
 import suftware.tuitui.dto.response.PageResponse;
 
@@ -26,6 +25,13 @@ public class AdminBlackListController {
 
         model.addAttribute("blackListPage", blackListPage.get());
         model.addAttribute("requestURI", request.getRequestURI());
-        return "blacklist"; // users.html 템플릿을 렌더링
+        return "blacklist";
+    }
+
+    @DeleteMapping("blacklists/{ipId}")
+    public ResponseEntity<Void> blackList(@PathVariable(name = "ipId") Integer ipId){
+        ipBlackListService.deleteIp(ipId);
+
+        return ResponseEntity.ok().build();
     }
 }
