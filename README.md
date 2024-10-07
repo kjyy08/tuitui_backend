@@ -1,4 +1,4 @@
-### 목차
+# 목차
 
 > 1. [프로젝트 소개](#프로젝트-소개)
 > 2. [ERD 구조](#erd-구조)
@@ -20,8 +20,14 @@
 > ### 아직 개발 중인 기능
 > 1. 채팅
 > 2. 태그
-> 3. AR
-> 4. 유저 차단
+> 3. 알림
+> 4. AR
+
+> ### Git 주소
+> 1. Frontend
+> 2. Backend\
+>    [API Repository]()\
+>    [Chat Repository]()
 
 ## 팀원
 <div align="center">
