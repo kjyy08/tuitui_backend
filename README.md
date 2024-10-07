@@ -1,10 +1,11 @@
 # ✨목차
 
 > 1. [프로젝트 소개](#프로젝트-소개)
-> 2. [ERD 구조](#erd-구조)
-> 3. [백엔드 아키텍처](#백엔드-아키텍처)
-> 4. [주요 기능](#주요-기능)
-> 5. [API 명세](#API-명세)
+> 2. [기술 스택](#기술-스택)
+> 3. [ERD 구조](#erd-구조)
+> 4. [백엔드 아키텍처](#백엔드-아키텍처)
+> 5. [주요 기능](#주요-기능)
+> 6. [API 명세](#API-명세)
 
 
 # 🏠프로젝트 소개
@@ -27,7 +28,7 @@
 > * Frontend
 > * Backend\
      >    [API Repository]()\
-     >    [Chat Repository]()
+     >    [Chat Repository - 개발 중]()
 
 ## 🙋팀원
 <div align="center">
@@ -67,6 +68,30 @@
         </tr>
     </table>
 </div>
+
+# 기술 스택
+### Frontend
+![React](https://img.shields.io/badge/React_Native-61DAFB.svg?style=for-the-badge&logo=react&logoColor=white)
+![Figma](https://img.shields.io/badge/Figma-F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white)
+
+
+### Backend
+![Java](https://img.shields.io/badge/JDK_17-000000.svg?style=for-the-badge&logo=openjdk&logoColor=white)
+![SpringBoot](https://img.shields.io/badge/SpringBoot-%236DB33F.svg?style=for-the-badge&logo=springboot&logoColor=white)
+![JPA](https://img.shields.io/badge/Spring_JPA-green.svg?style=for-the-badge&logo=springboot&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-purple?style=for-the-badge&logo=JSON%20web%20tokens)
+![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-FF4438.svg?style=for-the-badge&logo=redis&logoColor=white)
+
+### Server
+![AWS EC2](https://img.shields.io/badge/AWS_EC2-FF9900.svg?style=for-the-badge&logo=amazonec2&logoColor=white)
+![AWS RDS](https://img.shields.io/badge/AWS_RDS-527FFF.svg?style=for-the-badge&logo=amazonrds&logoColor=white)
+![AWS S3](https://img.shields.io/badge/AWS_S3-569A31.svg?style=for-the-badge&logo=amazons3&logoColor=white)
+![AWS Route53](https://img.shields.io/badge/AWS_Route53-8C4FFF.svg?style=for-the-badge&logo=amazonroute53&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED.svg?style=for-the-badge&logo=docker&logoColor=white)
+
+### API Documentation & Test
+![Postman](https://img.shields.io/badge/Postman-FF6C37.svg?style=for-the-badge&logo=postman&logoColor=white)
 
 # 🔎ERD 구조
 ![ERD](https://github.com/user-attachments/assets/a96130a4-87fa-47b9-8b81-069e260a4d40)
