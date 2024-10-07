@@ -36,6 +36,7 @@ application-dev.yml
 
 ### Docker ###
 Dockerfile
+docker-compose.yml
 .env
 
 ### NetBeans ###
