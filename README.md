@@ -66,7 +66,7 @@
 ![ERD](https://github.com/user-attachments/assets/a96130a4-87fa-47b9-8b81-069e260a4d40)
 
 # 백엔드 아키텍처
-![아키텍처](https://github.com/user-attachments/assets/c47038fb-2c65-4755-9e10-66a947e7dc06)
+![아키텍처](https://github.com/user-attachments/assets/0eba517e-9458-4f7f-90df-8d44ce05d412)
 # 주요 기능
 |      기능      | 설명                                                                                                                                  |
 |:------------:|-------------------------------------------------------------------------------------------------------------------------------------|
