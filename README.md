@@ -40,7 +40,7 @@
                 <br/>
             </td>
             <td align="center" class="기연">
-                <a href="">
+                <a href="https://github.com/Namgyeon">
                     <img alt="github-link" height="25" src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=GitHub&logoColor=white"/>
                 </a>
             </td>
@@ -79,31 +79,54 @@
 
 # API 명세
 ➡️[TuiTui API Document](https://documenter.getpostman.com/view/34178237/2sA3s3GB1N#50c1d557-1a40-468d-8c30-838589dd38f3)
- - ### API 명세 예시
-| Domain  |               URL               | Http Method |     Description     | Role |
-|:-------:|:-------------------------------:|:-----------:|:-------------------:|:----:|
-|  User   |             /token              |     GET     |   유저 토큰 발급 및 재발급    |  -   |
-|         |             /users              |   DELETE    |        유저 삭제        |  -   |
-|         |             /users              |     GET     |      전체 유저 조회       |  -   |
-|         |         /users/{userId}         |     GET     |      특정 유저 조회       |  -   |
-|         |             /logout             |    POST     |        로그아웃         |  -   |
-| Profile |     /profiles/without-image     |    POST     | 프로필 이미지 미포함 프로필 생성  |  -   |
-|         |      /profiles/with-image       |    POST     |  프로필 이미지 포함 프로필 생성  |  -   |
-|         |        /profiles/images         |    POST     |     프로필 이미지 수정      |  -   |
-|         |      /profiles/{profileId}      |   DELETE    |       프로필 삭제        |  -   |
-|         |            /profiles            |     PUT     |      프로필 정보 수정      |  -   |
-|         |            /profiles            |     GET     |      전체 프로필 조회      |  -   |
-|         |      /profiles/{profileId}      |     GET     |      특정 프로필 조회      |  -   |
-|         | /profiles/nicknames/{nickname}  |     GET     |  닉네임에 해당하는 프로필 조회   |  -   |
-|         |    /users/{userId}/profiles     |     GET     | 유저 ID에 해당하는 프로필 조회  |  -   |
-| Capsule |     /capsules/without-image     |    POST     |  이미지 미포함 타임 캡슐 생성   |  -   |
-|         |      /capsules/with-image       |    POST     |   이미지 포함 타임 캡슐 생성   |  -   |
-|         |      /capsules/{capsuleId}      |   DELETE    |      타임 캡슐 삭제       |  -   |
-|         |            /capsules            |     GET     |     전체 타임 캡슐 조회     |  -   |
-|         |      /capsules/{capsuleId}      |     GET     |      특정 캡슐 조회       |  -   |
-|         |                .                |      .      |          .          |  .   |
-|         |                .                |      .      |          .          |  .   |
-|         |                .                |      .      |          .          |  .   |
+
+| Domain  |                   URL                   | Http Method |    Description     |
+|:-------:|:---------------------------------------:|:-----------:|:------------------:|
+|  User   |                 /token                  |     GET     |   유저 토큰 발급 및 재발급   |
+|         |                 /users                  |   DELETE    |       유저 삭제        |
+|         |                 /users                  |     GET     |      전체 유저 조회      |
+|         |             /users/{userId}             |     GET     |      특정 유저 조회      |
+|         |        /users/{userId}/profiles         |     GET     | 유저 ID에 해당하는 프로필 조회 |
+|         |                 /logout                 |    POST     |        로그아웃        |
+| Profile |         /profiles/without-image         |    POST     | 프로필 이미지 미포함 프로필 생성 |
+|         |          /profiles/with-image           |    POST     | 프로필 이미지 포함 프로필 생성  |
+|         |            /profiles/images             |    POST     |     프로필 이미지 수정     |
+|         |          /profiles/{profileId}          |   DELETE    |       프로필 삭제       |
+|         |                /profiles                |     PUT     |     프로필 정보 수정      |
+|         |                /profiles                |     GET     |     전체 프로필 조회      |
+|         |          /profiles/{profileId}          |     GET     |     특정 프로필 조회      |
+|         |     /profiles/nicknames/{nickname}      |     GET     |  닉네임에 해당하는 프로필 조회  |
+|         | /profiles/nicknames/{nickname}/capsules |     GET     |  닉네임에 해당하는 캡슐 조회   |
+|         |     /profiles/{profileId}/capsules      |     GET     | 프로필 ID에 해당하는 캡슐 조회 |
+| Capsule |         /capsules/without-image         |    POST     |  이미지 미포함 타임 캡슐 생성  |
+|         |          /capsules/with-image           |    POST     |  이미지 포함 타임 캡슐 생성   |
+|         |                /capsules                |     PUT     |      타임 캡슐 수정      |
+|         |                /capsules                |     GET     |    전체 타임 캡슐 조회     |
+|         |          /capsules/{capsuleId}          |     GET     |      특정 캡슐 조회      |
+|         |          /capsules/{capsuleId}          |   DELETE    |      타임 캡슐 삭제      |
+|         |            /capsules/nearby             |     GET     | 위도, 경도 기반 인근 캡슐 조회 |
+|         |       /capsules/{capsuleId}/likes       |     GET     |   좋아요를 누른 유저 조회    |
+|         |             /capsules/likes             |    POST     |     캡슐 좋아요 저장      |
+|         |     /capsules/likes/{capsuleLikeId}     |   DELETE    |     캡슐 좋아요 삭제      |
+|         |      /capsules/{capsuleId}/visits       |     GET     |     캡슐 조회수 조회      |
+|         |      /capsules/{capsuleId}/visits       |    POST     |     캡슐 조회수 증가      |
+| Comment |           /capsules/comments            |    POST     |       댓글 생성        |
+|         |           /capsules/comments            |     PUT     |       댓글 수정        |
+|         |           /capsules/comments            |     GET     |      전체 댓글 조회      |
+|         |     /capsules/{capsuleId}/comments      |     GET     |    특정 캡슐 댓글 조회     |
+|         |     /capsules/comments/{commentId}      |   DELETE    |       댓글 삭제        |
+|         |             /comments/likes             |    POST     |     댓글 좋아요 저장      |
+|         |             /comments/likes             |   DELETE    |     댓글 좋아요 삭제      |
+|         |       /comments/likes/{commentId}       |     GET     |     댓글 좋아요 조회      |
+| Follow  |            /profiles/follows            |    POST     |     특정 유저 팔로우      |
+|         |            /profiles/follows            |   DELETE    |       팔로우 취소       |
+|         |      /profiles/follows/{profileId}      |     GET     |    팔로워 및 팔로잉 조회    |
+
+
+
+
+
+
 
 
 
