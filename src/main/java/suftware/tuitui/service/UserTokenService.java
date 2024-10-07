@@ -32,6 +32,8 @@ import suftware.tuitui.sns.naver.NaverResponse;
 import java.sql.Timestamp;
 import java.util.HashMap;
 
+//  급하게 구현하느라 너무 복잡한 코드를 짜버림
+//  나중에 고치자..ㅜ
 @Service
 @RequiredArgsConstructor
 @Slf4j

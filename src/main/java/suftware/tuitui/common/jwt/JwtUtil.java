@@ -90,11 +90,6 @@ public class JwtUtil {
                 break;
         }
 
-        //  관리자의 경우 엑세스, 리프레시 모두 만료 기한 1년으로 변경
-        if (role.equals(Role.ADMIN.getValue()) || role.equals(Role.MANAGER.getValue())){
-            expiration = refreshTokenExpiresIn * 12;
-        }
-
         return Jwts.builder()
                 //  클레임에 토큰 타입 저장
                 .claim("type", type)
