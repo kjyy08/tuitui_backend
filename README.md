@@ -25,10 +25,11 @@
 > 4. AR
 
 > ### Git 주소
-> * Frontend
+> * Frontend\
+>    [Client Repository](https://github.com/swuProject/main)
 > * Backend\
-     >    [API Repository](https://github.com/kjyy08/tuitui_backend.git)\
-     >    [Chat Repository - 개발 중]()
+>    [API Repository](https://github.com/kjyy08/tuitui_backend.git)\
+>    [Chat Repository - 개발 중]()
 
 ## 🙋팀원
 <div align="center">
@@ -69,7 +70,7 @@
     </table>
 </div>
 
-# 기술 스택
+# 💻기술 스택
 ### Frontend
 ![React](https://img.shields.io/badge/React_Native-61DAFB.svg?style=for-the-badge&logo=react&logoColor=white)
 ![Figma](https://img.shields.io/badge/Figma-F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white)
