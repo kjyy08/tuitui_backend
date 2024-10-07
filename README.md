@@ -1,19 +1,20 @@
-# 목차
+# ✨목차
 
 > 1. [프로젝트 소개](#프로젝트-소개)
-> 2. [ERD 구조](#erd-구조)
-> 3. [백엔드 아키텍처](#백엔드-아키텍처)
-> 4. [주요 기능](#주요-기능)
-> 5. [API 명세](#API-명세)
+> 2. [기술 스택](#기술-스택)
+> 3. [ERD 구조](#erd-구조)
+> 4. [백엔드 아키텍처](#백엔드-아키텍처)
+> 5. [주요 기능](#주요-기능)
+> 6. [API 명세](#API-명세)
 
 
-# 프로젝트 소개
+# 🏠프로젝트 소개
 > 안드로이드 플랫폼을 대상으로 한 장소 AR 기술을 활용한 SNS 애플리케이션입니다.\
 > 앱을 활용하여 사용자들이 사진과 글을 원하는 장소에 타임캡슐로 기록하고 이를 공유할 수 있습니다.
-> 
+>
 > 이렇게 작성된 타임캡슐은 AR 기술을 통해 실제 공간에 나타나 다른 사용자들과 공유할 수 있게 됩니다.\
 > 타임캡슐은 단순히 정보를 저장할 뿐 아니라 사용자가 설정한 시간이 지난 뒤에 알림을 통해 다시 회상할 수 있습니다.
-> 
+>
 > 이러한 기능을 통해 사용자들은 장소에 대한 경험을 더 생생하게 기록하고,\
 > 공유함으로써 다양한 추억을 만들어가고 건강한 장소 기반의 네트워크를 형성할 것입니다.
 
@@ -24,12 +25,12 @@
 > 4. AR
 
 > ### Git 주소
-> 1. Frontend
-> 2. Backend\
->    [API Repository]()\
->    [Chat Repository]()
+> * Frontend
+> * Backend\
+     >    [API Repository]()\
+     >    [Chat Repository - 개발 중]()
 
-## 팀원
+## 🙋팀원
 <div align="center">
     <table align="center"> <!-- 팀원 표 -->
         <tr>
@@ -68,12 +69,37 @@
     </table>
 </div>
 
-# ERD 구조
+# 기술 스택
+### Frontend
+![React](https://img.shields.io/badge/React_Native-61DAFB.svg?style=for-the-badge&logo=react&logoColor=white)
+![Figma](https://img.shields.io/badge/Figma-F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white)
+
+
+### Backend
+![Java](https://img.shields.io/badge/JDK_17-000000.svg?style=for-the-badge&logo=openjdk&logoColor=white)
+![SpringBoot](https://img.shields.io/badge/SpringBoot-%236DB33F.svg?style=for-the-badge&logo=springboot&logoColor=white)
+![JPA](https://img.shields.io/badge/Spring_JPA-green.svg?style=for-the-badge&logo=springboot&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-purple?style=for-the-badge&logo=JSON%20web%20tokens)
+![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-FF4438.svg?style=for-the-badge&logo=redis&logoColor=white)
+
+### Server
+![AWS EC2](https://img.shields.io/badge/AWS_EC2-FF9900.svg?style=for-the-badge&logo=amazonec2&logoColor=white)
+![AWS RDS](https://img.shields.io/badge/AWS_RDS-527FFF.svg?style=for-the-badge&logo=amazonrds&logoColor=white)
+![AWS S3](https://img.shields.io/badge/AWS_S3-569A31.svg?style=for-the-badge&logo=amazons3&logoColor=white)
+![AWS Route53](https://img.shields.io/badge/AWS_Route53-8C4FFF.svg?style=for-the-badge&logo=amazonroute53&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED.svg?style=for-the-badge&logo=docker&logoColor=white)
+
+### API Documentation & Test
+![Postman](https://img.shields.io/badge/Postman-FF6C37.svg?style=for-the-badge&logo=postman&logoColor=white)
+
+# 🔎ERD 구조
 ![ERD](https://github.com/user-attachments/assets/a96130a4-87fa-47b9-8b81-069e260a4d40)
 
-# 백엔드 아키텍처
+# ⚙️백엔드 아키텍처
 ![아키텍처](https://github.com/user-attachments/assets/0eba517e-9458-4f7f-90df-8d44ce05d412)
-# 주요 기능
+
+# 🔦주요 기능
 |      기능      | 설명                                                                                                                                  |
 |:------------:|-------------------------------------------------------------------------------------------------------------------------------------|
 |     글 작성     | ㆍ사용자의 감상, 현재 생각 등을 타임캡슐에 저장할 수 있고, 저장된 데이터는 다른 사용자들과 공유할 수 있습니다. <br>ㆍAR 기술을 활용하여 실제 공간에 기록하고 확인할 수 있습니다.                           |
@@ -83,7 +109,35 @@
 |    데이터 관리    | ㆍ사용자는 자신이 기록한 타임캡슐을 직접적으로 확인하고 검색할 수 있으며, <br> ㆍ다른 사용자의 타임캡슐 또한 공유 기능을 통해 위치 정보를 통해 확인할 수 있습니다.                                     |
 |      AR      | ㆍ실제 공간에서 사용자가 남긴 타임캡슐을 확인할 수 있습니다. <br> ㆍAR 기술을 통해 2차원에서 벗어나 더욱 풍부한 경험을 제공합니다.                                                      |
 
-# API 명세
+### 간단한 피그마 디자인 모음
+> ### 홈 & 글 작성 화면
+> <div style="display: flex; justify-content: space-around;">
+>   <figure style="text-align: center;">
+>     <img src="https://github.com/user-attachments/assets/5e6469c9-ee74-4d93-bc85-5ed31cc8bedb" alt="홈 화면">
+>   </figure>
+>   <figure style="text-align: center;">
+>     <img src="https://github.com/user-attachments/assets/55b0decd-26e6-40fe-bffa-0eb5d3bc1b81" alt="글 작성">
+>   </figure>
+> </div>
+
+> ### 지도 캡슐 조회 & 채팅 화면
+> <div style="display: flex; justify-content: space-around;">
+>   <figure style="text-align: center;">
+>     <img src="https://github.com/user-attachments/assets/c03d58f2-98ae-4476-9296-ed8aabafc541" alt="지도 캡슐 조회">
+>   </figure>
+>   <figure style="text-align: center;">
+>     <img src="https://github.com/user-attachments/assets/3ef30eb8-7d4e-488a-b8c2-8fec93b70020" alt="채팅">
+>   </figure>
+> </div>
+
+> ### 카메라 화면
+> <div style="display: flex; justify-content: center;">
+>   <figure style="text-align: center;">
+>     <img src="https://github.com/user-attachments/assets/273f2ba0-5d1c-40a2-9bd5-0544a6019e3c" alt="AR">
+>   </figure>
+> </div>
+
+# 📋API 명세
 ➡️[TuiTui API Document](https://documenter.getpostman.com/view/34178237/2sA3s3GB1N#50c1d557-1a40-468d-8c30-838589dd38f3)
 
 | Domain  |                   URL                   | Http Method |    Description     |
