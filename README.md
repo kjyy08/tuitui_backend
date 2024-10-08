@@ -5,7 +5,8 @@
 > 3. [ERD 구조](#erd-구조)
 > 4. [백엔드 아키텍처](#백엔드-아키텍처)
 > 5. [JWT](#JWT)
-> 6. [API 명세](#API-명세)
+> 6. [배포 과정](#배포-과정)
+> 7. [API 명세](#API-명세)
 
 # 🏠프로젝트 간략 소개
 > 안드로이드 플랫폼을 대상으로 한 장소 AR 기술을 활용한 SNS 애플리케이션입니다.\
@@ -58,6 +59,53 @@
 | 5  |           토큰 재발급에 사용할 Refresh 토큰을 DB에 저장합니다.            |     Refresh 토큰, 계정 정보,<br> 만료일을 DB에 저장     |   
 | 6  |           Access, Refresh 토큰 정보를 컨트롤러에 반환합니다.           |                                            |   
 | 7  |               유저에게 토큰 정보을 반환하여 발급을 마칩니다.                |                                            |
+
+# 🐋배포 과정
+* ### 도커를 통한 배포
+![image](https://github.com/user-attachments/assets/7753a3aa-7d3d-4248-9301-c49471f8a17c)
+
+| 순서 |                설명                 |             비고              |
+|:--:|:---------------------------------:|:---------------------------:|
+| 1  |   도커 이미지를 빌드하여 도커 허브로 Push 합니다.   |                             |   
+| 2  | AWS EC2 인스턴스에서 필요한 이미지를 Pull 합니다. |                             |
+| 3  |   도커 컴포즈를 이용하여 필요한 컨테이너를 실행합니다.   | docker-compose.yml 파일 작성 필요 |
+
+* ### docker-compose.yml 예시
+
+```yaml
+version: '3.8'
+
+services:
+  tuitui-backend:
+    container_name: tuitui-backend
+    image: kjyy08/tuitui-backend
+    ports:
+      - "8443:8443" # Https 연결을 위해 8443 포트 설정, 로컬 환경에서는 8080:8080으로 변경
+    volumes:
+      - /{ssl_directory}:/app/ssl/{file_name} # Https 연결에 필요한 인증서 루트 경로, 로컬 환경에서는 지우기
+    environment:
+      # 환경 변수 설정, .env 파일 작성 필요
+      - SPRING_PROFILES_ACTIVE
+      - SPRING_SQL_URL
+      - SPRING_SQL_USERNAME
+      - SPRING_SQL_PASSWORD
+      - SSL_PASSWORD
+      - ADMIN_SECRET_KEY
+      - MANAGER_SECRET_KEY
+      - JWT_SECRET_KEY
+      - CLOUD_FRONT_URL
+      - S3_BUCKET_NAME
+      - S3_ACCESS_KEY
+      - S3_SECRET_ACCESS_KEY
+      - MULTIPART_TEMP_ROOT
+      - S3_BUCKET_URL
+    networks:
+      - tuitui-network
+
+networks:
+  tuitui-network:
+    driver: bridge
+```
 
 # 📋API 명세
 ➡️[TuiTui API Document](https://documenter.getpostman.com/view/34178237/2sA3s3GB1N#50c1d557-1a40-468d-8c30-838589dd38f3)
