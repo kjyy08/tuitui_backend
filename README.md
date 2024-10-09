@@ -18,8 +18,7 @@
 > * Frontend\
 >    [Client Repository](https://github.com/swuProject/main)
 > * Backend\
->    [API Repository](https://github.com/kjyy08/tuitui_backend.git)\
->    [Chat Repository - 개발 중]()
+>    [API Repository](https://github.com/kjyy08/tuitui_backend.git)
 
 # 💻기술 스택
 ### Backend
