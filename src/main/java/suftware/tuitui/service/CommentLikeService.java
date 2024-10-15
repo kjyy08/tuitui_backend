@@ -35,11 +35,10 @@ public class CommentLikeService {
         if(commentLikes.isEmpty()){
             throw new TuiTuiException(TuiTuiMsgCode.COMMENT_LIKE_NOT_FOUND);
         }
-        List<CommentLikeResponseDto> likeResponseDtos = new ArrayList<>();
-        for(CommentLike like: commentLikes){
-            likeResponseDtos.add(CommentLikeResponseDto.toDto(like));
-        }
-        return likeResponseDtos;
+
+        return commentLikes.stream()
+                .map(CommentLikeResponseDto::toDto)
+                .toList();
     }
 
     // 좋아요 추가

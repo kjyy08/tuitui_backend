@@ -37,12 +37,9 @@ public class CommentService {
             throw new TuiTuiException(TuiTuiMsgCode.COMMENT_NOT_FOUND);
         }
 
-        List<CommentResponseDto> commentRequestDtoList = new ArrayList<>();
-        for (Comment comment : commentList){
-            commentRequestDtoList.add(CommentResponseDto.toDTO(comment));
-        }
-
-        return commentRequestDtoList;
+        return commentList.stream()
+                .map(CommentResponseDto::toDTO)
+                .toList();
     }
 
     //  캡슐에 해당하는 모든 댓글 조회
@@ -55,12 +52,9 @@ public class CommentService {
             throw new TuiTuiException(TuiTuiMsgCode.COMMENT_NOT_FOUND);
         }
 
-        List<CommentResponseDto> commentRequestDtoList = new ArrayList<>();
-        for (Comment comment : commentList){
-            commentRequestDtoList.add(CommentResponseDto.toDTO(comment));
-        }
-
-        return commentRequestDtoList;
+        return commentList.stream()
+                .map(CommentResponseDto::toDTO)
+                .toList();
     }
 
     //  댓글 저장
