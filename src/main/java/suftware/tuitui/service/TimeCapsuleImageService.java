@@ -31,10 +31,7 @@ public class TimeCapsuleImageService {
             TimeCapsule timeCapsule = timeCapsuleRepository.findById(id)
                     .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.CAPSULE_NOT_FOUND));
             String fileUrl = s3Service.upload(path, file);
-            TimeCapsuleImage timeCapsuleImage = timeCapsuleImageRepository.save(TimeCapsuleImage.builder()
-                    .timeCapsule(timeCapsule)
-                    .imgUrl(fileUrl)
-                    .build());
+            TimeCapsuleImage timeCapsuleImage = timeCapsuleImageRepository.save(TimeCapsuleImage.of(timeCapsule, fileUrl));
 
             return Optional.of(ImageResponseDto.toDto(timeCapsuleImage));
         } catch (IOException e){

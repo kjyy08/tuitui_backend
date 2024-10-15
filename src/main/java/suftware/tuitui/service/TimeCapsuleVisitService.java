@@ -29,10 +29,7 @@ public class TimeCapsuleVisitService {
         TimeCapsule timeCapsule = timeCapsuleRepository.findById(capsuleId)
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.CAPSULE_NOT_FOUND));
 
-        TimeCapsuleVisit timeCapsuleVisit = timeCapsuleVisitRepository.save(TimeCapsuleVisit.builder()
-                .timeCapsule(timeCapsule)
-                .visitCount(0)
-                .build());
+        TimeCapsuleVisit timeCapsuleVisit = timeCapsuleVisitRepository.save(TimeCapsuleVisit.of(timeCapsule));
 
         return Optional.of(TimeCapsuleVisitResponseDto.toDTO(timeCapsuleVisit));
     }
@@ -42,21 +39,14 @@ public class TimeCapsuleVisitService {
         TimeCapsule timeCapsule = timeCapsuleRepository.findById(capsuleId)
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.CAPSULE_NOT_FOUND));
 
-        TimeCapsuleVisit timeCapsuleVisit;
+        Optional<TimeCapsuleVisit> timeCapsuleVisit = timeCapsuleVisitRepository.findByTimeCapsule_TimeCapsuleId(capsuleId);
 
-        if (!timeCapsuleVisitRepository.existsByTimeCapsule_TimeCapsuleId(capsuleId)){
-            //  타임캡슐은 있으나 캡슐 조회 도메인이 존재하지 않는 경우 초기화 해서 생성
-            timeCapsuleVisit = timeCapsuleVisitRepository.save(TimeCapsuleVisit.builder()
-                    .timeCapsule(timeCapsule)
-                    .visitCount(0)
-                    .build());
-        } else {
-            //  기존 캡슐 조회 도메인 조회
-            timeCapsuleVisit = timeCapsuleVisitRepository.findByTimeCapsule_TimeCapsuleId(capsuleId)
-                    .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.CAPSULE_NOT_FOUND));
+        if (timeCapsuleVisit.isEmpty()){
+            timeCapsuleVisit = Optional.of(timeCapsuleVisitRepository.save(TimeCapsuleVisit.of(timeCapsule)));
         }
 
-        timeCapsuleVisit.setVisitCount(timeCapsuleVisit.getVisitCount() + 1);
-        return Optional.of(TimeCapsuleVisitResponseDto.toDTO(timeCapsuleVisit));
+        timeCapsuleVisit.get().addVisitCount();
+
+        return Optional.of(TimeCapsuleVisitResponseDto.toDTO(timeCapsuleVisit.get()));
     }
 }

@@ -6,10 +6,9 @@ import lombok.*;
 @Entity
 @ToString
 @Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "capsule_like")
 public class TimeCapsuleLike {
     @Id
@@ -24,4 +23,11 @@ public class TimeCapsuleLike {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "capsule_id", referencedColumnName = "capsule_id", unique = true, nullable = false)
     TimeCapsule timeCapsule;
+
+    public static TimeCapsuleLike of(TimeCapsule timeCapsule, Profile profile){
+        return TimeCapsuleLike.builder()
+                .timeCapsule(timeCapsule)
+                .profile(profile)
+                .build();
+    }
 }

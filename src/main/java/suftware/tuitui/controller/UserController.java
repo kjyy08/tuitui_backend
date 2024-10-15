@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import suftware.tuitui.common.http.HttpResponse;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.dto.request.UserCreateRequestDto;
+import suftware.tuitui.dto.request.UserUpdateRequestDto;
 import suftware.tuitui.dto.response.*;
 import suftware.tuitui.service.UserService;
 
@@ -71,8 +72,8 @@ public class UserController {
 
     //  유저 삭제
     @DeleteMapping(value = "users")
-    public ResponseEntity<HttpResponse> deleteUser(@RequestBody @Valid UserCreateRequestDto userCreateRequestDto){
-        userService.deleteUser(userCreateRequestDto);
+    public ResponseEntity<HttpResponse> deleteUser(@RequestBody @Valid UserUpdateRequestDto userUpdateRequestDto){
+        userService.deleteUser(userUpdateRequestDto);
 
         return HttpResponse.toResponseEntity(TuiTuiMsgCode.USER_DELETE_SUCCESS);
     }

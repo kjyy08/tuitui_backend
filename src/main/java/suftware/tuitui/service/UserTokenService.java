@@ -114,15 +114,7 @@ public class UserTokenService {
             log.info("UserTokenService.authorization() -> account: {} is exists", account);
         } else {
             //  유저 정보가 없다면 회원가입 처리
-            user = User.builder()
-                    .account(account)
-                    .createdAt(DateTimeUtil.getSeoulTimestamp())
-                    .accountState(AccountState.ACTIVE)
-                    .role(Role.USER)
-                    .snsType(snsType.toLowerCase())
-                    .build();
-
-            userRepository.save(user);
+            user = userRepository.save(User.of(account, snsType, AccountState.ACTIVE, Role.USER));
             isSigned = false;
             log.info("UserTokenService.authorization() -> create account: {}", account);
         }
@@ -136,11 +128,7 @@ public class UserTokenService {
         //  토큰 생성
         String access = jwtUtil.createJwt("access", account, Role.USER.getValue());   //  1시간의 생명주기를 가짐
         String refresh = jwtUtil.createJwt("refresh", account, Role.USER.getValue());  //  30일의 생명주기를 가짐
-        UserToken userToken = UserToken.builder()
-                .account(account)
-                .refresh(refresh)
-                .expiresIn(new Timestamp(DateTimeUtil.getSeoulTimestamp().getTime() + (jwtUtil.getExpiresIn(refresh) * 1000)))
-                .build();
+        UserToken userToken = UserToken.of(account, refresh, jwtUtil.getExpiresIn(refresh) * 1000);
 
         userTokenRepository.save(userToken);
         JwtResponseDto jwtResponseDto = JwtResponseDto.toDto("Bearer", access, jwtUtil.getExpiresIn(access), refresh, jwtUtil.getExpiresIn(refresh));
@@ -203,11 +191,7 @@ public class UserTokenService {
 
         //  기존에 있던 리프레시 삭제 후 저장
         userTokenRepository.deleteByRefresh(refreshToken);
-        userTokenRepository.save(UserToken.builder()
-                .account(account)
-                .refresh(newRefreshToken)
-                .expiresIn(new Timestamp(DateTimeUtil.getSeoulTimestamp().getTime() + (jwtUtil.getExpiresIn(newRefreshToken) * 1000)))
-                .build());
+        userTokenRepository.save(UserToken.of(account, newRefreshToken, jwtUtil.getExpiresIn(newRefreshToken) * 1000));
 
         JwtResponseDto jwtResponseDto = JwtResponseDto.toDto("Bearer", newAccessToken, jwtUtil.getExpiresIn(newAccessToken),
                 newRefreshToken, jwtUtil.getExpiresIn(newRefreshToken));
@@ -241,11 +225,7 @@ public class UserTokenService {
 
         //  기존에 있던 리프레시 삭제 후 저장
         userTokenRepository.deleteByAccount(account);
-        userTokenRepository.save(UserToken.builder()
-                .account(account)
-                .refresh(newRefreshToken)
-                .expiresIn(new Timestamp(DateTimeUtil.getSeoulTimestamp().getTime() + (jwtUtil.getExpiresIn(newRefreshToken) * 1000)))
-                .build());
+        userTokenRepository.save(UserToken.of(account, newRefreshToken, jwtUtil.getExpiresIn(newRefreshToken) * 1000));
 
         JwtResponseDto jwtResponseDto = JwtResponseDto.toDto("Bearer", newAccessToken, jwtUtil.getExpiresIn(newAccessToken),
                 newRefreshToken, jwtUtil.getExpiresIn(newRefreshToken));

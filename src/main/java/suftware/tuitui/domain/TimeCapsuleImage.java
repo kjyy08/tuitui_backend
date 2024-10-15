@@ -7,10 +7,9 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @ToString
 @Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
 @Table(name = "capsule_image")
 public class TimeCapsuleImage {
@@ -25,4 +24,11 @@ public class TimeCapsuleImage {
 
     @Column(name = "image_path", nullable = false)
     String imgUrl;
+
+    public static TimeCapsuleImage of(TimeCapsule timeCapsule, String url){
+        return TimeCapsuleImage.builder()
+                .timeCapsule(timeCapsule)
+                .imgUrl(url)
+                .build();
+    }
 }

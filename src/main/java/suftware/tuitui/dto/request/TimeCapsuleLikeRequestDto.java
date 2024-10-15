@@ -17,9 +17,6 @@ public class TimeCapsuleLikeRequestDto {
     Integer timeCapsuleId;
 
     public static TimeCapsuleLike toEntity(TimeCapsule timeCapsule, Profile profile){
-        return TimeCapsuleLike.builder()
-                .timeCapsule(timeCapsule)
-                .profile(profile)
-                .build();
+        return TimeCapsuleLike.of(timeCapsule, profile);
     }
 }

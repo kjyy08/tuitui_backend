@@ -101,11 +101,7 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
         String access = jwtUtil.createJwt("access", account, Role.USER.getValue());   //  1시간의 생명주기를 가짐
         String refresh = jwtUtil.createJwt("refresh", account, Role.USER.getValue());  //  30일의 생명주기를 가짐
 
-        UserToken userToken = UserToken.builder()
-                .account(account)
-                .refresh(refresh)
-                .expiresIn(new Timestamp(DateTimeUtil.getSeoulTimestamp().getTime() + jwtUtil.getRefreshTokenExpiresIn()))
-                .build();
+        UserToken userToken = UserToken.of(account, refresh, jwtUtil.getRefreshTokenExpiresIn());
 
         if (userTokenRepository.existsByAccount(account)){
             response.setStatus(HttpStatus.BAD_REQUEST.value());

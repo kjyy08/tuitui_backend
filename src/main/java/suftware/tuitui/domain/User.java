@@ -5,16 +5,16 @@ import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import suftware.tuitui.common.enumType.AccountState;
 import suftware.tuitui.common.enumType.Role;
+import suftware.tuitui.common.time.DateTimeUtil;
 
 import java.sql.Timestamp;
 
 @Entity
 @ToString
 @Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
 @Table(name = "user")
 public class User {
@@ -36,7 +36,6 @@ public class User {
     @Column(name = "account_state")
     private AccountState accountState;
 
-
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role;
@@ -46,4 +45,15 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Profile profile;
+
+    public static User of(String account, String snsType, AccountState state, Role role){
+        return User.builder()
+                .account(account)
+                .createdAt(DateTimeUtil.getSeoulTimestamp())
+                .accountState(state)
+                .role(role)
+                .snsType(snsType.toLowerCase())
+                .build();
+    }
+
 }

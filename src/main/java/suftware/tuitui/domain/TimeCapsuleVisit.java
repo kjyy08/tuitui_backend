@@ -6,10 +6,9 @@ import lombok.*;
 @Entity
 @ToString
 @Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "visit_counter")
 public class TimeCapsuleVisit {
     @Id
@@ -23,4 +22,15 @@ public class TimeCapsuleVisit {
 
     @Column(name = "visit_count", nullable = false)
     Integer visitCount;
+
+    public void addVisitCount(){
+        this.visitCount++;
+    }
+
+    public static TimeCapsuleVisit of(TimeCapsule timeCapsule){
+        return TimeCapsuleVisit.builder()
+                .timeCapsule(timeCapsule)
+                .visitCount(0)
+                .build();
+    }
 }
