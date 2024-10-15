@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import suftware.tuitui.admin.dto.response.IpBlackListResponseDto;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
@@ -17,7 +16,6 @@ import suftware.tuitui.repository.IpBlackListRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +29,7 @@ public class IpBlackListService {
 
         List<IpBlackListResponseDto> ipBlackListResponseDtoList = ipBlackListPage.getContent().stream()
                 .map(IpBlackListResponseDto::toDto)
-                .collect(Collectors.toList());
+                .toList();
 
         // PageResponse 반환
         return Optional.of(PageResponse.builder()
