@@ -58,17 +58,15 @@ public class ProfileService {
     public List<ProfileResponseDto> getProfileList() {
         List<Profile> profileList = profileRepository.findAll();
 
-        if (profileList.isEmpty()){
+        if (profileList.isEmpty()) {
             throw new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND);
         }
 
-        List<ProfileResponseDto> profileResponseDtoList = new ArrayList<>();
-        for (Profile profile : profileList){
-            profileResponseDtoList.add(ProfileResponseDto.toDTO(profile));
-        }
-
-        return profileResponseDtoList;
+        return profileList.stream()
+                .map(ProfileResponseDto::toDTO)
+                .toList();
     }
+
 
     public Optional<PageResponse> getProfileList(Integer pageNo, Integer pageSize, String sortBy) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
@@ -76,7 +74,7 @@ public class ProfileService {
 
         List<ProfileResponseDto> profileResponseDtoList = profilePage.getContent().stream()
                 .map(ProfileResponseDto::toDTO)
-                .collect(Collectors.toList());
+                .toList();
 
         // PageResponse 반환
         return Optional.of(PageResponse.builder()

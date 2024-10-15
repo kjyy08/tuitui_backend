@@ -35,13 +35,9 @@ public class TimeCapsuleLikeService {
             throw new TuiTuiException(TuiTuiMsgCode.CAPSULE_LIKE_NOT_FOUND);
         }
 
-        List<TimeCapsuleLikeResponseDto> timeCapsuleLikeResponseDtoList = new ArrayList<>();
-
-        for (TimeCapsuleLike timeCapsuleLike : timeCapsuleLikeList){
-            timeCapsuleLikeResponseDtoList.add(TimeCapsuleLikeResponseDto.toDto(timeCapsuleLike));
-        }
-
-        return timeCapsuleLikeResponseDtoList;
+        return timeCapsuleLikeList.stream()
+                .map(TimeCapsuleLikeResponseDto::toDto)
+                .toList();
     }
 
     //  캡슐 좋아요 저장

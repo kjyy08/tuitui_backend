@@ -15,10 +15,8 @@ import suftware.tuitui.dto.response.PageResponse;
 import suftware.tuitui.dto.response.UserResponseDto;
 import suftware.tuitui.repository.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,13 +37,9 @@ public class UserService {
             throw new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND);
         }
 
-        List<UserResponseDto> userResponseDtoList = new ArrayList<>();
-
-        for (User user : userList){
-            userResponseDtoList.add(UserResponseDto.toDTO(user));
-        }
-
-        return userResponseDtoList;
+        return userList.stream()
+                .map(UserResponseDto::toDTO)
+                .toList();
     }
 
     public Optional<PageResponse> getUserList(Integer pageNo, Integer pageSize, String sortBy) {
@@ -54,7 +48,7 @@ public class UserService {
 
         List<UserResponseDto> userResponseDtoList = userPage.getContent().stream()
                 .map(UserResponseDto::toDTO)
-                .collect(Collectors.toList());
+                .toList();
 
         // PageResponse 반환
         return Optional.of(PageResponse.builder()
