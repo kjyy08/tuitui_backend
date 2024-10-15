@@ -1,4 +1,4 @@
-package suftware.tuitui.common.jwt;
+package suftware.tuitui.common.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -8,7 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
-import suftware.tuitui.common.http.HttpResponseDto;
+import suftware.tuitui.common.http.HttpResponse;
+import suftware.tuitui.common.jwt.JwtMsgCode;
+import suftware.tuitui.common.jwt.JwtUtil;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -39,7 +41,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         if (!errorCode.equals(JwtMsgCode.OK)){
-            HttpResponseDto httpResponseDto = HttpResponseDto.builder()
+            HttpResponse httpResponse = HttpResponse.builder()
                     .status(errorCode.getStatus())
                     .code(errorCode.getCode())
                     .message(errorCode.getMsg())
@@ -48,7 +50,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             response.setStatus(errorCode.getStatus().value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().print(new ObjectMapper().writeValueAsString(httpResponseDto));
+            response.getWriter().print(new ObjectMapper().writeValueAsString(httpResponse));
             return;
         }
 

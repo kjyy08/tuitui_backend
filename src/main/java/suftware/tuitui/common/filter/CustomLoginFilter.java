@@ -1,4 +1,4 @@
-package suftware.tuitui.filter;
+package suftware.tuitui.common.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.util.MimeTypeUtils;
 import suftware.tuitui.common.enumType.Role;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
-import suftware.tuitui.common.http.HttpResponseDto;
+import suftware.tuitui.common.http.HttpResponse;
 import suftware.tuitui.common.jwt.JwtResponseDto;
 import suftware.tuitui.common.jwt.JwtUtil;
 import suftware.tuitui.common.time.DateTimeUtil;
@@ -111,7 +111,7 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().print(new ObjectMapper().writeValueAsString(HttpResponseDto.builder()
+            response.getWriter().print(new ObjectMapper().writeValueAsString(HttpResponse.builder()
                     .status(HttpStatus.BAD_REQUEST)
                     .message(TuiTuiMsgCode.USER_LOGIN_FAIL_EXIST.getMsg())
                     .code(TuiTuiMsgCode.USER_LOGIN_FAIL_EXIST.getCode())
@@ -123,7 +123,7 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
 
         JwtResponseDto jwtResponseDto = JwtResponseDto.toDto("Bearer", access, jwtUtil.getExpiresIn(access), refresh, jwtUtil.getExpiresIn(refresh));
 
-        HttpResponseDto httpResponseDto = HttpResponseDto.builder()
+        HttpResponse httpResponse = HttpResponse.builder()
                 .status(HttpStatus.OK)
                 .code(TuiTuiMsgCode.USER_LOGOUT_SUCCESS.getCode())
                 .message(TuiTuiMsgCode.USER_LOGIN_SUCCESS.getMsg())
@@ -137,7 +137,7 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().print(new ObjectMapper().writeValueAsString(httpResponseDto));
+        response.getWriter().print(new ObjectMapper().writeValueAsString(httpResponse));
     }
 
     //  로그인 실패시 실행
@@ -146,7 +146,7 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().print(new ObjectMapper().writeValueAsString(HttpResponseDto.builder()
+        response.getWriter().print(new ObjectMapper().writeValueAsString(HttpResponse.builder()
                 .status(HttpStatus.BAD_REQUEST)
                 .message(TuiTuiMsgCode.USER_LOGIN_FAIL.getMsg())
                 .code(TuiTuiMsgCode.USER_LOGIN_FAIL.getCode())

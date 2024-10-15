@@ -1,4 +1,4 @@
-package suftware.tuitui.config;
+package suftware.tuitui.common.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -14,13 +14,14 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import suftware.tuitui.common.enumType.Role;
-import suftware.tuitui.common.jwt.JwtAuthFilter;
-import suftware.tuitui.common.jwt.JwtFilter;
+import suftware.tuitui.common.filter.JwtAuthFilter;
+import suftware.tuitui.common.filter.JwtFilter;
 import suftware.tuitui.common.jwt.JwtUtil;
-import suftware.tuitui.filter.CustomLoginFilter;
-import suftware.tuitui.filter.CustomLogoutFilter;
-import suftware.tuitui.filter.IpBanFilter;
+import suftware.tuitui.common.filter.CustomLoginFilter;
+import suftware.tuitui.common.filter.CustomLogoutFilter;
+import suftware.tuitui.common.filter.IpBanFilter;
 import suftware.tuitui.repository.IpBlackListRepository;
+import suftware.tuitui.repository.ProfileRepository;
 import suftware.tuitui.repository.UserRepository;
 import suftware.tuitui.repository.UserTokenRepository;
 
@@ -32,6 +33,7 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final UserTokenRepository userTokenRepository;
+    private final ProfileRepository profileRepository;
     private final IpBlackListRepository ipBlackListRepository;
 
     //  관리자 페이지 필터 체인
@@ -79,7 +81,7 @@ public class SecurityConfig {
 
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, userTokenRepository), LogoutFilter.class)
                 .addFilterBefore(new IpBanFilter(ipBlackListRepository, requestMappingHandlerMapping), CustomLogoutFilter.class)
-                .addFilterBefore(new JwtFilter(jwtUtil, userRepository), CustomLoginFilter.class)
+                .addFilterBefore(new JwtFilter(jwtUtil, userRepository, profileRepository), CustomLoginFilter.class)
                 .addFilterBefore(new JwtAuthFilter(jwtUtil), JwtFilter.class)
 
                 //  jwt 사용을 위해 stateless로 설정

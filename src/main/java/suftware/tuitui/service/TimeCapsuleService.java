@@ -226,10 +226,10 @@ public class TimeCapsuleService {
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.CAPSULE_NOT_FOUND));
 
         if (!(timeCapsuleRequestDto.getContent() == null))
-            timeCapsule.setContent(timeCapsuleRequestDto.getContent());
+            timeCapsule.updateContent(timeCapsuleRequestDto.getContent());
+
         if (!(timeCapsuleRequestDto.getRemindDate() == null))
-            timeCapsule.setRemindDate(Timestamp.valueOf(LocalDateTime.now().plusDays(timeCapsuleRequestDto.getRemindDate())));
-        timeCapsule.setUpdateAt(DateTimeUtil.getSeoulTimestamp());
+            timeCapsule.updateRemindDate(timeCapsuleRequestDto.getRemindDate());
 
         return Optional.of(TimeCapsuleResponseDto.toDTO(timeCapsule));
     }

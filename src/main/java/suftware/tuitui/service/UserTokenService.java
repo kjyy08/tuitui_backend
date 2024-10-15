@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import suftware.tuitui.common.enumType.AccountState;
 import suftware.tuitui.common.enumType.Role;
-import suftware.tuitui.common.http.HttpResponseDto;
+import suftware.tuitui.common.http.HttpResponse;
 import suftware.tuitui.common.time.DateTimeUtil;
 import suftware.tuitui.sns.kakao.KakaoAuthService;
 import suftware.tuitui.sns.kakao.KakaoResponse;
@@ -88,7 +88,7 @@ public class UserTokenService {
     }
 
     //  토큰 발급 요청
-    public HttpResponseDto authorization(HttpServletRequest request, HttpServletResponse response) {
+    public HttpResponse authorization(HttpServletRequest request, HttpServletResponse response) {
         String account;
         String snsType;
 
@@ -156,15 +156,15 @@ public class UserTokenService {
 
         //  신규 유저면 http status 201, 기존 유저면 200 응답
         if (!isSigned) {
-            return HttpResponseDto.toBody(TuiTuiMsgCode.USER_SIGNUP_SUCCESS, responseData);
+            return HttpResponse.toBody(TuiTuiMsgCode.USER_SIGNUP_SUCCESS, responseData);
         }
 
-        return HttpResponseDto.toBody(JwtMsgCode.OK, responseData);
+        return HttpResponse.toBody(JwtMsgCode.OK, responseData);
     }
 
     //  토큰 갱신 요청
     @Transactional
-    public HttpResponseDto reissue(HttpServletRequest request, HttpServletResponse response) {
+    public HttpResponse reissue(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken;
 
         try {
@@ -213,10 +213,10 @@ public class UserTokenService {
                 newRefreshToken, jwtUtil.getExpiresIn(newRefreshToken));
 
         log.info("UserTokenService.reissue() -> success");
-        return HttpResponseDto.toBody(JwtMsgCode.OK, jwtResponseDto);
+        return HttpResponse.toBody(JwtMsgCode.OK, jwtResponseDto);
     }
 
-    public HttpResponseDto generateAdminToken(String account, String secretKey){
+    public HttpResponse generateAdminToken(String account, String secretKey){
         log.info("UserTokenService.generateAdminToken() -> account: {}, key: {}", account, secretKey);
         User user = userRepository.findByAccount(account)
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
@@ -252,6 +252,6 @@ public class UserTokenService {
 
         log.info("UserTokenService.generateAdminToken() -> success");
 
-        return HttpResponseDto.toBody(JwtMsgCode.OK, jwtResponseDto);
+        return HttpResponse.toBody(JwtMsgCode.OK, jwtResponseDto);
     }
 }

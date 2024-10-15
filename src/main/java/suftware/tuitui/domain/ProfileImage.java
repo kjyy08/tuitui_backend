@@ -7,10 +7,9 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @ToString
 @Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
 @Table(name = "profile_image")
 public class ProfileImage {
@@ -25,4 +24,15 @@ public class ProfileImage {
 
     @Column(name = "profile_image_path", nullable = false)
     String imgUrl;
+
+    public void updateImgUrl(String url){
+        this.imgUrl = url;
+    }
+
+    public static ProfileImage of(Profile profile, String url) {
+        return ProfileImage.builder()
+                .profile(profile)
+                .imgUrl(url)
+                .build();
+    }
 }

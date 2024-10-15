@@ -26,26 +26,11 @@ public class TimeCapsuleRequestDto {
     private BigDecimal longitude;
 
     public static TimeCapsule toEntity(TimeCapsuleRequestDto timeCapsuleRequestDto, Profile profile) {
-        TimeCapsule.TimeCapsuleBuilder builder = TimeCapsule.builder()
-                .profile(profile)
-                .content(timeCapsuleRequestDto.getContent())
-                .location(timeCapsuleRequestDto.getLocation())
-                .remindDate(Timestamp.valueOf(LocalDateTime.now().plusDays(timeCapsuleRequestDto.getRemindDate())))
-                .latitude(timeCapsuleRequestDto.getLatitude())
-                .longitude(timeCapsuleRequestDto.getLongitude());
-
-        if (timeCapsuleRequestDto.getWriteAt() == null){
-            builder.writeAt(DateTimeUtil.getSeoulTimestamp());
-        } else {
-            builder.writeAt(timeCapsuleRequestDto.getWriteAt());
-        }
-
-        if (timeCapsuleRequestDto.getUpdateAt() == null){
-            builder.updateAt(DateTimeUtil.getSeoulTimestamp());
-        } else {
-            builder.updateAt(timeCapsuleRequestDto.getUpdateAt());
-        }
-
-        return builder.build();
+        return TimeCapsule.of(profile,
+                timeCapsuleRequestDto.getContent(),
+                timeCapsuleRequestDto.getLocation(),
+                timeCapsuleRequestDto.getRemindDate(),
+                timeCapsuleRequestDto.getLatitude(),
+                timeCapsuleRequestDto.getLongitude());
     }
 }

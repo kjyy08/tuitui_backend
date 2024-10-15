@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 
 @Getter
 @Builder
@@ -24,6 +26,8 @@ public class ProfileUpdateRequestDto {
     String describeSelf;
 
     String gender;
+
+    LocalDate birth;
 
     byte[] profileImg;
 }

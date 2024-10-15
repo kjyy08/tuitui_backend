@@ -44,10 +44,7 @@ public class ProfileImageService {
             Profile profile = profileRepository.findById(profileId)
                     .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
             String fileUrl = s3Service.upload(path, file);
-            ProfileImage profileImage = profileImageRepository.save(ProfileImage.builder()
-                    .profile(profile)
-                    .imgUrl(fileUrl)
-                    .build());
+            ProfileImage profileImage = profileImageRepository.save(ProfileImage.of(profile, fileUrl));
 
             return Optional.of(ImageResponseDto.toDto(profileImage));
         } catch (IOException e){
@@ -66,10 +63,7 @@ public class ProfileImageService {
                 Profile profile = profileRepository.findById(profileId)
                         .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
                 String fileUrl = s3Service.upload(path, file);
-                ProfileImage profileImgEntity = profileImageRepository.save(ProfileImage.builder()
-                        .profile(profile)
-                        .imgUrl(fileUrl)
-                        .build());
+                ProfileImage profileImgEntity = profileImageRepository.save(ProfileImage.of(profile, fileUrl));
 
                 return Optional.of(ImageResponseDto.toDto(profileImgEntity));
             }
@@ -80,7 +74,7 @@ public class ProfileImageService {
             s3Service.delete(path, currentFileName);
 
             String fileUrl = s3Service.upload(path, file);
-            profileImage.get().setImgUrl(fileUrl);
+            profileImage.get().updateImgUrl(fileUrl);
 
             return Optional.of(ImageResponseDto.toDto(profileImage.get()));
         } catch (IOException e){
@@ -101,7 +95,7 @@ public class ProfileImageService {
         String currentFileUrl = profileImage.getImgUrl();
         String currentFileName = currentFileUrl.substring(currentFileUrl.lastIndexOf('/') + 1);
         //  기본 프로필 이미지 url로 변경
-        profileImage.setImgUrl(getBasicProfileUrl());
+        profileImage.updateImgUrl(getBasicProfileUrl());
 
         //  s3에 업로드된 프로필 이미지 삭제
         s3Service.delete(path, currentFileName);
@@ -122,7 +116,7 @@ public class ProfileImageService {
         String currentFileUrl = profileImage.getImgUrl();
         String currentFileName = currentFileUrl.substring(currentFileUrl.lastIndexOf('/') + 1);
         //  기본 프로필 이미지 url로 변경
-        profileImage.setImgUrl(getBasicProfileUrl());
+        profileImage.updateImgUrl(getBasicProfileUrl());
 
         //  s3에 업로드된 프로필 이미지 삭제
         s3Service.delete(S3ImagePath.PROFILE.getPath(), currentFileName);
@@ -133,10 +127,7 @@ public class ProfileImageService {
     public Optional<ImageResponseDto> createProfileBasicImage(Integer profileId){
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
-        ProfileImage profileImage = profileImageRepository.save(ProfileImage.builder()
-                .profile(profile)
-                .imgUrl(getBasicProfileUrl())
-                .build());
+        ProfileImage profileImage = profileImageRepository.save(ProfileImage.of(profile, getBasicProfileUrl()));
 
         return Optional.of(ImageResponseDto.toDto(profileImage));
     }

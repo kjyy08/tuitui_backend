@@ -4,18 +4,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
+import suftware.tuitui.common.time.DateTimeUtil;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @ToString
 @Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
 @Table(name = "timecapsule")
 public class TimeCapsule {
@@ -61,4 +62,27 @@ public class TimeCapsule {
 
     @OneToMany(mappedBy = "timeCapsule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
+
+    public void updateContent(String content){
+        this.content = content;
+        this.updateAt = DateTimeUtil.getSeoulTimestamp();
+    }
+
+    public void updateRemindDate(Integer days){
+        this.remindDate = DateTimeUtil.getSeoulTimestampPlusDays(days);
+        this.updateAt = DateTimeUtil.getSeoulTimestamp();
+    }
+
+    public static TimeCapsule of(Profile profile, String content, String location, Integer remindDate, BigDecimal latitude, BigDecimal longitude){
+        return TimeCapsule.builder()
+                .profile(profile)
+                .content(content)
+                .location(location)
+                .remindDate(DateTimeUtil.getSeoulTimestampPlusDays(remindDate))
+                .latitude(latitude)
+                .longitude(longitude)
+                .writeAt(DateTimeUtil.getSeoulTimestamp())
+                .updateAt(DateTimeUtil.getSeoulTimestamp())
+                .build();
+    }
 }

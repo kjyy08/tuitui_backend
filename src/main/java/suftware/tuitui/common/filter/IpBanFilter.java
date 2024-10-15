@@ -1,4 +1,4 @@
-package suftware.tuitui.filter;
+package suftware.tuitui.common.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

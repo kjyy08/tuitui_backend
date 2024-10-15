@@ -1,4 +1,4 @@
-package suftware.tuitui.config;
+package suftware.tuitui.common.config;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;

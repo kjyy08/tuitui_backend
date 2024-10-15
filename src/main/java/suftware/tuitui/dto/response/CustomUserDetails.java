@@ -3,6 +3,7 @@ package suftware.tuitui.dto.response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import suftware.tuitui.domain.Profile;
 import suftware.tuitui.domain.User;
 
 import java.util.ArrayList;
@@ -50,5 +51,9 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public Integer getUserId(){
+        return user.getUserId();
     }
 }

@@ -15,34 +15,34 @@ import suftware.tuitui.common.jwt.JwtMsgCode;
 @AllArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class HttpResponseDto {
+public class HttpResponse {
     private HttpStatus status;
     private String message;
     private String code;
     private Object data;
 
-    public HttpResponseDto(){
+    public HttpResponse(){
         this.status = null;
         this.message = null;
         this.code = null;
         this.data = null;
     }
 
-    public HttpResponseDto(HttpStatus status, String message){
+    public HttpResponse(HttpStatus status, String message){
         this.status = status;
         this.message = message;
     }
 
-    public static HttpResponseDto toBody(TuiTuiMsgCode tuiTuiMsgCode){
-        return HttpResponseDto.builder()
+    public static HttpResponse toBody(TuiTuiMsgCode tuiTuiMsgCode){
+        return HttpResponse.builder()
                 .status(tuiTuiMsgCode.getHttpStatus())
                 .code(tuiTuiMsgCode.getCode())
                 .message(tuiTuiMsgCode.getMsg())
                 .build();
     }
 
-    public static HttpResponseDto toBody(TuiTuiMsgCode tuiTuiMsgCode, Object obj){
-        return HttpResponseDto.builder()
+    public static HttpResponse toBody(TuiTuiMsgCode tuiTuiMsgCode, Object obj){
+        return HttpResponse.builder()
                 .status(tuiTuiMsgCode.getHttpStatus())
                 .code(tuiTuiMsgCode.getCode())
                 .message(tuiTuiMsgCode.getMsg())
@@ -50,16 +50,16 @@ public class HttpResponseDto {
                 .build();
     }
 
-    public static HttpResponseDto toBody(JwtMsgCode jwtMsgCode){
-        return HttpResponseDto.builder()
+    public static HttpResponse toBody(JwtMsgCode jwtMsgCode){
+        return HttpResponse.builder()
                 .status(jwtMsgCode.getStatus())
                 .code(jwtMsgCode.getCode())
                 .message(jwtMsgCode.getMsg())
                 .build();
     }
 
-    public static HttpResponseDto toBody(JwtMsgCode jwtMsgCode, Object obj){
-        return HttpResponseDto.builder()
+    public static HttpResponse toBody(JwtMsgCode jwtMsgCode, Object obj){
+        return HttpResponse.builder()
                 .status(jwtMsgCode.getStatus())
                 .code(jwtMsgCode.getCode())
                 .message(jwtMsgCode.getMsg())
@@ -67,11 +67,11 @@ public class HttpResponseDto {
                 .build();
     }
 
-    public static ResponseEntity<HttpResponseDto> toResponseEntity(TuiTuiMsgCode tuiTuiMsgCode){
+    public static ResponseEntity<HttpResponse> toResponseEntity(TuiTuiMsgCode tuiTuiMsgCode){
         return ResponseEntity.status(tuiTuiMsgCode.getHttpStatus()).body(toBody(tuiTuiMsgCode));
     }
 
-    public static ResponseEntity<HttpResponseDto> toResponseEntity(TuiTuiMsgCode tuiTuiMsgCode, Object obj){
+    public static ResponseEntity<HttpResponse> toResponseEntity(TuiTuiMsgCode tuiTuiMsgCode, Object obj){
         return ResponseEntity.status(tuiTuiMsgCode.getHttpStatus()).body(toBody(tuiTuiMsgCode, obj));
     }
 }

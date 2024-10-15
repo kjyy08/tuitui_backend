@@ -40,25 +40,13 @@ public class ProfileCreateRequestDto {
     byte[] profileImg;
 
     public static Profile toEntity(ProfileCreateRequestDto profileCreateRequestDto, User user){
-        Profile.ProfileBuilder builder = Profile.builder()
-                .user(user)
-                .name(profileCreateRequestDto.getName())
-                .phone(profileCreateRequestDto.getPhone())
-                .nickname(profileCreateRequestDto.getNickname())
-                .describeSelf(profileCreateRequestDto.getDescribeSelf());
-
-        // gender 값이 null이면 OTHER로 저장
-        if (profileCreateRequestDto.getGender() == null) {
-            builder.gender(Gender.OTHER);
-        } else {
-            builder.gender(Gender.valueOf(profileCreateRequestDto.getGender()));
-        }
-
-        // birth 값이 null이 아닌 경우에만 저장
-        if (profileCreateRequestDto.getBirth() != null) {
-            builder.birth(profileCreateRequestDto.getBirth());
-        }
-
-        return builder.build();
+        return Profile.of(
+                user,
+                profileCreateRequestDto.getName(),
+                profileCreateRequestDto.getPhone(),
+                profileCreateRequestDto.getNickname(),
+                profileCreateRequestDto.getDescribeSelf(),
+                Gender.valueOf(profileCreateRequestDto.getGender()),
+                profileCreateRequestDto.getBirth());
     }
 }

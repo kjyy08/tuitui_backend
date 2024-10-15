@@ -2,10 +2,9 @@ package suftware.tuitui.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import suftware.tuitui.common.http.HttpResponseDto;
+import suftware.tuitui.common.http.HttpResponse;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.dto.request.UserCreateRequestDto;
 import suftware.tuitui.dto.response.*;
@@ -21,18 +20,18 @@ public class UserController {
 
     //  전체 유저 조회
     @GetMapping(value = "users")
-    public ResponseEntity<HttpResponseDto> readUserList() {
+    public ResponseEntity<HttpResponse> readUserList() {
         List<UserResponseDto> userResponseDtoList = userService.getUserList();
 
-        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.USER_READ_SUCCESS, userResponseDtoList);
+        return HttpResponse.toResponseEntity(TuiTuiMsgCode.USER_READ_SUCCESS, userResponseDtoList);
     }
 
     //  유저 id 기준 조회
     @GetMapping(value = "users/{userId}")
-    public ResponseEntity<HttpResponseDto> readUser(@PathVariable(name = "userId") Integer user_id) {
+    public ResponseEntity<HttpResponse> readUser(@PathVariable(name = "userId") Integer user_id) {
         Optional<UserResponseDto> userResponseDto = userService.getUser(user_id);
 
-        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.USER_READ_SUCCESS, userResponseDto);
+        return HttpResponse.toResponseEntity(TuiTuiMsgCode.USER_READ_SUCCESS, userResponseDto);
     }
 
 //    //  유저 생성
@@ -72,10 +71,10 @@ public class UserController {
 
     //  유저 삭제
     @DeleteMapping(value = "users")
-    public ResponseEntity<HttpResponseDto> deleteUser(@RequestBody @Valid UserCreateRequestDto userCreateRequestDto){
+    public ResponseEntity<HttpResponse> deleteUser(@RequestBody @Valid UserCreateRequestDto userCreateRequestDto){
         userService.deleteUser(userCreateRequestDto);
 
-        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.USER_DELETE_SUCCESS);
+        return HttpResponse.toResponseEntity(TuiTuiMsgCode.USER_DELETE_SUCCESS);
     }
 
     //  유저 로그인

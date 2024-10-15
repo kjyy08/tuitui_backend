@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.common.exception.TuiTuiException;
-import suftware.tuitui.common.http.HttpResponseDto;
+import suftware.tuitui.common.http.HttpResponse;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -21,10 +21,10 @@ public class GlobalExceptionHandler {
 
     //  앱 관련 오류 예외처리 핸들러
     @ExceptionHandler(TuiTuiException.class)
-    protected ResponseEntity<HttpResponseDto> handleTuiTuiException(TuiTuiException e){
+    protected ResponseEntity<HttpResponse> handleTuiTuiException(TuiTuiException e){
         log.error("TuiTuiExceptionHandler.handleTuiTuiException() -> status: {}, code: {}, message: {}, data: {}",
                 e.getMsg().getHttpStatus().toString(), e.getMsg().getCode(), e.getMsg().getMsg(), e.getObj());
-        return ResponseEntity.status(e.getMsg().getHttpStatus()).body(HttpResponseDto.builder()
+        return ResponseEntity.status(e.getMsg().getHttpStatus()).body(HttpResponse.builder()
                 .status(e.getMsg().getHttpStatus())
                 .message(e.getMsg().getMsg())
                 .code(e.getMsg().getCode())
@@ -34,9 +34,9 @@ public class GlobalExceptionHandler {
 
     //  서버 스크립트 오류 예외처리 핸들러
     @ExceptionHandler(RuntimeException.class)
-    protected ResponseEntity<HttpResponseDto> handleServerException(RuntimeException e){
+    protected ResponseEntity<HttpResponse> handleServerException(RuntimeException e){
         log.error("TuiTuiExceptionHandler.handleServerException() -> error Message: {}", e.getMessage());
-        return ResponseEntity.status(TuiTuiMsgCode.INTERNAL_SERVER_ERROR.getHttpStatus()).body(HttpResponseDto.builder()
+        return ResponseEntity.status(TuiTuiMsgCode.INTERNAL_SERVER_ERROR.getHttpStatus()).body(HttpResponse.builder()
                 .status(TuiTuiMsgCode.INTERNAL_SERVER_ERROR.getHttpStatus())
                 .code(TuiTuiMsgCode.INTERNAL_SERVER_ERROR.getCode())
                 .message(TuiTuiMsgCode.INTERNAL_SERVER_ERROR.getMsg())
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
 
     //  유효성 검사 예외처리 핸들러
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    protected ResponseEntity<HttpResponseDto> handleValidException(MethodArgumentNotValidException e){
+    protected ResponseEntity<HttpResponse> handleValidException(MethodArgumentNotValidException e){
         TuiTuiMsgCode tuiTuiMsgCode = getTuiTuiErrorCode(e.getBindingResult());
         HashMap<String, String> errors = getErrors(e.getBindingResult());
 
@@ -54,7 +54,7 @@ public class GlobalExceptionHandler {
                 e.getFieldErrors().stream()
                         .map(fieldError -> String.format("\"%s\": \"%s\"", fieldError.getField(), fieldError.getRejectedValue()))
                         .collect(Collectors.toList()));
-        return ResponseEntity.status(tuiTuiMsgCode.getHttpStatus()).body(HttpResponseDto.builder()
+        return ResponseEntity.status(tuiTuiMsgCode.getHttpStatus()).body(HttpResponse.builder()
                 .status(tuiTuiMsgCode.getHttpStatus())
                 .code(tuiTuiMsgCode.getCode())
                 .message(tuiTuiMsgCode.getMsg())

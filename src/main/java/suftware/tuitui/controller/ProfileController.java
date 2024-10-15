@@ -4,15 +4,15 @@ package suftware.tuitui.controller;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import suftware.tuitui.common.enumType.S3ImagePath;
 import suftware.tuitui.common.exception.TuiTuiException;
-import suftware.tuitui.common.http.HttpResponseDto;
+import suftware.tuitui.common.http.HttpResponse;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
 import suftware.tuitui.dto.request.ProfileCreateRequestDto;
 import suftware.tuitui.dto.request.ProfileUpdateRequestDto;
@@ -34,7 +34,7 @@ public class ProfileController {
 
     //  전체 프로필 조회
     @GetMapping(value = "profiles")
-    public ResponseEntity<HttpResponseDto> readProfile() {
+    public ResponseEntity<HttpResponse> readProfile() {
         List<ProfileResponseDto> profileResponseDtoList = profileService.getProfileList();
 
         for (ProfileResponseDto profileResponseDto : profileResponseDtoList){
@@ -44,12 +44,12 @@ public class ProfileController {
             profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
         }
 
-        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_READ_SUCCESS, profileResponseDtoList);
+        return HttpResponse.toResponseEntity(TuiTuiMsgCode.PROFILE_READ_SUCCESS, profileResponseDtoList);
     }
 
     //  프로필 id 기준 조회
     @GetMapping(value = "profiles/{profileId}")
-    public ResponseEntity<HttpResponseDto> readProfileById(@PathVariable(name = "profileId") Integer profileId){
+    public ResponseEntity<HttpResponse> readProfileById(@PathVariable(name = "profileId") Integer profileId){
         ProfileResponseDto profileResponseDto = profileService.getProfile(profileId)
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
         ImageResponseDto imageResponseDto = profileImageService.readProfileImage(profileResponseDto.getProfileId())
@@ -57,12 +57,12 @@ public class ProfileController {
 
         profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
 
-        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_READ_SUCCESS, profileResponseDto);
+        return HttpResponse.toResponseEntity(TuiTuiMsgCode.PROFILE_READ_SUCCESS, profileResponseDto);
     }
 
     //  user id 기준 조회
     @GetMapping(value = "users/{userId}/profiles")
-    public ResponseEntity<HttpResponseDto> readProfileByUserId(@PathVariable(name = "userId") Integer userId) {
+    public ResponseEntity<HttpResponse> readProfileByUserId(@PathVariable(name = "userId") Integer userId) {
         ProfileResponseDto profileResponseDto = profileService.getProfileByUserId(userId)
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
         ImageResponseDto imageResponseDto = profileImageService.readProfileImage(profileResponseDto.getProfileId())
@@ -70,12 +70,12 @@ public class ProfileController {
 
         profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
 
-        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_READ_SUCCESS, profileResponseDto);
+        return HttpResponse.toResponseEntity(TuiTuiMsgCode.PROFILE_READ_SUCCESS, profileResponseDto);
     }
 
     //  닉네임 기준 프로필 조회
     @GetMapping(value = "profiles/nicknames/{nickname}")
-    public ResponseEntity<HttpResponseDto> readProfileByNickname(@PathVariable(name = "nickname") String nickname) {
+    public ResponseEntity<HttpResponse> readProfileByNickname(@PathVariable(name = "nickname") String nickname) {
         ProfileResponseDto profileResponseDto = profileService.getProfileByNickname(nickname)
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND));
         ImageResponseDto imageResponseDto = profileImageService.readProfileImage(profileResponseDto.getProfileId())
@@ -83,12 +83,13 @@ public class ProfileController {
 
         profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
 
-        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_READ_SUCCESS, profileResponseDto);
+        return HttpResponse.toResponseEntity(TuiTuiMsgCode.PROFILE_READ_SUCCESS, profileResponseDto);
     }
 
     //  프로필 생성, 이미지 미포함
     @PostMapping(value = "profiles/without-image")
-    public ResponseEntity<HttpResponseDto> createProfileWithJson(@Valid @RequestBody ProfileCreateRequestDto profileCreateRequestDto) throws MethodArgumentNotValidException {
+    public ResponseEntity<HttpResponse> createProfileWithJson(@Valid @RequestBody ProfileCreateRequestDto profileCreateRequestDto,
+                                                              Authentication authentication) throws MethodArgumentNotValidException {
         //  프로필 생성
         ProfileResponseDto profileResponseDto = profileService.saveProfile(profileCreateRequestDto)
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_CREATE_FAIL));
@@ -98,13 +99,13 @@ public class ProfileController {
 
         profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
 
-        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_CREATE_SUCCESS, profileResponseDto);
+        return HttpResponse.toResponseEntity(TuiTuiMsgCode.PROFILE_CREATE_SUCCESS, profileResponseDto);
     }
 
     //  프로필 생성, 이미지 포함
     @PostMapping(value = "profiles/with-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<HttpResponseDto> createProfileWithImage(@Valid @RequestPart(name = "request") ProfileCreateRequestDto profileCreateRequestDto,
-                                                                  @RequestPart(name = "file", required = true) MultipartFile file) throws MethodArgumentNotValidException {
+    public ResponseEntity<HttpResponse> createProfileWithImage(@Valid @RequestPart(name = "request") ProfileCreateRequestDto profileCreateRequestDto,
+                                                               @RequestPart(name = "file", required = true) MultipartFile file) throws MethodArgumentNotValidException {
         //  파일이 존재하는 경우에만 동작
         if(file != null && !file.isEmpty()) {
             ProfileResponseDto profileResponseDto = profileService.saveProfile(profileCreateRequestDto)
@@ -115,16 +116,16 @@ public class ProfileController {
 
             profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
 
-            return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_CREATE_SUCCESS, profileResponseDto);
+            return HttpResponse.toResponseEntity(TuiTuiMsgCode.PROFILE_CREATE_SUCCESS, profileResponseDto);
         } else {
-            return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_CREATE_FAIL);
+            return HttpResponse.toResponseEntity(TuiTuiMsgCode.PROFILE_CREATE_FAIL);
         }
     }
 
     //  프로필 이미지 수정
     @PostMapping(value = "profiles/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<HttpResponseDto> updateProfileImage(@RequestPart(name = "profileId") Integer profileId,
-                                                              @RequestPart(name = "file", required = false) MultipartFile file){
+    public ResponseEntity<HttpResponse> updateProfileImage(@RequestPart(name = "profileId") Integer profileId,
+                                                           @RequestPart(name = "file", required = false) MultipartFile file){
         ImageResponseDto imageResponseDto;
 
         //  파일이 비어있지 않으면 해당 이미지로 변경, 그렇지 않으면 기본 프로필 이미지로 변경
@@ -137,23 +138,23 @@ public class ProfileController {
                     .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_UPDATE_FAIL));
         }
 
-        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_UPDATE_SUCCESS, imageResponseDto);
+        return HttpResponse.toResponseEntity(TuiTuiMsgCode.PROFILE_UPDATE_SUCCESS, imageResponseDto);
     }
 
     //  프로필 정보 수정
     @PutMapping(value = "profiles")
-    public ResponseEntity<HttpResponseDto> updateProfile(@Valid @RequestBody ProfileUpdateRequestDto profileUpdateRequestDto) throws MethodArgumentNotValidException{
+    public ResponseEntity<HttpResponse> updateProfile(@Valid @RequestBody ProfileUpdateRequestDto profileUpdateRequestDto) throws MethodArgumentNotValidException{
         Optional<ProfileResponseDto> profileResponseDto = profileService.updateProfile(profileUpdateRequestDto);
 
-        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_UPDATE_SUCCESS, profileResponseDto);
+        return HttpResponse.toResponseEntity(TuiTuiMsgCode.PROFILE_UPDATE_SUCCESS, profileResponseDto);
     }
 
     //  프로필 삭제
     @DeleteMapping(value = "profiles/{profileId}")
-    public ResponseEntity<HttpResponseDto> deleteProfile(@PathVariable(name = "profileId") Integer profileId){
+    public ResponseEntity<HttpResponse> deleteProfile(@PathVariable(name = "profileId") Integer profileId){
         profileImageService.deleteProfileImage(profileId, S3ImagePath.PROFILE.getPath());
         profileService.deleteProfile(profileId);
 
-        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_DELETE_SUCCESS);
+        return HttpResponse.toResponseEntity(TuiTuiMsgCode.PROFILE_DELETE_SUCCESS);
     }
 }

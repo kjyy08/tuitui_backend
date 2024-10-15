@@ -11,10 +11,9 @@ import java.util.List;
 @Entity
 @ToString
 @Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
 @Table(name = "profile")
 public class Profile {
@@ -47,9 +46,6 @@ public class Profile {
     @Column(name = "birth")
     LocalDate birth;
 
-    //@Column(name = "profile_image")
-    //String profileImgPath;
-
     @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     private ProfileImage profileImage;
 
@@ -70,4 +66,37 @@ public class Profile {
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserHashtag> userHashtags;
+
+    public void updatePhone(String phone){
+        this.phone = phone;
+    }
+
+    public void updateNickname(String nickname){
+        this.nickname = nickname;
+    }
+
+    public void updateDescribeSelf(String describeSelf){
+        this.describeSelf = describeSelf;
+    }
+
+    public void updateGender(Gender gender){
+        this.gender = gender;
+    }
+
+    public void updateBirth(LocalDate birth){
+        this.birth = birth;
+    }
+
+    public static Profile of(User user, String name, String phone, String nickname,
+                             String describeSelf, Gender gender, LocalDate birth) {
+        return Profile.builder()
+                .user(user)
+                .name(name)
+                .phone(phone)
+                .nickname(nickname)
+                .describeSelf(describeSelf)
+                .gender(gender != null ? gender : Gender.OTHER)
+                .birth(birth)
+                .build();
+    }
 }

@@ -98,11 +98,6 @@ public class ProfileService {
             throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST);
         }
 
-        //  전화번호 중복 가입 방지
-        //  if (profileRepository.existsByPhone(profileCreateRequestDto.getPhone())) {
-        //      throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_PHONE);
-        //  }
-
         //  닉네임 중복 확인
         if (profileRepository.existsByNickname(profileCreateRequestDto.getNickname())){
             throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_NICKNAME);
@@ -126,7 +121,7 @@ public class ProfileService {
                     throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_PHONE);
                 }
 
-                profile.setPhone(profileUpdateRequestDto.getPhone());
+                profile.updatePhone(profileUpdateRequestDto.getPhone());
             }
         }
 
@@ -137,22 +132,27 @@ public class ProfileService {
                     throw new TuiTuiException(TuiTuiMsgCode.PROFILE_EXIST_NICKNAME);
                 }
 
-                profile.setNickname(profileUpdateRequestDto.getNickname());
+                profile.updateNickname(profileUpdateRequestDto.getNickname());
             }
         }
 
         //  자기소개 수정
         if (!(profileUpdateRequestDto.getDescribeSelf() == null)) {
             if (!profile.getDescribeSelf().equals(profileUpdateRequestDto.getDescribeSelf())) {
-                profile.setDescribeSelf(profileUpdateRequestDto.getDescribeSelf());
+                profile.updateDescribeSelf(profileUpdateRequestDto.getDescribeSelf());
             }
         }
 
         //  성별 수정
         if (!(profileUpdateRequestDto.getGender() == null)) {
             if (!profile.getGender().toString().equals(profileUpdateRequestDto.getGender())) {
-                profile.setGender(Gender.valueOf(profileUpdateRequestDto.getGender()));
+                profile.updateGender(Gender.valueOf(profileUpdateRequestDto.getGender()));
             }
+        }
+
+        //  생일 수정
+        if (!(profileUpdateRequestDto.getBirth() == null)) {
+            profile.updateBirth(profileUpdateRequestDto.getBirth());
         }
 
         return Optional.of(ProfileResponseDto.toDTO(profile));
