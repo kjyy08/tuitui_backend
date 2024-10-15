@@ -91,11 +91,7 @@ public class IpBanFilter extends OncePerRequestFilter {
 
         try {
             log.info("IpBanFilter.banIp() -> request from ip: {} has been blocked", ip);
-            ipBlackListRepository.save(IpBlackList.builder()
-                    .ipAddress(ip)
-                    .bannedAt(DateTimeUtil.getSeoulTimestamp())
-                    .isBanned(true)
-                    .build());
+            ipBlackListRepository.save(IpBlackList.of(ip));
 
         } catch (Exception e) {
             log.info("IpBanFilter.banIp() -> clientIp: {} is already blocked", ip);

@@ -27,11 +27,7 @@ public class CommentController {
     public ResponseEntity<HttpResponseDto> readCapsuleComment(@PathVariable(name = "capsuleId") Integer id) {
         List<CommentResponseDto> commentResponseDtoList = commentService.getCapsuleComment(id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.COMMENT_READ_SUCCESS.getMsg())
-                .data(commentResponseDtoList)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.COMMENT_READ_SUCCESS, commentResponseDtoList);
     }
 
     //  전체 댓글 조회
@@ -39,11 +35,7 @@ public class CommentController {
     public ResponseEntity<HttpResponseDto> readCommentAll() {
         List<CommentResponseDto> commentResponseDtoList = commentService.getCommentList();
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.COMMENT_READ_SUCCESS.getMsg())
-                .data(commentResponseDtoList)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.COMMENT_READ_SUCCESS, commentResponseDtoList);
     }
 
     //  댓글 저장
@@ -51,11 +43,7 @@ public class CommentController {
     public ResponseEntity<HttpResponseDto> createCapsuleComment(@Valid @RequestBody CommentRequestDto commentRequestDto) {
         Optional<CommentResponseDto> commentResponseDto = commentService.saveCapsuleComment(commentRequestDto);
 
-        return ResponseEntity.status(TuiTuiMsgCode.COMMENT_CREATE_SUCCESS.getHttpStatus()).body(HttpResponseDto.builder()
-                .status(TuiTuiMsgCode.COMMENT_CREATE_SUCCESS.getHttpStatus())
-                .message(TuiTuiMsgCode.COMMENT_CREATE_SUCCESS.getMsg())
-                .data(commentResponseDto)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.COMMENT_CREATE_SUCCESS, commentResponseDto);
     }
 
     //  댓글 수정
@@ -63,11 +51,7 @@ public class CommentController {
     public ResponseEntity<HttpResponseDto> updateCapsuleComment(@Valid @RequestBody CommentRequestDto commentRequestDto){
         Optional<CommentResponseDto> commentResponseDto = commentService.updateCapsuleComment(commentRequestDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.COMMENT_UPDATE_SUCCESS.getMsg())
-                .data(commentResponseDto)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.COMMENT_UPDATE_SUCCESS, commentResponseDto);
     }
 
     //  댓글 삭제
@@ -75,10 +59,6 @@ public class CommentController {
     public ResponseEntity<HttpResponseDto> deleteCapsuleComment(@PathVariable(name = "commentId") Integer commentId){
         commentService.deleteCapsuleComment(commentId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.COMMENT_DELETE_SUCCESS.getMsg())
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.COMMENT_DELETE_SUCCESS);
     }
-
 }

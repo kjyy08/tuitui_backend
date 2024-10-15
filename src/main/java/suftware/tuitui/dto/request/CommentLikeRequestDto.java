@@ -17,10 +17,6 @@ public class CommentLikeRequestDto {
     Integer commentId;
 
     public static CommentLike toEntity(Comment comment, Profile profile){
-        return CommentLike.builder()
-                .comment(comment)
-                .profile(profile)
-                .build();
+        return CommentLike.of(comment, profile);
     }
-
 }

@@ -2,6 +2,7 @@ package suftware.tuitui.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import suftware.tuitui.common.time.DateTimeUtil;
 
 import java.sql.Timestamp;
 
@@ -9,9 +10,9 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @ToString
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "ip_blacklist")
 public class IpBlackList {
     @Id
@@ -27,4 +28,12 @@ public class IpBlackList {
 
     @Column(name = "banned_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp bannedAt;
+
+    public static IpBlackList of(String ip) {
+        return IpBlackList.builder()
+                .ipAddress(ip)
+                .bannedAt(DateTimeUtil.getSeoulTimestamp())
+                .isBanned(true)
+                .build();
+    }
 }

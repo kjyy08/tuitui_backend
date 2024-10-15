@@ -69,5 +69,4 @@ public class CommentLikeService {
 
         commentLikeRepository.delete(commentLike);
     }
-
 }

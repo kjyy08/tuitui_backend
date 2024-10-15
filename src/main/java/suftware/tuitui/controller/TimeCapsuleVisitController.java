@@ -22,11 +22,7 @@ public class TimeCapsuleVisitController {
     public ResponseEntity<HttpResponseDto> readCapsuleVisitCount(@PathVariable(name = "capsuleId") Integer capsuleId) {
         Optional<TimeCapsuleVisitResponseDto> timeCapsuleVisitResponseDto = timeCapsuleVisitService.getCapsuleVisitCount(capsuleId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.CAPSULE_VISIT_READ_SUCCESS.getMsg())
-                .data(timeCapsuleVisitResponseDto)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.CAPSULE_VISIT_READ_SUCCESS, timeCapsuleVisitResponseDto);
     }
 
     //  조회수 증가
@@ -36,10 +32,6 @@ public class TimeCapsuleVisitController {
     public ResponseEntity<HttpResponseDto> createCapsuleVisitCount(@PathVariable(name = "capsuleId") Integer capsuleId) {
         Optional<TimeCapsuleVisitResponseDto> timeCapsuleVisitResponseDto = timeCapsuleVisitService.addCapsuleVisitCount(capsuleId);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(HttpResponseDto.builder()
-                .status(HttpStatus.CREATED)
-                .message(TuiTuiMsgCode.CAPSULE_VISIT_CREATE_SUCCESS.getMsg())
-                .data(timeCapsuleVisitResponseDto)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.CAPSULE_VISIT_CREATE_SUCCESS, timeCapsuleVisitResponseDto);
     }
 }

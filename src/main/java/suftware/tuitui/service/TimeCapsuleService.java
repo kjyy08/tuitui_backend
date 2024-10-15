@@ -27,7 +27,9 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,22 +43,11 @@ public class TimeCapsuleService {
     private List<ImageResponseDto> getCapsuleImageList(Integer id){
         List<TimeCapsuleImage> imageList = timeCapsuleImageRepository.findByCapsuleId(id);
 
-        //  캡슐에 저장된 이미지가 1개 이상일 경우 이미지 포함 반환
-        if (!imageList.isEmpty()) {
-            List<ImageResponseDto> imageResponseDtoList = new ArrayList<>();
-
-            for (TimeCapsuleImage image : imageList) {
-                imageResponseDtoList.add(ImageResponseDto.toDto(image));
-            }
-
-            return imageResponseDtoList;
-        }
-
-        //  없는 경우 null
-        return null;
+        return imageList.stream()
+                .map(ImageResponseDto::toDto)
+                .toList();
     }
 
-    //  전체 캡슐 조회
     @Transactional(readOnly = true)
     public Optional<PageResponse> getCapsuleList(Integer pageNo, Integer pageSize, String sortBy) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
@@ -64,23 +55,17 @@ public class TimeCapsuleService {
 
         List<TimeCapsule> timeCapsuleList = capsulePage.getContent();
 
-        //if (timeCapsuleList.isEmpty()){
-        //    throw new TuiTuiException(TuiTuiMsgCode.CAPSULE_NOT_FOUND);
-        //}
+        // List of TimeCapsuleResponseDto 생성
+        List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = timeCapsuleList.stream()
+                .map(timeCapsule -> {
+                    List<ImageResponseDto> imageResponseDtoList = getCapsuleImageList(timeCapsule.getTimeCapsuleId());
+                    return imageResponseDtoList.isEmpty()
+                            ? TimeCapsuleResponseDto.toDTO(timeCapsule)
+                            : TimeCapsuleResponseDto.toDTO(timeCapsule, imageResponseDtoList);
+                })
+                .toList();
 
-        List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = new ArrayList<>();
-
-        for (TimeCapsule timeCapsule : timeCapsuleList){
-            List<ImageResponseDto> imageResponseDtoList = getCapsuleImageList(timeCapsule.getTimeCapsuleId());
-
-            if (imageResponseDtoList != null) {
-                timeCapsuleResponseDtoList.add(TimeCapsuleResponseDto.toDTO(timeCapsule, imageResponseDtoList));
-            }
-            else {
-                timeCapsuleResponseDtoList.add(TimeCapsuleResponseDto.toDTO(timeCapsule));
-            }
-        }
-
+        // 페이지 응답 생성 후 Optional로 반환
         return Optional.of(PageResponse.builder()
                 .contents(timeCapsuleResponseDtoList)
                 .pageNo(pageNo)
@@ -99,18 +84,15 @@ public class TimeCapsuleService {
 
         List<ImageResponseDto> imageResponseDtoList = getCapsuleImageList(timeCapsule.getTimeCapsuleId());
 
-        if (imageResponseDtoList != null) {
-            return Optional.of(TimeCapsuleResponseDto.toDTO(timeCapsule, imageResponseDtoList));
-        }
-        else {
-            return Optional.of(TimeCapsuleResponseDto.toDTO(timeCapsule));
-        }
+        return Optional.of(imageResponseDtoList.isEmpty()
+                ? TimeCapsuleResponseDto.toDTO(timeCapsule)
+                : TimeCapsuleResponseDto.toDTO(timeCapsule, imageResponseDtoList));
     }
 
-    //  프로필 id 기준 조회
+    // 프로필 id 기준 조회
     @Transactional(readOnly = true)
     public Optional<PageResponse> getCapsuleByWriteUser(Integer profileId, Integer pageNo, Integer pageSize, String sortBy) {
-        if (!profileRepository.existsById(profileId)){
+        if (!profileRepository.existsById(profileId)) {
             throw new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND);
         }
 
@@ -119,22 +101,18 @@ public class TimeCapsuleService {
 
         List<TimeCapsule> timeCapsuleList = capsulePage.getContent();
 
-        if (timeCapsuleList.isEmpty()){
+        if (timeCapsuleList.isEmpty()) {
             throw new TuiTuiException(TuiTuiMsgCode.CAPSULE_NOT_FOUND);
         }
 
-        List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = new ArrayList<>();
-
-        for (TimeCapsule timeCapsule : timeCapsuleList){
-            List<ImageResponseDto> imageResponseDtoList = getCapsuleImageList(timeCapsule.getTimeCapsuleId());
-
-            if (imageResponseDtoList != null) {
-                timeCapsuleResponseDtoList.add(TimeCapsuleResponseDto.toDTO(timeCapsule, imageResponseDtoList));
-            }
-            else {
-                timeCapsuleResponseDtoList.add(TimeCapsuleResponseDto.toDTO(timeCapsule));
-            }
-        }
+        List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = timeCapsuleList.stream()
+                .map(timeCapsule -> {
+                    List<ImageResponseDto> imageResponseDtoList = getCapsuleImageList(timeCapsule.getTimeCapsuleId());
+                    return imageResponseDtoList.isEmpty()
+                            ? TimeCapsuleResponseDto.toDTO(timeCapsule)
+                            : TimeCapsuleResponseDto.toDTO(timeCapsule, imageResponseDtoList);
+                })
+                .toList();
 
         return Optional.of(PageResponse.builder()
                 .contents(timeCapsuleResponseDtoList)
@@ -146,10 +124,11 @@ public class TimeCapsuleService {
                 .build());
     }
 
+
     //  해당 닉네임의 캡슐 목록 조회
     @Transactional(readOnly = true)
     public Optional<PageResponse> getCapsuleByNickname(String nickname, Integer pageNo, Integer pageSize, String sortBy) {
-        if (!profileRepository.existsByNickname(nickname)){
+        if (!profileRepository.existsByNickname(nickname)) {
             throw new TuiTuiException(TuiTuiMsgCode.PROFILE_NOT_FOUND);
         }
 
@@ -158,22 +137,18 @@ public class TimeCapsuleService {
 
         List<TimeCapsule> timeCapsuleList = capsulePage.getContent();
 
-        if (timeCapsuleList.isEmpty()){
+        if (timeCapsuleList.isEmpty()) {
             throw new TuiTuiException(TuiTuiMsgCode.CAPSULE_NOT_FOUND);
         }
 
-        List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = new ArrayList<>();
-
-        for (TimeCapsule timeCapsule : timeCapsuleList){
-            List<ImageResponseDto> imageResponseDtoList = getCapsuleImageList(timeCapsule.getTimeCapsuleId());
-
-            if (imageResponseDtoList != null) {
-                timeCapsuleResponseDtoList.add(TimeCapsuleResponseDto.toDTO(timeCapsule, imageResponseDtoList));
-            }
-            else {
-                timeCapsuleResponseDtoList.add(TimeCapsuleResponseDto.toDTO(timeCapsule));
-            }
-        }
+        List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = timeCapsuleList.stream()
+                .map(timeCapsule -> {
+                    List<ImageResponseDto> imageResponseDtoList = getCapsuleImageList(timeCapsule.getTimeCapsuleId());
+                    return imageResponseDtoList.isEmpty()
+                            ? TimeCapsuleResponseDto.toDTO(timeCapsule)
+                            : TimeCapsuleResponseDto.toDTO(timeCapsule, imageResponseDtoList);
+                })
+                .toList();
 
         return Optional.of(PageResponse.builder()
                 .contents(timeCapsuleResponseDtoList)
@@ -187,47 +162,36 @@ public class TimeCapsuleService {
 
     @Transactional(readOnly = true)
     public Optional<PageResponse> getCapsuleByPosition(BigDecimal latitude, BigDecimal longitude, Double radius,
-                                                       Integer pageNo, Integer pageSize, String sortBy){
-        //  native query를 날리기 전 정렬 문자열 변환
-        switch (sortBy){
-            case "timeCapsuleId":
-                sortBy = "capsule_id";
-                break;
-            case "profile":
-                sortBy = "write_user_id";
-                break;
-            case "writeAt":
-                sortBy = "write_at";
-                break;
-            case "updateAt":
-                sortBy = "update_at";
-                break;
-            case "remindDate":
-                sortBy = "remind_date";
-                break;
-        }
+                                                       Integer pageNo, Integer pageSize, String sortBy) {
+        // 정렬 문자열 변환
+        Map<String, String> sortByMap = Map.of(
+                "timeCapsuleId", "capsule_id",
+                "profile", "write_user_id",
+                "writeAt", "write_at",
+                "updateAt", "update_at",
+                "remindDate", "remind_date"
+        );
+
+        //  변환
+        sortBy = sortByMap.getOrDefault(sortBy, sortBy);
 
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
         Page<TimeCapsule> capsulePage = timeCapsuleRepository.findByPosition(latitude, longitude, radius, pageable);
 
         List<TimeCapsule> timeCapsuleList = capsulePage.getContent();
 
-        if (timeCapsuleList.isEmpty()){
+        if (timeCapsuleList.isEmpty()) {
             throw new TuiTuiException(TuiTuiMsgCode.CAPSULE_NOT_FOUND);
         }
 
-        List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = new ArrayList<>();
-
-        for (TimeCapsule timeCapsule : timeCapsuleList){
-            List<ImageResponseDto> imageResponseDtoList = getCapsuleImageList(timeCapsule.getTimeCapsuleId());
-
-            if (imageResponseDtoList != null) {
-                timeCapsuleResponseDtoList.add(TimeCapsuleResponseDto.toDTO(timeCapsule, imageResponseDtoList));
-            }
-            else {
-                timeCapsuleResponseDtoList.add(TimeCapsuleResponseDto.toDTO(timeCapsule));
-            }
-        }
+        List<TimeCapsuleResponseDto> timeCapsuleResponseDtoList = timeCapsuleList.stream()
+                .map(timeCapsule -> {
+                    List<ImageResponseDto> imageResponseDtoList = getCapsuleImageList(timeCapsule.getTimeCapsuleId());
+                    return imageResponseDtoList.isEmpty()
+                            ? TimeCapsuleResponseDto.toDTO(timeCapsule)
+                            : TimeCapsuleResponseDto.toDTO(timeCapsule, imageResponseDtoList);
+                })
+                .toList();
 
         return Optional.of(PageResponse.builder()
                 .contents(timeCapsuleResponseDtoList)
@@ -238,6 +202,7 @@ public class TimeCapsuleService {
                 .lastPage(capsulePage.isLast())
                 .build());
     }
+
 
     //  캡슐 저장
     public Optional<TimeCapsuleResponseDto> save(TimeCapsuleRequestDto timeCapsuleRequestDto){

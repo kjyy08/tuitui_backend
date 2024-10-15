@@ -27,24 +27,11 @@ public class CommentRequestDto {
 
     //  제일 최상단 부모 댓글 엔티티 생성
     public static Comment toEntity(CommentRequestDto commentRequestDto, Profile profile, TimeCapsule timeCapsule){
-        return Comment.builder()
-                .comment(commentRequestDto.getComment())
-                .profile(profile)
-                .timeCapsule(timeCapsule)
-                .updateAt(DateTimeUtil.getSeoulTimestamp())
-                .modified(Boolean.FALSE)
-                .build();
+        return Comment.of(commentRequestDto.getComment(), profile, timeCapsule);
     }
 
     //  대댓글에 해당하는 자식 댓글 엔티티 생성
-    public static Comment toEntity(CommentRequestDto commentRequestDto, Comment childComment, Profile profile, TimeCapsule timeCapsule){
-        return Comment.builder()
-                .parentComment(childComment)
-                .comment(commentRequestDto.getComment())
-                .profile(profile)
-                .timeCapsule(timeCapsule)
-                .updateAt(DateTimeUtil.getSeoulTimestamp())
-                .modified(Boolean.FALSE)
-                .build();
+    public static Comment toEntity(CommentRequestDto commentRequestDto, Comment parentComment, Profile profile, TimeCapsule timeCapsule){
+        return Comment.of(parentComment, commentRequestDto.getComment(), profile, timeCapsule);
     }
 }

@@ -16,9 +16,6 @@ public class FollowRequestDto {
     Integer followingId;
 
     public static Follow toEntity(Profile follower, Profile following){
-        return Follow.builder()
-                .follower(follower)
-                .following(following)
-                .build();
+        return Follow.of(follower, following);
     }
 }

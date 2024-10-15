@@ -36,11 +36,7 @@ public class TimeCapsuleController {
                                                            @RequestParam(name = "sortBy", defaultValue = "writeAt", required = false) String sortBy) {
         Optional<PageResponse> timeCapsulePageResponse = timeCapsuleService.getCapsuleList(pageNo, pageSize, sortBy);
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getMsg())
-                .data(timeCapsulePageResponse)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.CAPSULE_READ_SUCCESS, timeCapsulePageResponse);
     }
 
     //  캡슐 id 기준 타임 캡슐 조회
@@ -48,11 +44,7 @@ public class TimeCapsuleController {
     public ResponseEntity<HttpResponseDto> readCapsule(@PathVariable(name = "capsuleId") Integer timeCapsuleId) {
         Optional<TimeCapsuleResponseDto> timeCapsuleResponseDto = timeCapsuleService.getCapsule(timeCapsuleId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getMsg())
-                .data(timeCapsuleResponseDto)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.CAPSULE_READ_SUCCESS, timeCapsuleResponseDto);
     }
 
     //  프로필 id 기준 타임 캡슐 조회
@@ -63,11 +55,7 @@ public class TimeCapsuleController {
                                                                   @RequestParam(name = "sortBy", defaultValue = "writeAt", required = false) String sortBy) {
         Optional<PageResponse> timeCapsulePageResponse = timeCapsuleService.getCapsuleByWriteUser(writeUserId, pageNo, pageSize, sortBy);
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getMsg())
-                .data(timeCapsulePageResponse)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.CAPSULE_READ_SUCCESS, timeCapsulePageResponse);
     }
 
     //  닉네임 기준 타임 캡슐 조회
@@ -78,11 +66,7 @@ public class TimeCapsuleController {
                                                                  @RequestParam(name = "sortBy", defaultValue = "writeAt", required = false) String sortBy){
         Optional<PageResponse> timeCapsulePageResponse = timeCapsuleService.getCapsuleByNickname(nickname, pageNo, pageSize, sortBy);
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getMsg())
-                .data(timeCapsulePageResponse)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.CAPSULE_READ_SUCCESS, timeCapsulePageResponse);
     }
 
     //  구면 코사인 법칙 이용 현재 좌표를 받아 거리이내의 캡슐 조회
@@ -95,11 +79,7 @@ public class TimeCapsuleController {
                                                                  @RequestParam(name = "sortBy", defaultValue = "writeAt", required = false) String sortBy){
         Optional<PageResponse> timeCapsulePageResponse = timeCapsuleService.getCapsuleByPosition(latitude, longitude, radius, pageNo, pageSize, sortBy);
 
-        return ResponseEntity.status(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getHttpStatus()).body(HttpResponseDto.builder()
-                .status(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getHttpStatus())
-                .message(TuiTuiMsgCode.CAPSULE_READ_SUCCESS.getMsg())
-                .data(timeCapsulePageResponse)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.CAPSULE_READ_SUCCESS, timeCapsulePageResponse);
     }
 
     // 캡슐 저장 이미지 포함
@@ -122,17 +102,9 @@ public class TimeCapsuleController {
 
             timeCapsuleResponseDto.setImageList(imageResponseDtoList);
 
-            return ResponseEntity.status(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS.getHttpStatus()).body(HttpResponseDto.builder()
-                    .status(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS.getHttpStatus())
-                    .message(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS.getMsg())
-                    .data(timeCapsuleResponseDto)
-                    .build());
+            return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS, timeCapsuleResponseDto);
         } else {
-            return ResponseEntity.status(TuiTuiMsgCode.CAPSULE_CREATE_FAIL.getHttpStatus()).body(HttpResponseDto.builder()
-                    .status(TuiTuiMsgCode.CAPSULE_CREATE_FAIL.getHttpStatus())
-                    .message(TuiTuiMsgCode.CAPSULE_CREATE_FAIL.getMsg())
-                    .code(TuiTuiMsgCode.CAPSULE_CREATE_FAIL.getCode())
-                    .build());
+            return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.CAPSULE_CREATE_FAIL);
         }
     }
 
@@ -141,11 +113,7 @@ public class TimeCapsuleController {
     public ResponseEntity<HttpResponseDto> createCapsuleWithJson(@RequestBody TimeCapsuleRequestDto timeCapsuleRequestDto) {
         Optional<TimeCapsuleResponseDto> timeCapsuleResponseDto = timeCapsuleService.save(timeCapsuleRequestDto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(HttpResponseDto.builder()
-                .status(HttpStatus.CREATED)
-                .message(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS.getMsg())
-                .data(timeCapsuleResponseDto)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS, timeCapsuleResponseDto);
     }
 
     //  캡슐 수정
@@ -154,11 +122,7 @@ public class TimeCapsuleController {
         Optional<TimeCapsuleResponseDto> timeCapsuleResponseDto = timeCapsuleService.updateCapsule(timeCapsuleRequestDto.getCapsuleId(),
                 timeCapsuleRequestDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.CAPSULE_UPDATE_SUCCESS.getMsg())
-                .data(timeCapsuleResponseDto)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.CAPSULE_UPDATE_SUCCESS, timeCapsuleResponseDto);
     }
 
     //  캡슐 삭제
@@ -167,9 +131,6 @@ public class TimeCapsuleController {
         timeCapsuleImageService.deleteCapsuleImage(id);
         timeCapsuleService.deleteCapsule(id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.CAPSULE_DELETE_SUCCESS.getMsg())
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.CAPSULE_DELETE_SUCCESS);
     }
 }

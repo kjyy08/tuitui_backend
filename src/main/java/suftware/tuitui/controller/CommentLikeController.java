@@ -23,13 +23,9 @@ public class CommentLikeController {
     // 댓글 좋아요 유저 조회
     @GetMapping(value = "comments/likes/{commentId}")
     public ResponseEntity<HttpResponseDto> readCommentLike(@PathVariable(name = "commentId") Integer id){
-        List<CommentLikeResponseDto> likes = commentLikeService.getCommentLike(id);
+        List<CommentLikeResponseDto> commentLikeResponseDto = commentLikeService.getCommentLike(id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.COMMENT_LIKE_READ_SUCCESS.getMsg())
-                .data(likes)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.COMMENT_LIKE_READ_SUCCESS, commentLikeResponseDto);
     }
 
     // 댓글 좋아요 추가
@@ -37,11 +33,7 @@ public class CommentLikeController {
     public ResponseEntity<HttpResponseDto> createCommentLike(@RequestBody CommentLikeRequestDto commentLikeRequestDto){
         Optional<CommentLikeResponseDto> commentLikeResponseDto = commentLikeService.saveCapsuleLike(commentLikeRequestDto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(HttpResponseDto.builder()
-                .status(HttpStatus.CREATED)
-                .message(TuiTuiMsgCode.COMMENT_LIKE_CREATE_SUCCESS.getMsg())
-                .data(commentLikeResponseDto)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.COMMENT_LIKE_CREATE_SUCCESS, commentLikeResponseDto);
     }
 
     // 댓글 좋아요 삭제
@@ -49,9 +41,6 @@ public class CommentLikeController {
     public ResponseEntity<HttpResponseDto> deleteCommentLike(@RequestBody CommentLikeRequestDto commentLikeRequestDto){
         commentLikeService.deleteCommentLike(commentLikeRequestDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.COMMENT_LIKE_DELETE_SUCCESS.getMsg())
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.COMMENT_LIKE_DELETE_SUCCESS);
     }
 }

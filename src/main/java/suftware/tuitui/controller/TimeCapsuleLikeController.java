@@ -24,11 +24,7 @@ public class TimeCapsuleLikeController {
     public ResponseEntity<HttpResponseDto> readCapsuleLike(@PathVariable(name = "capsuleId") Integer capsule_id) {
         List<TimeCapsuleLikeResponseDto> timeCapsuleLikeResponseDtoList = timeCapsuleLikeService.getCapsuleLike(capsule_id);
 
-        return ResponseEntity.status(TuiTuiMsgCode.CAPSULE_LIKE_READ_SUCCESS.getHttpStatus()).body(HttpResponseDto.builder()
-                .status(TuiTuiMsgCode.CAPSULE_LIKE_READ_SUCCESS.getHttpStatus())
-                .message(TuiTuiMsgCode.CAPSULE_LIKE_READ_SUCCESS.getMsg())
-                .data(timeCapsuleLikeResponseDtoList)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.CAPSULE_LIKE_READ_SUCCESS, timeCapsuleLikeResponseDtoList);
     }
 
     //  캡슐 좋아요 저장
@@ -36,11 +32,7 @@ public class TimeCapsuleLikeController {
     public ResponseEntity<HttpResponseDto> createCapsuleLike(@RequestBody TimeCapsuleLikeRequestDto timeCapsuleLikeRequestDto) {
         Optional<TimeCapsuleLikeResponseDto> timeCapsuleLikeResponseDto = timeCapsuleLikeService.saveCapsuleLike(timeCapsuleLikeRequestDto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(HttpResponseDto.builder()
-                .status(HttpStatus.CREATED)
-                .message(TuiTuiMsgCode.CAPSULE_LIKE_CREATE_SUCCESS.getMsg())
-                .data(timeCapsuleLikeResponseDto)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.CAPSULE_LIKE_CREATE_SUCCESS, timeCapsuleLikeResponseDto);
     }
 
     //  캡슐 좋아요 삭제
@@ -48,9 +40,6 @@ public class TimeCapsuleLikeController {
     public ResponseEntity<HttpResponseDto> deleteCapsuleLike(@PathVariable(name = "capsuleLikeId") Integer timeCapsuleLikeId){
         timeCapsuleLikeService.deleteCapsuleLike(timeCapsuleLikeId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.CAPSULE_LIKE_DELETE_SUCCESS.getMsg())
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.CAPSULE_LIKE_DELETE_SUCCESS);
     }
 }

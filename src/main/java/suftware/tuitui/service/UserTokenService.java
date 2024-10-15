@@ -96,7 +96,7 @@ public class UserTokenService {
             account = request.getParameter("account");
             snsType = request.getParameter("sns_type");
             log.info("UserTokenService.authorization() -> request.getParameter(), account: {}, snsType: {}", account, snsType);
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             log.error("UserTokenService.authorization() -> request.getParameter() is null");
             throw new JwtException(JwtMsgCode.BAD_REQUEST);
         }
@@ -105,7 +105,7 @@ public class UserTokenService {
         boolean isSigned;
 
         //  계정이 이미 생성됐는지 확인
-        if (userRepository.existsByAccount(account)){
+        if (userRepository.existsByAccount(account)) {
             //  이미 생성된 유저는 기존 유저 정보 반환
             //  account, sns 일치 여부 확인 후 불일치하면 예외 발생
             user = userRepository.findByAccountAndSnsType(account, snsType)
@@ -146,28 +146,20 @@ public class UserTokenService {
         JwtResponseDto jwtResponseDto = JwtResponseDto.toDto("Bearer", access, jwtUtil.getExpiresIn(access), refresh, jwtUtil.getExpiresIn(refresh));
 
         //  response body 응답 생성
-        HttpResponseDto httpResponseDto = new HttpResponseDto();
         UserResponseDto userResponseDto = UserResponseDto.toDTO(user);
         HashMap<String, Object> responseData = new HashMap<>();
 
         responseData.put("user", userResponseDto);
         responseData.put("token", jwtResponseDto);
 
+        log.info("UserTokenService.authorization() -> success");
+
         //  신규 유저면 http status 201, 기존 유저면 200 응답
-        if (!isSigned){
-            httpResponseDto.setStatus(TuiTuiMsgCode.USER_SIGNUP_SUCCESS.getHttpStatus());
-            httpResponseDto.setCode(JwtMsgCode.OK.getCode());
-            httpResponseDto.setMessage(JwtMsgCode.OK.getMsg());
-            httpResponseDto.setData(responseData);
-        } else {
-            httpResponseDto.setStatus(JwtMsgCode.OK.getStatus());
-            httpResponseDto.setCode(JwtMsgCode.OK.getCode());
-            httpResponseDto.setMessage(JwtMsgCode.OK.getMsg());
-            httpResponseDto.setData(responseData);
+        if (!isSigned) {
+            return HttpResponseDto.toBody(TuiTuiMsgCode.USER_SIGNUP_SUCCESS, responseData);
         }
 
-        log.info("UserTokenService.authorization() -> success");
-        return httpResponseDto;
+        return HttpResponseDto.toBody(JwtMsgCode.OK, responseData);
     }
 
     //  토큰 갱신 요청
@@ -221,12 +213,7 @@ public class UserTokenService {
                 newRefreshToken, jwtUtil.getExpiresIn(newRefreshToken));
 
         log.info("UserTokenService.reissue() -> success");
-        return HttpResponseDto.builder()
-                .status(JwtMsgCode.OK.getStatus())
-                .code(JwtMsgCode.OK.getCode())
-                .message(JwtMsgCode.OK.getMsg())
-                .data(jwtResponseDto)
-                .build();
+        return HttpResponseDto.toBody(JwtMsgCode.OK, jwtResponseDto);
     }
 
     public HttpResponseDto generateAdminToken(String account, String secretKey){
@@ -264,12 +251,7 @@ public class UserTokenService {
                 newRefreshToken, jwtUtil.getExpiresIn(newRefreshToken));
 
         log.info("UserTokenService.generateAdminToken() -> success");
-        return HttpResponseDto.builder()
-                .status(JwtMsgCode.OK.getStatus())
-                .code(JwtMsgCode.OK.getCode())
-                .message(JwtMsgCode.OK.getMsg())
-                .data(jwtResponseDto)
-                .build();
+
+        return HttpResponseDto.toBody(JwtMsgCode.OK, jwtResponseDto);
     }
-    
 }

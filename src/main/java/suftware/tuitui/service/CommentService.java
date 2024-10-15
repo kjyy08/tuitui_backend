@@ -91,9 +91,7 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentRequestDto.getCommentId())
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.COMMENT_NOT_FOUND));
 
-        comment.setComment(commentRequestDto.getComment());
-        comment.setUpdateAt(DateTimeUtil.getSeoulTimestamp());
-        comment.setModified(Boolean.TRUE);
+        comment.updateComment(commentRequestDto.getComment());
 
         return Optional.of(CommentResponseDto.toDTO(comment));
     }

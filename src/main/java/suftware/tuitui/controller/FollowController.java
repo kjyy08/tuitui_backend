@@ -25,20 +25,12 @@ public class FollowController {
 
         //  팔로워 및 팔로잉 하는 유저가 없음
         if (followerList == null && followingList == null){
-            return ResponseEntity.status(TuiTuiMsgCode.FOLLOWS_NOT_FOUND.getHttpStatus()).body(HttpResponseDto.builder()
-                    .status(TuiTuiMsgCode.FOLLOWS_NOT_FOUND.getHttpStatus())
-                    .code(TuiTuiMsgCode.FOLLOWS_NOT_FOUND.getCode())
-                    .message(TuiTuiMsgCode.FOLLOWS_NOT_FOUND.getMsg())
-                    .build());
+            return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.FOLLOWS_NOT_FOUND);
         }
         else {
             FollowResponseDto followResponseDtoList = FollowResponseDto.toDto(followerList, followingList);
 
-            return ResponseEntity.status(TuiTuiMsgCode.FOLLOWS_READ_SUCCESS.getHttpStatus()).body(HttpResponseDto.builder()
-                    .status(TuiTuiMsgCode.FOLLOWS_READ_SUCCESS.getHttpStatus())
-                    .message(TuiTuiMsgCode.FOLLOWS_READ_SUCCESS.getMsg())
-                    .data(followResponseDtoList)
-                    .build());
+            return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.FOLLOWS_READ_SUCCESS, followResponseDtoList);
         }
     }
 
@@ -46,19 +38,13 @@ public class FollowController {
     public ResponseEntity<HttpResponseDto> createFollow(@RequestBody FollowRequestDto followRequestDto){
         followService.saveFollow(followRequestDto);
 
-        return ResponseEntity.status(TuiTuiMsgCode.FOLLOWS_CREATE_SUCCESS.getHttpStatus()).body(HttpResponseDto.builder()
-                .status(TuiTuiMsgCode.FOLLOWS_CREATE_SUCCESS.getHttpStatus())
-                .message(TuiTuiMsgCode.FOLLOWS_CREATE_SUCCESS.getMsg())
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.FOLLOWS_CREATE_SUCCESS);
     }
 
     @DeleteMapping(value = "profiles/follows")
     public ResponseEntity<HttpResponseDto> deleteFollow(@RequestBody FollowRequestDto followRequestDto){
         followService.deleteFollow(followRequestDto);
 
-        return ResponseEntity.status(TuiTuiMsgCode.FOLLOWS_DELETE_SUCCESS.getHttpStatus()).body(HttpResponseDto.builder()
-                .status(TuiTuiMsgCode.FOLLOWS_DELETE_SUCCESS.getHttpStatus())
-                .message(TuiTuiMsgCode.FOLLOWS_DELETE_SUCCESS.getMsg())
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.FOLLOWS_DELETE_SUCCESS);
     }
 }

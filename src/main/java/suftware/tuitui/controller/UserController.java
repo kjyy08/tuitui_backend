@@ -24,11 +24,7 @@ public class UserController {
     public ResponseEntity<HttpResponseDto> readUserList() {
         List<UserResponseDto> userResponseDtoList = userService.getUserList();
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.USER_READ_SUCCESS.getMsg())
-                .data(userResponseDtoList)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.USER_READ_SUCCESS, userResponseDtoList);
     }
 
     //  유저 id 기준 조회
@@ -36,11 +32,7 @@ public class UserController {
     public ResponseEntity<HttpResponseDto> readUser(@PathVariable(name = "userId") Integer user_id) {
         Optional<UserResponseDto> userResponseDto = userService.getUser(user_id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.USER_READ_SUCCESS.getMsg())
-                .data(userResponseDto)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.USER_READ_SUCCESS, userResponseDto);
     }
 
 //    //  유저 생성
@@ -83,10 +75,7 @@ public class UserController {
     public ResponseEntity<HttpResponseDto> deleteUser(@RequestBody @Valid UserCreateRequestDto userCreateRequestDto){
         userService.deleteUser(userCreateRequestDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.USER_DELETE_SUCCESS.getMsg())
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.USER_DELETE_SUCCESS);
     }
 
     //  유저 로그인

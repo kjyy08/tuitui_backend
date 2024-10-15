@@ -8,9 +8,9 @@ import org.hibernate.annotations.DynamicUpdate;
 @Getter
 @Setter
 @ToString
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
 @Table(name = "comment_like")
 public class CommentLike {
@@ -26,4 +26,11 @@ public class CommentLike {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id", referencedColumnName = "profile_id", nullable = false)
     Profile profile;
+
+    public static CommentLike of(Comment comment, Profile profile) {
+        return CommentLike.builder()
+                .comment(comment)
+                .profile(profile)
+                .build();
+    }
 }

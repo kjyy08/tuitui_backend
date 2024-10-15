@@ -5,11 +5,10 @@ import lombok.*;
 
 @Entity
 @Getter
-@Setter
 @ToString
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "hashtag_label")
 public class Hashtag {
     @Id

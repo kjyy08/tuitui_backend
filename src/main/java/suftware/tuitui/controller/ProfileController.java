@@ -44,11 +44,7 @@ public class ProfileController {
             profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.PROFILE_READ_SUCCESS.getMsg())
-                .data(profileResponseDtoList)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_READ_SUCCESS, profileResponseDtoList);
     }
 
     //  프로필 id 기준 조회
@@ -61,11 +57,7 @@ public class ProfileController {
 
         profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.PROFILE_READ_SUCCESS.getMsg())
-                .data(profileResponseDto)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_READ_SUCCESS, profileResponseDto);
     }
 
     //  user id 기준 조회
@@ -78,11 +70,7 @@ public class ProfileController {
 
         profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.PROFILE_READ_SUCCESS.getMsg())
-                .data(profileResponseDto)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_READ_SUCCESS, profileResponseDto);
     }
 
     //  닉네임 기준 프로필 조회
@@ -95,11 +83,7 @@ public class ProfileController {
 
         profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.PROFILE_READ_SUCCESS.getMsg())
-                .data(profileResponseDto)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_READ_SUCCESS, profileResponseDto);
     }
 
     //  프로필 생성, 이미지 미포함
@@ -114,11 +98,7 @@ public class ProfileController {
 
         profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(HttpResponseDto.builder()
-                .status(HttpStatus.CREATED)
-                .message(TuiTuiMsgCode.PROFILE_CREATE_SUCCESS.getMsg())
-                .data(profileResponseDto)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_CREATE_SUCCESS, profileResponseDto);
     }
 
     //  프로필 생성, 이미지 포함
@@ -135,17 +115,9 @@ public class ProfileController {
 
             profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
 
-            return ResponseEntity.status(TuiTuiMsgCode.PROFILE_CREATE_SUCCESS.getHttpStatus()).body(HttpResponseDto.builder()
-                    .status(TuiTuiMsgCode.PROFILE_CREATE_SUCCESS.getHttpStatus())
-                    .message(TuiTuiMsgCode.PROFILE_CREATE_SUCCESS.getMsg())
-                    .data(profileResponseDto)
-                    .build());
+            return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_CREATE_SUCCESS, profileResponseDto);
         } else {
-            return ResponseEntity.status(TuiTuiMsgCode.PROFILE_CREATE_FAIL.getHttpStatus()).body(HttpResponseDto.builder()
-                    .status(TuiTuiMsgCode.PROFILE_CREATE_FAIL.getHttpStatus())
-                    .code(TuiTuiMsgCode.PROFILE_CREATE_FAIL.getCode())
-                    .message(TuiTuiMsgCode.PROFILE_CREATE_FAIL.getMsg())
-                    .build());
+            return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_CREATE_FAIL);
         }
     }
 
@@ -164,11 +136,8 @@ public class ProfileController {
             imageResponseDto = profileImageService.deleteProfileImage(profileId, S3ImagePath.PROFILE.getPath())
                     .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_UPDATE_FAIL));
         }
-        return ResponseEntity.status(TuiTuiMsgCode.PROFILE_UPDATE_SUCCESS.getHttpStatus()).body(HttpResponseDto.builder()
-                .status(TuiTuiMsgCode.PROFILE_UPDATE_SUCCESS.getHttpStatus())
-                .message(TuiTuiMsgCode.PROFILE_UPDATE_SUCCESS.getMsg())
-                .data(imageResponseDto)
-                .build());
+
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_UPDATE_SUCCESS, imageResponseDto);
     }
 
     //  프로필 정보 수정
@@ -176,11 +145,7 @@ public class ProfileController {
     public ResponseEntity<HttpResponseDto> updateProfile(@Valid @RequestBody ProfileUpdateRequestDto profileUpdateRequestDto) throws MethodArgumentNotValidException{
         Optional<ProfileResponseDto> profileResponseDto = profileService.updateProfile(profileUpdateRequestDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.PROFILE_UPDATE_SUCCESS.getMsg())
-                .data(profileResponseDto)
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_UPDATE_SUCCESS, profileResponseDto);
     }
 
     //  프로필 삭제
@@ -189,9 +154,6 @@ public class ProfileController {
         profileImageService.deleteProfileImage(profileId, S3ImagePath.PROFILE.getPath());
         profileService.deleteProfile(profileId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpResponseDto.builder()
-                .status(HttpStatus.OK)
-                .message(TuiTuiMsgCode.PROFILE_DELETE_SUCCESS.getMsg())
-                .build());
+        return HttpResponseDto.toResponseEntity(TuiTuiMsgCode.PROFILE_DELETE_SUCCESS);
     }
 }

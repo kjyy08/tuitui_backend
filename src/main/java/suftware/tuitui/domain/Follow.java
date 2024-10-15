@@ -5,11 +5,10 @@ import lombok.*;
 
 @Entity
 @Getter
-@Setter
 @ToString
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "follow")
 public class Follow {
     @Id
@@ -24,4 +23,11 @@ public class Follow {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "following_id", nullable = false, referencedColumnName = "profile_id")
     Profile following;
+
+    public static Follow of(Profile follower, Profile following){
+        return Follow.builder()
+                .follower(follower)
+                .following(following)
+                .build();
+    }
 }
