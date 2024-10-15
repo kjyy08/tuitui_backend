@@ -17,14 +17,11 @@ import suftware.tuitui.dto.request.ProfileCreateRequestDto;
 import suftware.tuitui.dto.request.ProfileUpdateRequestDto;
 import suftware.tuitui.dto.response.PageResponse;
 import suftware.tuitui.dto.response.ProfileResponseDto;
-import suftware.tuitui.dto.response.UserResponseDto;
 import suftware.tuitui.repository.ProfileRepository;
 import suftware.tuitui.repository.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

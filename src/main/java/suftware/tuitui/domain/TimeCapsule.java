@@ -8,7 +8,6 @@ import suftware.tuitui.common.time.DateTimeUtil;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity

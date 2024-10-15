@@ -21,7 +21,7 @@ public class UserTokenController {
     //  jwt 토큰 발급
     @GetMapping(value = "token")
     public ResponseEntity<HttpResponse> token(HttpServletRequest request, HttpServletResponse response){
-        HttpResponse httpResponse = null;
+        HttpResponse httpResponse;
 
         try {
             String grantType = request.getParameter("grant_type");

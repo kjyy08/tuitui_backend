@@ -1,14 +1,11 @@
 package suftware.tuitui.dto.request;
 
-import jakarta.persistence.Column;
 import lombok.*;
-import suftware.tuitui.common.time.DateTimeUtil;
 import suftware.tuitui.domain.Profile;
 import suftware.tuitui.domain.TimeCapsule;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Getter
 @Builder

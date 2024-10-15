@@ -27,7 +27,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //  헤더에서 access키에 담긴 token을 꺼냄
         String accessToken = request.getHeader("Authorization");
-        JwtMsgCode errorCode = null;
+        JwtMsgCode errorCode;
 
         if (accessToken == null || accessToken.isEmpty()){
             errorCode = JwtMsgCode.EMPTY;

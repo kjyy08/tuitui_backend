@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import suftware.tuitui.common.exception.TuiTuiException;
 import suftware.tuitui.common.enumType.TuiTuiMsgCode;
-import suftware.tuitui.common.time.DateTimeUtil;
 import suftware.tuitui.domain.Profile;
 import suftware.tuitui.domain.TimeCapsule;
 import suftware.tuitui.domain.TimeCapsuleImage;
@@ -23,13 +22,9 @@ import suftware.tuitui.repository.TimeCapsuleImageRepository;
 import suftware.tuitui.repository.TimeCapsuleRepository;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
