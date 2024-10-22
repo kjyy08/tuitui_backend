@@ -35,7 +35,7 @@ application-dev.properties
 application-dev.yml
 
 ### Docker ###
-Dockerfile
+/Dockerfile
 docker-compose.yml
 .env
 

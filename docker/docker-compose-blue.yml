@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  backend:
+    # 현재 디렉토리에서의 Dockerfile을 사용하여 Docker 이미지를 빌드
+    build: .
+    ports:
+      - "8443:8443"
+    # 컨테이너의 이름
+    container_name: tuitui-backend-blue
+    volumes:
+      - /home/ubuntu/ssl/tuituissl.p12:/app/ssl/tuituissl.p12
+    environment:
+      - TZ=Asia/Seoul
+      - SPRING_PROFILES_ACTIVE
+      - SPRING_SQL_URL
+      - SPRING_SQL_USERNAME
+      - SPRING_SQL_PASSWORD
+      - SSL_PASSWORD
+      - ADMIN_SECRET_KEY
+      - MANAGER_SECRET_KEY
+      - JWT_SECRET_KEY
+      - CLOUD_FRONT_URL
+      - S3_BUCKET_NAME
+      - S3_ACCESS_KEY
+      - S3_SECRET_ACCESS_KEY
+      - MULTIPART_TEMP_ROOT
+      - S3_BUCKET_URL
+      - SPRING_REDIS_URL
+      - SPRING_REDIS_PASSWORD
+    networks:
+      - tuituinetwork
+
+networks:
+  tuituinetwork:
+    external: true
+    driver: bridge

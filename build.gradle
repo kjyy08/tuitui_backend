@@ -42,3 +42,7 @@ dependencies {
 compileJava {
 	options.compilerArgs << '-parameters'
 }
+
+tasks.named('jar') {
+	enabled = false
+}
