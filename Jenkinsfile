@@ -9,7 +9,12 @@ pipeline{
     stages{
         stage('Checkout') {
             steps {
-                checkout scm
+                 checkout([
+                            $class: 'GitSCM',
+                            branches: [[name: '*/main']],  // main 브랜치를 명시적으로 설정
+                            doGenerateSubmoduleConfigurations: false,
+                            extensions: [[$class: 'CleanBeforeCheckout']],  // 이전 작업 클린업
+                 ])
             }
         }
 
