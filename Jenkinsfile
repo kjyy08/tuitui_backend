@@ -45,8 +45,8 @@ pipeline{
         stage('Deploy') {
             steps {
                 sh '''
-                    cp ./docker/docker-compose.blue.yml ${SCRIPT_PATH}
-                    cp ./docker/docker-compose.green.yml ${SCRIPT_PATH}
+                    cp ./docker/docker-compose-blue.yml ${SCRIPT_PATH}
+                    cp ./docker/docker-compose-green.yml ${SCRIPT_PATH}
                     cp ./docker/Dockerfile ${SCRIPT_PATH}
                     cp ./scripts/deploy.sh ${SCRIPT_PATH}
                     cp ./build/libs/*.jar ${SCRIPT_PATH}
