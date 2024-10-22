@@ -5,7 +5,6 @@ plugins {
 }
 
 group = 'suftware'
-version = '1.0.0'
 
 java {
 	sourceCompatibility = '17'
