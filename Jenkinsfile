@@ -27,10 +27,10 @@ pipeline{
         stage('Replace Prod Properties') {
             steps {
                 withCredentials([file(credentialsId: 'applicationMain', variable: 'applicationMain')]) {
-                                    script {
-                                        sh 'cp $applicationMain ./src/main/resources/application.yml'
-                                    }
-                                }
+                    script {
+                        sh 'cp $applicationMain ./src/main/resources/application.yml'
+                    }
+                }
 
                 withCredentials([file(credentialsId: 'applicationProd', variable: 'applicationProd')]) {
                     script {

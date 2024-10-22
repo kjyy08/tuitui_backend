@@ -1,5 +1,5 @@
 #!/bin/bash
-# 작업 디렉토리를 /var/jenkins_home/custom/snapcampus으로 변경
+# 작업 디렉토리를 /var/jenkins_home/custom/tuitui_backend로 변경
 cd /var/jenkins_home/custom/tuitui_backend
 
 # 환경변수 DOCKER_APP_NAME : 컨테이너 메인 이름

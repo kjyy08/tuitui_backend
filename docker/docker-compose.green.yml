@@ -28,9 +28,9 @@ services:
       - SPRING_REDIS_URL
       - SPRING_REDIS_PASSWORD
     networks:
-      - tuituinetwork
+      - tuitui-network
 
 networks:
-  tuituinetwork:
+  tuitui-network:
     external: true
     driver: bridge
