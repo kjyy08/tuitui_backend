@@ -12,11 +12,13 @@ pipeline{
                 checkout scm
             }
         }
+
         stage('Prepare'){
             steps {
                 sh 'gradle clean'
             }
         }
+
         stage('Replace Prod Properties') {
             steps {
                 withCredentials([file(credentialsId: 'applicationMain', variable: 'applicationMain')]) {
@@ -32,16 +34,19 @@ pipeline{
                 }
             }
         }
+
         stage('Build') {
             steps {
                 sh 'gradle build -x test'
             }
         }
+
         stage('Test') {
             steps {
                 sh 'gradle test'
             }
         }
+
         stage('Deploy') {
             steps {
                 sh '''
