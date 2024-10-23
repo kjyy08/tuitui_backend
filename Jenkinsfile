@@ -40,7 +40,7 @@ pipeline{
 
                 withCredentials([file(credentialsId: 'applicationEnv', variable: 'applicationEnv')]) {
                     script {
-                        sh 'cp applicationEnv ./.env'
+                        sh 'cp $applicationEnv ./.env'
                     }
                 }
             }
