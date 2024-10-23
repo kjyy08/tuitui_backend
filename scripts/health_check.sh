@@ -7,7 +7,7 @@ check_health() {
     local count=0
 
     while [ $count -lt $retries ]; do
-        echo "Checking health at http://127.9.13.1:$port/actuator/health"
+        echo "Checking health at http://tuituiworld.store:$port/actuator/health"
 
         http_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:$port/actuator/health)
 
