@@ -1,58 +1,36 @@
 #!/bin/bash
-# 작업 디렉토리를 /var/jenkins_home/custom/tuitui_backend로 변경
-cd /var/jenkins_home/custom/tuitui_backend
 
-# 환경변수 DOCKER_APP_NAME : 컨테이너 메인 이름
+# 작업 디렉토리로 변경
+cd /var/jenkins_home/custom/tuitui_backend || exit 1
+
+# 환경변수
 DOCKER_APP_NAME=tuitui-backend
 LOG_FILE=./deploy.log
 
-# 실행중인 blue가 있는지 확인
-# 프로젝트의 실행 중인 컨테이너를 확인하고, 해당 컨테이너가 실행 중인지 여부를 EXIST_BLUE 변수에 저장
-EXIST_BLUE=$(docker-compose -p "${DOCKER_APP_NAME}-blue" -f docker-compose.blue.yml ps | grep -E "Up|running")
+# 로그 기록 함수 포함
+source ./log.sh
 
-# 배포 시작한 날짜와 시간을 기록
-echo "배포 시작일자 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> $LOG_FILE
+# 헬스 체크 함수 포함
+source ./health_check.sh
 
+# 메인 함수
+main() {
+    log "배포 시작일자 : $(date +'%Y-%m-%d %H:%M:%S')"
 
-# green이 실행중이면 blue up
-# EXIST_BLUE 변수가 비어있는지 확인
-if [ -z "$EXIST_BLUE" ]; then
+    EXIST_BLUE=$(docker-compose -p "${DOCKER_APP_NAME}-blue" -f docker-compose.blue.yml ps | grep -E "Up|running")
 
-  # 로그 파일에 "blue up - blue 배포 : port:8081"이라는 내용을 추가
-  echo "blue 배포 시작 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> $LOG_FILE
+    if [ -z "$EXIST_BLUE" ]; then
+        ./deploy_blue.sh  # 블루 배포
+    else
+        ./deploy_green.sh  # 그린 배포
+    fi
 
-  # docker-compose.blue.yml 파일을 사용하여 blue 컨테이너를 빌드하고 실행
-  docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose.blue.yml up -d --build
+    # 사용하지 않는 이미지 삭제
+    docker image prune -af
 
-  # 30초 동안 대기
-  sleep 30
+    log "배포 종료  : $(date +'%Y-%m-%d %H:%M:%S')"
+    log "===================== 배포 완료 ====================="
+}
 
-  # 로그 파일에 "green 중단 시작"이라는 내용을 추가
-  echo "green 중단 시작 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> $LOG_FILE
-
-  # docker-compose.green.yml 파일을 사용하여 green 컨테이너를 중지
-  docker-compose -p ${DOCKER_APP_NAME}-green -f docker-compose.green.yml down
-
-   # 사용하지 않는 이미지 삭제
-  docker image prune -af
-
-  echo "green 중단 완료 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> $LOG_FILE
-
-# blue가 실행중이면 green up
-else
-  echo "green 배포 시작 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> $LOG_FILE
-  docker-compose -p ${DOCKER_APP_NAME}-green -f docker-compose.green.yml up -d --build
-
-  sleep 30
-
-  echo "blue 중단 시작 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> $LOG_FILE
-  docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose.blue.yml down
-  docker image prune -af
-
-  echo "blue 중단 완료 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> $LOG_FILE
-
-fi
-  echo "배포 종료  : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> $LOG_FILE
-
-  echo "===================== 배포 완료 =====================" >> $LOG_FILE
-  echo >> $LOG_FILE
+# 스크립트 실행
+main
