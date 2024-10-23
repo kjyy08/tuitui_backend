@@ -1,6 +1,8 @@
 package suftware.tuitui.common.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -29,12 +31,24 @@ import suftware.tuitui.repository.UserTokenRepository;
 @EnableWebSecurity(debug = false)
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final RequestMappingHandlerMapping requestMappingHandlerMapping;
+    @Autowired
+    private RequestMappingHandlerMapping requestMappingHandlerMapping;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final UserTokenRepository userTokenRepository;
     private final ProfileRepository profileRepository;
     private final IpBlackListRepository ipBlackListRepository;
+
+    //  헬스 체크를 위한 필터 체인
+    @Bean
+    @Order(1)
+    public SecurityFilterChain actuatorFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .securityMatcher("/actuator/health")
+                .authorizeHttpRequests((auth) -> auth
+                        .anyRequest().permitAll())
+                .build();
+    }
 
     //  관리자 페이지 필터 체인
     @Bean
@@ -72,7 +86,6 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers(
-                                new AntPathRequestMatcher("/health"),
                                 new AntPathRequestMatcher("/error"),
                                 new AntPathRequestMatcher("/api/**")).permitAll()
                         .anyRequest().authenticated())

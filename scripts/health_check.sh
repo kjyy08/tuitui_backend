@@ -7,7 +7,7 @@ check_health() {
     local count=0
 
     while [ $count -lt $retries ]; do
-        http_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:$port/health)
+        http_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:$port/actuator/health)
 
         if [ "$http_code" -eq 200 ]; then
             echo "서비스가 정상 작동 중입니다 (포트: $port)."
