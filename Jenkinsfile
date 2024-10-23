@@ -24,7 +24,7 @@ pipeline{
             }
         }
 
-        stage('Replace Prod Properties') {
+        stage('Replace Prod Properties And Environment') {
             steps {
                 withCredentials([file(credentialsId: 'applicationMain', variable: 'applicationMain')]) {
                     script {
@@ -35,6 +35,12 @@ pipeline{
                 withCredentials([file(credentialsId: 'applicationProd', variable: 'applicationProd')]) {
                     script {
                         sh 'cp $applicationProd ./src/main/resources/application-prod.yml'
+                    }
+                }
+
+                withCredentials([file(credentialsId: 'applicationEnv', variable: 'applicationEnv')]) {
+                    script {
+                        sh 'cp applicationEnv ./.env'
                     }
                 }
             }
