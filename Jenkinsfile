@@ -65,13 +65,9 @@ pipeline{
                     cp ./docker/docker-compose.blue.yml ${SCRIPT_PATH}
                     cp ./docker/docker-compose.green.yml ${SCRIPT_PATH}
                     cp ./docker/Dockerfile ${SCRIPT_PATH}
-                    cp ./scripts/deploy.sh ${SCRIPT_PATH}
-                    cp ./scripts/deploy_blue.sh ${SCRIPT_PATH}
-                    cp ./scripts/deploy_green.sh ${SCRIPT_PATH}
-                    cp ./scripts/health_check.sh ${SCRIPT_PATH}
-                    cp ./scripts/log.sh ${SCRIPT_PATH}
+                    cp ./scripts/*.sh ${SCRIPT_PATH}
                     cp ./build/libs/*.jar ${SCRIPT_PATH}
-                    chmod +x ${SCRIPT_PATH}/deploy.sh
+                    chmod +x ${SCRIPT_PATH}/*.sh
                     ${SCRIPT_PATH}/deploy.sh
                 '''
             }
