@@ -10,6 +10,9 @@ LOG_FILE=./deploy.log
 # 로그 기록 함수 포함
 source ./log.sh
 
+# 헬스 체크 함수 포함
+source ./health_check.sh  # 헬스 체크 함수 로드
+
 # 블루 환경 배포
 deploy_blue() {
     log "blue 배포 시작 : $(date +'%Y-%m-%d %H:%M:%S')"
