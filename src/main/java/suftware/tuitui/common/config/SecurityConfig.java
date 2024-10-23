@@ -72,6 +72,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers(
+                                new AntPathRequestMatcher("/health"),
                                 new AntPathRequestMatcher("/error"),
                                 new AntPathRequestMatcher("/api/**")).permitAll()
                         .anyRequest().authenticated())
