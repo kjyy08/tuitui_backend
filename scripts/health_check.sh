@@ -7,6 +7,8 @@ check_health() {
     local count=0
 
     while [ $count -lt $retries ]; do
+        echo "Checking health at http://localhost:$port/actuator/health"
+
         http_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:$port/actuator/health)
 
         if [ "$http_code" -eq 200 ]; then
