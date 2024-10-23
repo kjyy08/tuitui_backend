@@ -7,8 +7,6 @@ services:
       - "8444:8443"
     # 컨테이너의 이름
     container_name: tuitui-backend-green
-    volumes:
-      - /home/ubuntu/ssl/tuituissl.p12:/app/ssl/tuituissl.p12
     environment:
       - TZ=Asia/Seoul
       - SPRING_PROFILES_ACTIVE
