@@ -37,6 +37,12 @@ pipeline{
                         sh 'cp $applicationProd ./src/main/resources/application-prod.yml'
                     }
                 }
+
+                withCredentials([file(credentialsId: 'applicationEnv', variable: 'applicationEnv')]) {
+                    script {
+                        sh 'cp $applicationEnv ./docker/.env'
+                    }
+                }
             }
         }
 
