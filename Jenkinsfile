@@ -40,7 +40,7 @@ pipeline{
 
                 withCredentials([file(credentialsId: 'applicationEnv', variable: 'applicationEnv')]) {
                     script {
-                        sh 'cp $applicationEnv ./.env'
+                        sh 'cp $applicationEnv ./docker/.env'
                     }
                 }
             }
@@ -61,6 +61,7 @@ pipeline{
         stage('Deploy') {
             steps {
                 sh '''
+                    cp  ./
                     cp ./docker/docker-compose.blue.yml ${SCRIPT_PATH}
                     cp ./docker/docker-compose.green.yml ${SCRIPT_PATH}
                     cp ./docker/Dockerfile ${SCRIPT_PATH}
