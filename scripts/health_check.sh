@@ -9,7 +9,7 @@ check_health() {
     while [ $count -lt $retries ]; do
         echo "Checking health at http://tuituiworld.store:$port/actuator/health"
 
-        http_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:$port/actuator/health)
+        http_code=$(curl -s -o /dev/null -w "%{http_code}" http://tuituiworld.store:$port/actuator/health)
 
         if [ "$http_code" -eq 200 ]; then
             echo "서비스가 정상 작동 중입니다 (포트: $port)."
