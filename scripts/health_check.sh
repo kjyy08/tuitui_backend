@@ -6,6 +6,8 @@ check_health() {
     local retries=5
     local count=0
 
+    sleep 30 # spring 가동을 위해 대기
+
     while [ $count -lt $retries ]; do
         echo "Checking health at http://tuituiworld.store:$port/actuator/health"
 
