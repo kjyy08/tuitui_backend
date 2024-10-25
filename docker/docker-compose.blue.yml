@@ -1,10 +1,11 @@
 version: '3.8'
 services:
-  backend:
+  tuitui-backend-blue:
     # 현재 디렉토리에서의 Dockerfile을 사용하여 Docker 이미지를 빌드
     build: .
     ports:
       - "8443:8443"
+    image: tuitui-backend-blue
     # 컨테이너의 이름
     container_name: tuitui-backend-blue
     environment:
