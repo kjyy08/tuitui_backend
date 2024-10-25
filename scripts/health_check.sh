@@ -5,13 +5,14 @@ check_health() {
     local port=$1
     local retries=5
     local count=0
+    local url=${API_URL}
 
     sleep 30 # spring 가동을 위해 대기
 
     while [ $count -lt $retries ]; do
-        echo "Checking health at http://tuituiworld.store:$port/actuator/health"
+        echo "Checking health at http://$url:$port/actuator/health"
 
-        http_code=$(curl -s -o /dev/null -w "%{http_code}" http://tuituiworld.store:$port/actuator/health)
+        http_code=$(curl -s -o /dev/null -w "%{http_code}" http://$url:$port/actuator/health)
 
         if [ "$http_code" -eq 200 ]; then
             echo "서비스가 정상 작동 중입니다 (포트: $port)."
