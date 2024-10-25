@@ -20,9 +20,9 @@ main() {
     EXIST_BLUE=$(docker-compose -p "${DOCKER_APP_NAME}-blue" -f docker-compose.blue.yml ps | grep -E "Up|running")
 
     if [ -z "$EXIST_BLUE" ]; then
-        ./deploy_blue.sh  # 블루 배포
-    else
         ./deploy_green.sh  # 그린 배포
+    else
+        ./deploy_blue.sh  # 블루 배포
     fi
 
     # 사용하지 않는 이미지 삭제
