@@ -45,20 +45,6 @@
 # ⚙️백엔드 아키텍처
 ![아키텍처](https://github.com/user-attachments/assets/0eba517e-9458-4f7f-90df-8d44ce05d412)
 
-# 🔑JWT
-* ### 토큰 발급 및 생성 과정
-![image](https://github.com/user-attachments/assets/e7a33cc0-ad6f-44ea-af49-a8925966aa88)
-
-| 순서 |                           설명                            |                     비고                     |
-|:--:|:-------------------------------------------------------:|:------------------------------------------:|
-| 1  |      유저가 소셜 로그인에 성공하여 필요한 정보를 담아<br> 로그인 요청을 보냅니다.      | grant_type, Access/Refresh 토큰,<br> 계정 정보 등 |   
-| 2  |               컨트롤러에서 서비스로 토큰 검증 요청을 보냅니다.               |                                            |
-| 3  | 서비스에서 실제 SNS 이용자인지 검증하기 위해<br> SNS 서버로 유저 검증 요청을 보냅니다.  |          SDK에서 발급받은 Access 토큰 이용           |
-| 4  |                 유저 검증에 성공하면 토큰을 생성합니다.                  |                                            |   
-| 5  |           토큰 재발급에 사용할 Refresh 토큰을 DB에 저장합니다.            |     Refresh 토큰, 계정 정보,<br> 만료일을 DB에 저장     |   
-| 6  |           Access, Refresh 토큰 정보를 컨트롤러에 반환합니다.           |                                            |   
-| 7  |               유저에게 토큰 정보을 반환하여 발급을 마칩니다.                |                                            |
-
 # 🐋배포 과정
 * ### 도커를 통한 배포
 ![image](https://github.com/user-attachments/assets/7753a3aa-7d3d-4248-9301-c49471f8a17c)
@@ -106,6 +92,20 @@ networks:
     driver: bridge
 ```
 
+# 🔑JWT
+* ### 토큰 발급 및 생성 과정
+![image](https://github.com/user-attachments/assets/e7a33cc0-ad6f-44ea-af49-a8925966aa88)
+
+| 순서 |                           설명                            |                     비고                     |
+|:--:|:-------------------------------------------------------:|:------------------------------------------:|
+| 1  |      유저가 소셜 로그인에 성공하여 필요한 정보를 담아<br> 로그인 요청을 보냅니다.      | grant_type, Access/Refresh 토큰,<br> 계정 정보 등 |   
+| 2  |               컨트롤러에서 서비스로 토큰 검증 요청을 보냅니다.               |                                            |
+| 3  | 서비스에서 실제 SNS 이용자인지 검증하기 위해<br> SNS 서버로 유저 검증 요청을 보냅니다.  |          SDK에서 발급받은 Access 토큰 이용           |
+| 4  |                 유저 검증에 성공하면 토큰을 생성합니다.                  |                                            |   
+| 5  |           토큰 재발급에 사용할 Refresh 토큰을 DB에 저장합니다.            |     Refresh 토큰, 계정 정보,<br> 만료일을 DB에 저장     |   
+| 6  |           Access, Refresh 토큰 정보를 컨트롤러에 반환합니다.           |                                            |   
+| 7  |               유저에게 토큰 정보을 반환하여 발급을 마칩니다.                |                                            |
+
 # 📋API 명세
 ➡️[TuiTui API Document](https://documenter.getpostman.com/view/34178237/2sA3s3GB1N#50c1d557-1a40-468d-8c30-838589dd38f3)
 
@@ -150,11 +150,6 @@ networks:
 | Follow  |            /profiles/follows            |    POST     |     특정 유저 팔로우      |
 |         |            /profiles/follows            |   DELETE    |       팔로우 취소       |
 |         |      /profiles/follows/{profileId}      |     GET     |    팔로워 및 팔로잉 조회    |
-
-
-
-
-
 
 
 
