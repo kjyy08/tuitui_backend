@@ -17,7 +17,7 @@ source ./health_check.sh
 main() {
     log "배포 시작일자 : $(date +'%Y-%m-%d %H:%M:%S')"
 
-    EXIST_BLUE=$(docker-compose -f docker-compose.blue.yml ps | grep -E "Up|running")
+    EXIST_BLUE=$(docker-compose -p "${DOCKER_APP_NAME}-blue" -f docker-compose.blue.yml ps | grep -E "Up|running")
 
     if [ -z "$EXIST_BLUE" ]; then
         ./deploy_blue.sh  # 블루 배포
