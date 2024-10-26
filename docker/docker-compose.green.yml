@@ -13,9 +13,9 @@ services:
     env_file:
       - .env
     networks:
-      - tuitui-api-network
+      - tuitui-network
 
 networks:
-  tuitui-api-network:
+  tuitui-network:
     external: true
     driver: bridge
