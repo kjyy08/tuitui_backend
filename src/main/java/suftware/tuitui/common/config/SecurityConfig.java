@@ -50,6 +50,21 @@ public class SecurityConfig {
                 .build();
     }
 
+    //  ar 페이지 필터 체인
+    @Bean
+    @Order(1)
+    public SecurityFilterChain arFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf((csrfConfigurer) -> csrfConfigurer.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                .securityMatcher("/ar/**")
+                .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/ar/**")).permitAll()
+                        .anyRequest().authenticated())
+                .formLogin(AbstractHttpConfigurer::disable)
+                .build();
+    }
+
     //  관리자 페이지 필터 체인
     @Bean
     @Order(1)
