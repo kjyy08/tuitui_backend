@@ -1,6 +1,9 @@
 package suftware.tuitui.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +27,7 @@ import java.util.Optional;
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/")
+@Slf4j
 public class TimeCapsuleController {
     private final TimeCapsuleService timeCapsuleService;
     private final TimeCapsuleImageService timeCapsuleImageService;
@@ -101,16 +105,23 @@ public class TimeCapsuleController {
 
             timeCapsuleResponseDto.setImageList(imageResponseDtoList);
 
+            String dto = new ObjectMapper().writeValueAsString(timeCapsuleResponseDto);
+            log.info("Create Capsule With Images: {}", dto);
+
             return HttpResponse.toResponseEntity(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS, timeCapsuleResponseDto);
         } else {
+            log.info("Create Capsule Fail");
             return HttpResponse.toResponseEntity(TuiTuiMsgCode.CAPSULE_CREATE_FAIL);
         }
     }
 
     //  캡슐 저장
     @PostMapping(value = "capsules/without-image")
-    public ResponseEntity<HttpResponse> createCapsuleWithJson(@RequestBody TimeCapsuleRequestDto timeCapsuleRequestDto) {
+    public ResponseEntity<HttpResponse> createCapsuleWithJson(@RequestBody TimeCapsuleRequestDto timeCapsuleRequestDto) throws JsonProcessingException {
         Optional<TimeCapsuleResponseDto> timeCapsuleResponseDto = timeCapsuleService.save(timeCapsuleRequestDto);
+
+        String dto = new ObjectMapper().writeValueAsString(timeCapsuleResponseDto.get());
+        log.info("Create Capsule: {}", dto);
 
         return HttpResponse.toResponseEntity(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS, timeCapsuleResponseDto);
     }

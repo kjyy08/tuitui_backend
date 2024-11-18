@@ -1,8 +1,12 @@
 package suftware.tuitui.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import suftware.tuitui.common.http.HttpResponse;
@@ -19,6 +23,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @RequestMapping("api/")
 public class CommentController {
+    private static final Logger log = LoggerFactory.getLogger(CommentController.class);
     private final CommentService commentService;
 
     //  캡슐 id에 해당하는 모든 댓글 조회
@@ -39,8 +44,11 @@ public class CommentController {
 
     //  댓글 저장
     @PostMapping(value = "capsules/comments")
-    public ResponseEntity<HttpResponse> createCapsuleComment(@Valid @RequestBody CommentRequestDto commentRequestDto) {
+    public ResponseEntity<HttpResponse> createCapsuleComment(@Valid @RequestBody CommentRequestDto commentRequestDto) throws JsonProcessingException {
         Optional<CommentResponseDto> commentResponseDto = commentService.saveCapsuleComment(commentRequestDto);
+
+        String dto = new ObjectMapper().writeValueAsString(commentResponseDto.get());
+        log.info("Create Capsule Comment: {}", dto);
 
         return HttpResponse.toResponseEntity(TuiTuiMsgCode.COMMENT_CREATE_SUCCESS, commentResponseDto);
     }

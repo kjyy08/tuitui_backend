@@ -1,6 +1,8 @@
 package suftware.tuitui.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -89,7 +91,7 @@ public class ProfileController {
     //  프로필 생성, 이미지 미포함
     @PostMapping(value = "profiles/without-image")
     public ResponseEntity<HttpResponse> createProfileWithJson(@Valid @RequestBody ProfileCreateRequestDto profileCreateRequestDto,
-                                                              Authentication authentication) throws MethodArgumentNotValidException {
+                                                              Authentication authentication) throws MethodArgumentNotValidException, JsonProcessingException {
         //  프로필 생성
         ProfileResponseDto profileResponseDto = profileService.saveProfile(profileCreateRequestDto)
                 .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.PROFILE_CREATE_FAIL));
@@ -99,13 +101,16 @@ public class ProfileController {
 
         profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
 
+        String dto = new ObjectMapper().writeValueAsString(profileResponseDto);
+        log.info("Create Profile: {}", dto);
+
         return HttpResponse.toResponseEntity(TuiTuiMsgCode.PROFILE_CREATE_SUCCESS, profileResponseDto);
     }
 
     //  프로필 생성, 이미지 포함
     @PostMapping(value = "profiles/with-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<HttpResponse> createProfileWithImage(@Valid @RequestPart(name = "request") ProfileCreateRequestDto profileCreateRequestDto,
-                                                               @RequestPart(name = "file", required = true) MultipartFile file) throws MethodArgumentNotValidException {
+                                                               @RequestPart(name = "file", required = true) MultipartFile file) throws JsonProcessingException {
         //  파일이 존재하는 경우에만 동작
         if(file != null && !file.isEmpty()) {
             ProfileResponseDto profileResponseDto = profileService.saveProfile(profileCreateRequestDto)
@@ -116,8 +121,12 @@ public class ProfileController {
 
             profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
 
+            String dto = new ObjectMapper().writeValueAsString(profileResponseDto);
+            log.info("Create Profile With Image: {}", dto);
+
             return HttpResponse.toResponseEntity(TuiTuiMsgCode.PROFILE_CREATE_SUCCESS, profileResponseDto);
         } else {
+            log.info("Create Profile Fail");
             return HttpResponse.toResponseEntity(TuiTuiMsgCode.PROFILE_CREATE_FAIL);
         }
     }
