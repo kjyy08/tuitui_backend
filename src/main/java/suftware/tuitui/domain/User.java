@@ -56,4 +56,8 @@ public class User {
                 .build();
     }
 
+    public void updateSnsType(String type){
+        snsType = type;
+    }
+
 }

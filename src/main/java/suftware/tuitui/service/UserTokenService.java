@@ -109,24 +109,12 @@ public class UserTokenService {
         if (userRepository.existsByAccount(account)) {
             //  이미 생성된 유저는 기존 유저 정보 반환
             //  account, sns 일치 여부 확인 후 불일치하면 예외 발생
-            user = userRepository.findByAccountAndSnsType(account, snsType)
-                    .orElse(null);
+            user = userRepository.findByAccount(account)
+                    .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_NOT_FOUND));
 
-            if (user == null) {
-                // 다른 snsType으로 로그인된 경우 모든 리프레시 토큰 삭제
-                log.info("UserTokenService.authorization() -> account exists but snsType mismatched. Logging out from all devices.");
+            if (!user.getSnsType().equals(snsType)) {
+                user.updateSnsType(snsType);
                 userTokenRepository.deleteByAccount(account);
-
-                // 로그아웃 주소로 리다이렉트
-                try {
-                    response.sendRedirect("/api/logout");
-                } catch (IOException e) {
-                    log.error("Failed to redirect to logout", e);
-                    throw new TuiTuiException(TuiTuiMsgCode.USER_LOGOUT_FAIL);
-                }
-
-                // 리다이렉트 후 null 반환
-                return null;
             }
 
             isSigned = true;
