@@ -29,6 +29,7 @@ import suftware.tuitui.sns.naver.NaverAuthService;
 import suftware.tuitui.sns.naver.NaverResponse;
 
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 
@@ -109,7 +110,16 @@ public class UserTokenService {
             //  이미 생성된 유저는 기존 유저 정보 반환
             //  account, sns 일치 여부 확인 후 불일치하면 예외 발생
             user = userRepository.findByAccountAndSnsType(account, snsType)
-                    .orElseThrow(() -> new TuiTuiException(TuiTuiMsgCode.USER_EXIST));
+                    .orElseGet(() -> {
+                        //  다른 기기에 로그인된 유저 강제 로그아웃 처리
+                        try {
+                            response.sendRedirect("/api/logout");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        return null;
+                    });
             isSigned = true;
             log.info("UserTokenService.authorization() -> account: {} is exists", account);
         } else {
@@ -126,8 +136,8 @@ public class UserTokenService {
         }
 
         //  토큰 생성
-        String access = jwtUtil.createJwt("access", account, Role.USER.getValue());   //  1시간의 생명주기를 가짐
-        String refresh = jwtUtil.createJwt("refresh", account, Role.USER.getValue());  //  30일의 생명주기를 가짐
+        String access = jwtUtil.createJwt("access", account, Role.USER.getValue());
+        String refresh = jwtUtil.createJwt("refresh", account, Role.USER.getValue());
         UserToken userToken = UserToken.of(account, refresh, jwtUtil.getExpiresIn(refresh) * 1000);
 
         userTokenRepository.save(userToken);
