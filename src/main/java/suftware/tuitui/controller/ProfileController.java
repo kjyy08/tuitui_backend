@@ -101,8 +101,7 @@ public class ProfileController {
 
         profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
 
-        String dto = new ObjectMapper().writeValueAsString(profileResponseDto);
-        log.info("Create Profile: {}", dto);
+        log.info("Create Profile Id: {}", profileResponseDto.getProfileId());
 
         return HttpResponse.toResponseEntity(TuiTuiMsgCode.PROFILE_CREATE_SUCCESS, profileResponseDto);
     }
@@ -121,8 +120,7 @@ public class ProfileController {
 
             profileResponseDto.setProfileImgPath(imageResponseDto.getImagePath());
 
-            String dto = new ObjectMapper().writeValueAsString(profileResponseDto);
-            log.info("Create Profile With Image: {}", dto);
+            log.info("Create Profile Id: {}", profileResponseDto.getProfileId());
 
             return HttpResponse.toResponseEntity(TuiTuiMsgCode.PROFILE_CREATE_SUCCESS, profileResponseDto);
         } else {

@@ -105,8 +105,7 @@ public class TimeCapsuleController {
 
             timeCapsuleResponseDto.setImageList(imageResponseDtoList);
 
-            String dto = new ObjectMapper().writeValueAsString(timeCapsuleResponseDto);
-            log.info("Create Capsule With Images: {}", dto);
+            log.info("Create Capsule Id: {}", timeCapsuleResponseDto.getCapsuleId());
 
             return HttpResponse.toResponseEntity(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS, timeCapsuleResponseDto);
         } else {
@@ -120,8 +119,7 @@ public class TimeCapsuleController {
     public ResponseEntity<HttpResponse> createCapsuleWithJson(@RequestBody TimeCapsuleRequestDto timeCapsuleRequestDto) throws JsonProcessingException {
         Optional<TimeCapsuleResponseDto> timeCapsuleResponseDto = timeCapsuleService.save(timeCapsuleRequestDto);
 
-        String dto = new ObjectMapper().writeValueAsString(timeCapsuleResponseDto.get());
-        log.info("Create Capsule: {}", dto);
+        log.info("Create Capsule Id: {}", timeCapsuleResponseDto.get().getCapsuleId());
 
         return HttpResponse.toResponseEntity(TuiTuiMsgCode.CAPSULE_CREATE_SUCCESS, timeCapsuleResponseDto);
     }

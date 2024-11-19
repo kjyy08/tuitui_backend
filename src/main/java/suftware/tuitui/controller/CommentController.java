@@ -47,8 +47,7 @@ public class CommentController {
     public ResponseEntity<HttpResponse> createCapsuleComment(@Valid @RequestBody CommentRequestDto commentRequestDto) throws JsonProcessingException {
         Optional<CommentResponseDto> commentResponseDto = commentService.saveCapsuleComment(commentRequestDto);
 
-        String dto = new ObjectMapper().writeValueAsString(commentResponseDto.get());
-        log.info("Create Capsule Comment: {}", dto);
+        log.info("Create Capsule Comment Id: {}", commentResponseDto.get().getCommentId());
 
         return HttpResponse.toResponseEntity(TuiTuiMsgCode.COMMENT_CREATE_SUCCESS, commentResponseDto);
     }
