@@ -31,6 +31,9 @@ public class UserTokenController {
                 //  토큰 발급 요청 전 파라미터로 넘겨받은 account 인증
                 if (userTokenService.authenticate(request, response)) {
                     httpResponse = userTokenService.authorization(request, response);
+                    if (httpResponse == null){
+                        return null;
+                    }
                 } else {
                     throw new JwtException(JwtMsgCode.BAD_REQUEST);
                 }
